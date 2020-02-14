@@ -35,6 +35,11 @@ Unit tests:
 composer tests/unit
 ```
 
+End to end tests:
+```sh
+composer tests/end-to-end
+```
+
 ### And coding style tests
 
 PHP_CodeSniffer

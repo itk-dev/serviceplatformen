@@ -41,12 +41,12 @@
         "tests/unit": [
             "phpunit --configuration phpunit.xml.dist --testsuite Unit"
         ],
-        "tests/feature": [
-            "phpunit --configuration phpunit.xml.dist --testsuite Feature"
+        "tests/end-to-end": [
+            "phpunit --configuration phpunit.xml.dist --testsuite EndToEnd"
         ],
         "tests": [
             "@tests/unit",
-            "@tests/feature"
+            "@tests/end-to-end"
         ],
         "check-coding-standards/php-cs-fixer": [
             "php-cs-fixer --config=.php_cs.dist fix --dry-run"
