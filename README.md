@@ -65,6 +65,42 @@ composer static-code-analysis/phan
 composer require itk-dev/serviceplatformen
 ```
 
+## Usage
+```php
+<?php
+
+require_once 'vendor/autoload.php';
+
+use ItkDev\Serviceplatformen\Certificate\FilesystemCertificateLocator;
+use ItkDev\Serviceplatformen\Request\InvocationContextRequestGenerator;
+use ItkDev\Serviceplatformen\Service\PersonBaseDataExtendedService;
+
+$certificateLocator = new FilesystemCertificateLocator(__DIR__.'path_to_certificate.pem', 'passphrase if any');
+
+$pathToWsdl = __DIR__.'/resources/person-base-data-extended-service-contract/wsdl/context/PersonBaseDataExtendedService.wsdl';
+
+$options = [
+    'local_cert' => $certificateLocator->getPathToCertificate(),
+    'passphrase' => $certificateLocator->getPassphrase(),
+    'location' => 'https://url.to.service.endpoint'
+];
+
+$soapClient = new SoapClient($pathToWsdl, $options);
+
+$requestGenerator = new InvocationContextRequestGenerator(
+    'xxxx', // Service agreement UUID
+    'xxxx', // User system UUID
+    'xxxx', // Service UUID
+    'xxxx' // User UUID
+);
+
+$service = new PersonBaseDataExtendedService($soapClient, $requestGenerator);
+
+$response = $service->personLookup('1234567891');
+
+var_dump($response);
+```
+
 ## Contributing
 
 ### Pull Request Process
