@@ -65,10 +65,6 @@ composer static-code-analysis/phan
 composer require itk-dev/serviceplatformen
 ```
 
-## Built With
-
-* [WsdlToPhp](https://github.com/WsdlToPhp)
-
 ## Contributing
 
 ### Pull Request Process
