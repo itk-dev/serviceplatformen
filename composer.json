@@ -10,10 +10,10 @@
         }
     ],
     "require": {
-        "php": "^7.1.3",
+        "php": "^7.2",
         "ext-soap": "*",
         "ext-openssl": "*",
-        "itk-dev/azure-key-vault-php": "^0.0.1"
+        "itk-dev/azure-key-vault-php": "^0.0.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
