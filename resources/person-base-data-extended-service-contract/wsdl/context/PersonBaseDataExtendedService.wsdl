@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+        targetNamespace="http://serviceplatformen.dk/xml/wsdl/soap11/CPR/PersonBaseDataExtended/4/"
+        xmlns:tns="http://serviceplatformen.dk/xml/wsdl/soap11/CPR/PersonBaseDataExtended/4/"
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:spf="http://serviceplatformen.dk/xml/schemas/ServiceplatformFault/1/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+        name="PersonBaseDataExtendedService">
+
+    <wsdl:import namespace="http://serviceplatformen.dk/xml/wsdl/soap11/Security/Policy" location="policies.wsdl"/>
+    <wsdl:import namespace="http://serviceplatformen.dk/xml/schemas/ServiceplatformFault/1/"
+                 location="../../sp/ServiceplatformFaultMessage_1.wsdl"/>
+
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://serviceplatformen.dk/xml/wsdl/soap11/CPR/PersonBaseDataExtended/4/">
+            <xsd:include schemaLocation="../../PersonBaseDataExtendedServiceMsg.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+
+    <wsdl:message name="PersonLookupRequestMessage">
+        <wsdl:part name="request" element="tns:PersonLookupRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="PersonLookupResponseMessage">
+        <wsdl:part name="response" element="tns:PersonLookupResponse"/>
+    </wsdl:message>
+
+    <wsdl:portType name="PersonBaseDataExtendedPortType">
+        <wsdl:operation name="PersonLookup">
+            <wsdl:input message="tns:PersonLookupRequestMessage"/>
+            <wsdl:output message="tns:PersonLookupResponseMessage"/>
+            <wsdl:fault message="spf:ServiceplatformFault" name="ServiceplatformFault"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="PersonBaseDataExtendedBinding" type="tns:PersonBaseDataExtendedPortType">
+        <wsp:PolicyReference URI="policies.wsdl#ServiceplatformBindingPolicy"/>
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+
+        <wsdl:operation name="PersonLookup">
+            <soap:operation soapAction="http://serviceplatformen.dk/xml/wsdl/soap11/CPR/PersonBaseDataExtended/4/PersonLookup"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="ServiceplatformFault">
+                <soap:fault name="ServiceplatformFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="PersonBaseDataExtendedService">
+        <wsdl:port name="PersonBaseDataExtendedPort" binding="tns:PersonBaseDataExtendedBinding">
+            <soap:address location="https://localhost:8080/service/CPR/PersonBaseDataExtended/4"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

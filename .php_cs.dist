@@ -5,7 +5,7 @@ $finder = PhpCsFixer\Finder::create()
 ;
 
 $header =<<<'HEADER'
-This file is part of itk-dev/datatidy.
+This file is part of itk-dev/serviceplatformen.
 
 (c) 2020 ITK Development
 
@@ -17,7 +17,7 @@ return PhpCsFixer\Config::create()
     ->setRules([
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
-        'header_comment' => ['header' => $header],
+        'header_comment' => ['header' => $header, 'commentType' => 'PHPDoc'],
         'list_syntax' => ['syntax' => 'short'],
         'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
         'strict_comparison' => true,

@@ -13,3 +13,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PHP_CodeSniffer configuration
 - PHPUnit configuration
 - Phan configuration
+- Functionality for making calls to the PersonBaseDataExtended service.
