@@ -14,3 +14,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PHPUnit configuration
 - Phan configuration
 - Functionality for making calls to the PersonBaseDataExtended service.
+- Possibility to use certificates stored in Azure Key Vault.

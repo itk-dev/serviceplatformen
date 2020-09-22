@@ -15,10 +15,9 @@ use InvalidArgumentException;
 /**
  * Class FilesystemCertificateLocator
  */
-class FilesystemCertificateLocator implements CertificateLocatorInterface
+class FilesystemCertificateLocator extends AbstractCertificateLocator implements CertificateLocatorInterface
 {
     private $pathToCertificate;
-    private $passphrase;
 
     /**
      * FilesystemCertificateLocator constructor.
@@ -31,7 +30,7 @@ class FilesystemCertificateLocator implements CertificateLocatorInterface
     public function __construct(string $pathToCertificate, string $passphrase = '')
     {
         $this->setPathToCertificate($pathToCertificate);
-        $this->passphrase = $passphrase;
+        parent::__construct($passphrase);
     }
 
     /**
@@ -58,21 +57,5 @@ class FilesystemCertificateLocator implements CertificateLocatorInterface
     public function getAbsolutePathToCertificate(): string
     {
         return $this->pathToCertificate;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getPassphrase(): string
-    {
-        return $this->passphrase;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function hasPassphrase(): bool
-    {
-        return empty($this->passphrase);
     }
 }

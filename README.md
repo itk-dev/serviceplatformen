@@ -66,6 +66,9 @@ composer require itk-dev/serviceplatformen
 ```
 
 ## Usage
+
+### Certificate stored on local filesystem.
+
 ```php
 <?php
 
@@ -76,6 +79,57 @@ use ItkDev\Serviceplatformen\Request\InvocationContextRequestGenerator;
 use ItkDev\Serviceplatformen\Service\PersonBaseDataExtendedService;
 
 $certificateLocator = new FilesystemCertificateLocator(__DIR__.'path_to_certificate.pem', 'passphrase if any');
+
+$pathToWsdl = __DIR__.'/resources/person-base-data-extended-service-contract/wsdl/context/PersonBaseDataExtendedService.wsdl';
+
+$options = [
+    'local_cert' => $certificateLocator->getAbsolutePathToCertificate(),
+    'passphrase' => $certificateLocator->getPassphrase(),
+    'location' => 'https://url.to.service.endpoint'
+];
+
+$soapClient = new SoapClient($pathToWsdl, $options);
+
+$requestGenerator = new InvocationContextRequestGenerator(
+    'xxxx', // Service agreement UUID
+    'xxxx', // User system UUID
+    'xxxx', // Service UUID
+    'xxxx' // User UUID
+);
+
+$service = new PersonBaseDataExtendedService($soapClient, $requestGenerator);
+
+$response = $service->personLookup('1234567891');
+
+var_dump($response);
+```
+
+### Certificate stored in Azure Key Vault
+```php
+<?php
+
+require_once 'vendor/autoload.php';
+
+use ItkDev\AzureKeyVault\Authorisation\VaultToken;
+use ItkDev\AzureKeyVault\KeyVault\VaultSecret;
+use ItkDev\Serviceplatformen\Certificate\AzureKeyVaultCertificateLocator;
+use ItkDev\Serviceplatformen\Request\InvocationContextRequestGenerator;
+use ItkDev\Serviceplatformen\Service\PersonBaseDataExtendedService;
+
+$token = VaultToken::getToken(
+    'xxxx', // Azure tenant id
+    'xxxx', // Client id (azure application id)
+    'xxxx' // Client secret
+);
+
+$vault = new VaultSecret('kontrolgruppen', $token->getAccessToken());
+
+$certificateLocator = new AzureKeyVaultCertificateLocator(
+    $vault,
+    'xxxx', // Name of the certificate
+    'xxxx', // Version of the certificate
+    'yyyy' // optional passphrase for the certificate
+);
 
 $pathToWsdl = __DIR__.'/resources/person-base-data-extended-service-contract/wsdl/context/PersonBaseDataExtendedService.wsdl';
 
