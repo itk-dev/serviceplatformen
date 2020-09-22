@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of itk-dev/serviceplatformen.
  *
  * (c) 2020 ITK Development
@@ -16,6 +16,8 @@ namespace ItkDev\Serviceplatformen\Certificate;
 interface CertificateLocatorInterface
 {
     /**
+     * Returns the absolute path to the certificate.
+     *
      * @return string
      */
     public function getPathToCertificate(): string;
