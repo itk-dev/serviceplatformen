@@ -72,8 +72,8 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
         $certificateStoreData = [];
         $passphrase = $this->hasPassphrase()
             ? $this->getPassphrase()
-            : null
-        ;
+            : null;
+
         if (!openssl_pkcs12_read($decodedSecretValue, $certificateStoreData, $passphrase)) {
             throw new AzureKeyVaultCertificateLocatorException('Could not read certificate.');
         }
@@ -108,8 +108,7 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
         if (array_key_exists('extracerts', $certificateStoreData)) {
             $combinedCertificate .= is_array($certificateStoreData['extracerts'])
                 ? implode('', $certificateStoreData['extracerts'])
-                : $certificateStoreData['extracerts']
-            ;
+                : $certificateStoreData['extracerts'];
         }
 
         return $combinedCertificate;
