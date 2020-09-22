@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.3] - 2020-09-22
+### Changed
+- Upgraded required version of PHP to 7.2
+- Required 0.0.2 version of azure key vault library
+
 ## [0.0.2] - 2020-09-22
 ### Changed
 - Downgraded required version of PHP to 7.1.3
