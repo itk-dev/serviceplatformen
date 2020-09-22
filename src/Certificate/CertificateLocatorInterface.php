@@ -10,6 +10,8 @@
 
 namespace ItkDev\Serviceplatformen\Certificate;
 
+use ItkDev\Serviceplatformen\Certificate\Exception\CertificateLocatorException;
+
 /**
  * Interface CertificateLocatorInterface
  */
@@ -19,6 +21,8 @@ interface CertificateLocatorInterface
      * Returns the absolute path to the certificate.
      *
      * @return string the absolute path to the certificate.
+     *
+     * @throws CertificateLocatorException
      */
     public function getAbsolutePathToCertificate(): string;
 
