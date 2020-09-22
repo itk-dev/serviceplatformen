@@ -12,6 +12,7 @@
     "require": {
         "php": "^7.3",
         "ext-soap": "*",
+        "ext-openssl": "*",
         "itk-dev/azure-key-vault-php": "^0.0.1"
     },
     "require-dev": {
