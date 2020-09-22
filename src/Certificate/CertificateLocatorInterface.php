@@ -20,7 +20,6 @@ interface CertificateLocatorInterface
      */
     public function getPathToCertificate(): string;
 
-
     /**
      * @return string
      */
