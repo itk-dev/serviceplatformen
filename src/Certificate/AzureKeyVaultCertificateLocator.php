@@ -102,8 +102,7 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
 
         $combinedCertificate = $certificateStoreData['pkey']
             . PHP_EOL
-            . $certificateStoreData['cert']
-        ;
+            . $certificateStoreData['cert'];
 
         if (array_key_exists('extracerts', $certificateStoreData)) {
             $combinedCertificate .= is_array($certificateStoreData['extracerts'])
