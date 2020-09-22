@@ -127,7 +127,8 @@ $vault = new VaultSecret('kontrolgruppen', $token->getAccessToken());
 $certificateLocator = new AzureKeyVaultCertificateLocator(
     $vault,
     'xxxx', // Name of the certificate
-    'xxxx' // Version of the certificate
+    'xxxx', // Version of the certificate
+    'yyyy' // optional passphrase for the certificate
 );
 
 $pathToWsdl = __DIR__.'/resources/person-base-data-extended-service-contract/wsdl/context/PersonBaseDataExtendedService.wsdl';
