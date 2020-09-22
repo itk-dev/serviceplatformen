@@ -125,6 +125,10 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
      */
     private function getAbsoluteTmpPathByContent(string $content): string
     {
+        // Static variables is stored in the global variable area and destroyed during the shutdown phase.
+        // This ensures that there are no references to the file when the code has executed and thus is deleted.
+        // The variable must be declared static before the temporary file is assigned to the variable or else PHP
+        // thinks you are assigning values to a constant.
         static $tmpFile = null;
         $tmpFile = tmpfile();
         fwrite($tmpFile, $content);
