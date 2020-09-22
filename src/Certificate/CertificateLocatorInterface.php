@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of itk-dev/datatidy.
+ * This file is part of itk-dev/serviceplatformen.
  *
  * (c) 2020 ITK Development
  *
