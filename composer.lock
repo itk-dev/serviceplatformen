@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c5d9bf48869da777a58eb3545d2236fc",
+    "content-hash": "10d941511b558a5966aea766c42f4864",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -228,22 +228,22 @@
         },
         {
             "name": "itk-dev/azure-key-vault-php",
-            "version": "0.0.1",
+            "version": "0.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/itk-dev/AzureKeyVaultPhp.git",
-                "reference": "6d6500d4f92a7e8e9d2cb682fdf4a74e33b270c5"
+                "reference": "a95dab2dbe5074d04c44c7b048ec1571a9f74574"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/itk-dev/AzureKeyVaultPhp/zipball/6d6500d4f92a7e8e9d2cb682fdf4a74e33b270c5",
-                "reference": "6d6500d4f92a7e8e9d2cb682fdf4a74e33b270c5",
+                "url": "https://api.github.com/repos/itk-dev/AzureKeyVaultPhp/zipball/a95dab2dbe5074d04c44c7b048ec1571a9f74574",
+                "reference": "a95dab2dbe5074d04c44c7b048ec1571a9f74574",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "guzzlehttp/guzzle": "^7.0",
-                "php": ">=7.3"
+                "php": ">=7.2"
             },
             "require-dev": {
                 "escapestudios/symfony2-coding-standard": "^3.11",
@@ -301,10 +301,10 @@
                 "key vault"
             ],
             "support": {
-                "source": "https://github.com/itk-dev/AzureKeyVaultPhp/tree/0.0.1",
+                "source": "https://github.com/itk-dev/AzureKeyVaultPhp/tree/0.0.2",
                 "issues": "https://github.com/itk-dev/AzureKeyVaultPhp/issues"
             },
-            "time": "2020-09-18T07:56:01+00:00"
+            "time": "2020-09-22T12:43:34+00:00"
         },
         {
             "name": "psr/http-client",
@@ -4685,7 +4685,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.1.3",
+        "php": "^7.2",
         "ext-soap": "*",
         "ext-openssl": "*"
     },
