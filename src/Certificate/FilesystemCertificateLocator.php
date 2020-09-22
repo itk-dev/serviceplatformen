@@ -55,7 +55,7 @@ class FilesystemCertificateLocator implements CertificateLocatorInterface
     /**
      * {@inheritDoc}
      */
-    public function getPathToCertificate(): string
+    public function getAbsolutePathToCertificate(): string
     {
         return $this->pathToCertificate;
     }

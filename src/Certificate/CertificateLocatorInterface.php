@@ -20,7 +20,7 @@ interface CertificateLocatorInterface
      *
      * @return string the absolute path to the certificate.
      */
-    public function getPathToCertificate(): string;
+    public function getAbsolutePathToCertificate(): string;
 
     /**
      * @return string

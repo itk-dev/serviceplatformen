@@ -80,7 +80,7 @@ $certificateLocator = new FilesystemCertificateLocator(__DIR__.'path_to_certific
 $pathToWsdl = __DIR__.'/resources/person-base-data-extended-service-contract/wsdl/context/PersonBaseDataExtendedService.wsdl';
 
 $options = [
-    'local_cert' => $certificateLocator->getPathToCertificate(),
+    'local_cert' => $certificateLocator->getAbsolutePathToCertificate(),
     'passphrase' => $certificateLocator->getPassphrase(),
     'location' => 'https://url.to.service.endpoint'
 ];
