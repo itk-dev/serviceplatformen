@@ -116,6 +116,7 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
 
     /**
      * Creates a temporary file with the provided content and returns the absolute path to the temporary file.
+     *
      * The file will be removed from the filesystem when no more references exists to the file.
      *
      * @param string $content the content of the temporary file.
