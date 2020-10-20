@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.4] - 2020-10-20
+### Changed
+- Casting specific exceptions on service call errors.
+
 ## [0.0.3] - 2020-09-22
 ### Changed
 - Upgraded required version of PHP to 7.2
