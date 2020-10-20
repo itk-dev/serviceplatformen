@@ -11,6 +11,7 @@
 namespace ItkDev\Serviceplatformen\Service;
 
 use ItkDev\Serviceplatformen\Request\RequestGeneratorInterface;
+use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
 use SoapClient;
 
 /**
@@ -40,11 +41,17 @@ abstract class AbstractService
      * @param array $message the message to be passed to the operation.
      *
      * @return object the raw response.
+     *
+     * @throws ServiceException
      */
     public function makeCall(string $operation, array $message): object
     {
         $request = $this->requestGenerator->makeRequest($message);
 
-        return call_user_func_array([$this->soapClient, $operation], [$request]);
+        try {
+            return call_user_func_array([$this->soapClient, $operation], [$request]);
+        } catch (\SoapFault $exception) {
+            throw new ServiceException($exception->getMessage(), $exception->getCode());
+        }
     }
 }
