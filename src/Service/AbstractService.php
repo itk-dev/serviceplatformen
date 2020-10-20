@@ -42,7 +42,7 @@ abstract class AbstractService
      *
      * @return object the raw response.
      *
-     * @throws ServiceException
+     * @throws ServiceException is thrown on SoapFaults.
      */
     public function makeCall(string $operation, array $message): object
     {
