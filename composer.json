@@ -13,7 +13,7 @@
         "php": "^7.2",
         "ext-soap": "*",
         "ext-openssl": "*",
-        "itk-dev/azure-key-vault-php": "^0.0.2"
+        "itk-dev/azure-key-vault-php": "dev-feature/use-psr-instead-of-guzzle"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
