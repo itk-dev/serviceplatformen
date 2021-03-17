@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2021-03-17
+### Changed
+- Required ^1.0 version of Azure Key Vault library.
+- Updated [README](README.md) with usage example that uses the latest version of Azure Key Vault library.
+
 ## [0.0.4] - 2020-10-20
 ### Changed
 - Casting specific exceptions on service call errors.
