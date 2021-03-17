@@ -116,7 +116,10 @@ use ItkDev\Serviceplatformen\Certificate\AzureKeyVaultCertificateLocator;
 use ItkDev\Serviceplatformen\Request\InvocationContextRequestGenerator;
 use ItkDev\Serviceplatformen\Service\PersonBaseDataExtendedService;
 
-$vaultToken = new VaultToken($httpClient, $requestFactory);
+$vaultToken = new VaultToken(
+    $httpClient, // PSR-18 compatible http client 
+    $requestFactory // PSR-17 compatible request factory
+);
 
 $token = $vaultToken->getToken(
     'xxxx', // Azure tenant id
@@ -124,7 +127,12 @@ $token = $vaultToken->getToken(
     'xxxx' // Client secret
 );
 
-$vault = new VaultSecret($httpClient, $requestFactory, 'kontrolgruppen', $token->getAccessToken());
+$vault = new VaultSecret(
+    $httpClient, // PSR-18 compatible http client
+    $requestFactory, // PSR-17 compatible request factory
+    'testVault', // Name of vault
+    $token->getAccessToken()
+);
 
 $certificateLocator = new AzureKeyVaultCertificateLocator(
     $vault,
