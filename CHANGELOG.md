@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2021-06-18
+### Added
+- Functionality to make call to the getLegalUnit operation on the Online service.
+
 ## [1.0.0] - 2021-03-17
 ### Changed
 - Required ^1.0 version of Azure Key Vault library.
