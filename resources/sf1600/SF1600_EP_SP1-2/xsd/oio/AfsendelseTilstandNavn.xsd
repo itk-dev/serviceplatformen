@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dkal="urn:oio:dkal:1.0.0" targetNamespace="urn:oio:dkal:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA">
+	<element name="AfsendelseTilstandNavn" type="dkal:AfsendelseTilstandNavnType" />
+	<simpleType name="AfsendelseTilstandNavnType">
+		<restriction base="string">
+			<enumeration value="afventer" />
+			<enumeration value="fremsendt" />
+			<enumeration value="planlagt" />
+		</restriction>
+	</simpleType>
+</schema>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:oio:adir:dagpenge:2009.07.01" elementFormDefault="qualified"
+        attributeFormDefault="unqualified" version="1.0" xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:cvr="http://rep.oio.dk/cvr.dk/xml/schemas/2005/03/22/">
+  <import namespace="http://rep.oio.dk/cvr.dk/xml/schemas/2005/03/22/" schemaLocation="CVR_CVRnumberIdentifier.xsd"/>
+  <element name="CVRnummerIdentifikator" type="cvr:CVRnumberIdentifierType"/>
+</schema>

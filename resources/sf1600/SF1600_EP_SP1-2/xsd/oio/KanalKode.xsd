@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--edited with XMLSpy v2009 sp1 (http://www.altova.com) by Simon Holm Frandsen (Logica Danmark A/S)--><schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fjernprint="urn:oio:fjernprint:1.0.0">
+  <element name="KanalKode" type="fjernprint:KanalKodeType"/>
+  <simpleType name="KanalKodeType">
+    <restriction base="string">
+      <enumeration value="Digital Post"/>
+      <enumeration value="Fysisk Post"/>
+    </restriction>
+  </simpleType>
+</schema>

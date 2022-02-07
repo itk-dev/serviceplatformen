@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 rel. 2 sp1 (x64) (http://www.altova.com) by Simon Holm Frandsen (Logica A/S) -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fjernprint="urn:oio:fjernprint:1.0.0" targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA">
+	<element name="TilbagekaldStatusKode" type="fjernprint:TilbagekaldStatusKodeType"/>
+	<simpleType name="TilbagekaldStatusKodeType">
+		<restriction base="string">
+			<enumeration value="Tilbagekaldt"/>
+			<enumeration value="Afventer tilbagekald"/>
+			<enumeration value="Tilbagekald ikke muligt"/>
+			<enumeration value="Tilbagekald lykkedes ikke"/>
+			<enumeration value="Tilbagekald fejlet"/>
+		</restriction>
+	</simpleType>
+</schema>

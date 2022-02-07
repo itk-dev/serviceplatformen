@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="PrintService"
+             targetNamespace="http://serviceplatformen.dk/xml/wsdl/soap11/Print/Print/2/"
+             xmlns:tns="http://serviceplatformen.dk/xml/wsdl/soap11/Print/Print/2/"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:spf="http://serviceplatformen.dk/xml/schemas/ServiceplatformFault/1/"
+             xmlns:dkal="urn:oio:dkal:1.0.0"
+             xmlns:wsp="http://www.w3.org/ns/ws-policy">
+
+    <import namespace="http://serviceplatformen.dk/xml/wsdl/soap11/Security/Policy" location="policies.wsdl"/>
+
+    <types>
+        <xsd:schema targetNamespace="http://serviceplatformen.dk/xml/wsdl/soap11/Print/Print/2/">
+            <xsd:include schemaLocation="../../PrintServiceMsg.xsd"/>
+        </xsd:schema>
+        <xsd:schema targetNamespace="urn:oio:dkal:1.0.0">
+            <xsd:include schemaLocation="../../SF1600_EP_SP1-2/xsd/oio/Fejl.xsd"/>
+        </xsd:schema>
+        <xsd:schema targetNamespace="http://serviceplatformen.dk/xml/schemas/ServiceplatformFault/1/">
+            <xsd:include schemaLocation="../../sp/ServiceplatformFault_1.xsd"/>
+        </xsd:schema>
+    </types>
+
+    <message name="PrintAfsendBrevRequestMessage">
+        <part name="request" element="tns:PrintAfsendBrevRequest"/>
+    </message>
+    <message name="PrintAfsendBrevResponseMessage">
+        <part name="response" element="tns:PrintAfsendBrevResponse"/>
+    </message>
+    <message name="PrintSpoergTilmeldingRequestMessage">
+        <part name="request" element="tns:PrintSpoergTilmeldingRequest"/>
+    </message>
+    <message name="PrintSpoergTilmeldingResponseMessage">
+        <part name="response" element="tns:PrintSpoergTilmeldingResponse"/>
+    </message>
+
+  <message name="ServiceplatformFault">
+    <part name="spfault" element="spf:ServiceplatformFault"/>
+  </message>
+    <message name="SP_FejlFault">
+        <part name="fejlfault" element="dkal:Fejl"/>
+    </message>
+
+    <portType name="PrintPortType">
+        <operation name="afsendBrev">
+            <input message="tns:PrintAfsendBrevRequestMessage"/>
+            <output message="tns:PrintAfsendBrevResponseMessage"/>
+            <fault message="tns:ServiceplatformFault" name="ServiceplatformFault"/>
+            <fault message="tns:SP_FejlFault" name="SP_FejlFault"/>
+        </operation>
+        <operation name="spoergTilmelding">
+            <input message="tns:PrintSpoergTilmeldingRequestMessage"/>
+            <output message="tns:PrintSpoergTilmeldingResponseMessage"/>
+            <fault message="tns:ServiceplatformFault" name="ServiceplatformFault"/>
+            <fault message="tns:SP_FejlFault" name="SP_FejlFault"/>
+        </operation>
+    </portType>
+
+    <binding name="Print" type="tns:PrintPortType">
+        <wsp:PolicyReference URI="policies.wsdl#ServiceplatformBindingPolicy"/>
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+        <operation name="afsendBrev">
+            <soap:operation soapAction="http://serviceplatformen.dk/xml/wsdl/soap11/Print/Print/2/afsendBrev"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="ServiceplatformFault">
+                <soap:fault name="ServiceplatformFault" use="literal"/>
+            </fault>
+            <fault name="SP_FejlFault">
+                <soap:fault name="SP_FejlFault" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="spoergTilmelding">
+            <soap:operation soapAction="http://serviceplatformen.dk/xml/wsdl/soap11/Print/Print/2/spoergTilmelding"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="ServiceplatformFault">
+                <soap:fault name="ServiceplatformFault" use="literal"/>
+            </fault>
+            <fault name="SP_FejlFault">
+                <soap:fault name="SP_FejlFault" use="literal"/>
+            </fault>
+        </operation>
+    </binding>
+
+    <service name="Print">
+        <port name="Print" binding="tns:Print">
+            <soap:address location="https://localhost:8080/service/Print/Print/2"/>
+        </port>
+    </service>
+</definitions>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified"
+        xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:fjernprint="urn:oio:fjernprint:1.0.0">
+  <include schemaLocation="EnhedTekst.xsd"/>
+  <include schemaLocation="BrugerNavn.xsd"/>
+  <include schemaLocation="PaatrykAfsenderAdresseIndikator.xsd"/>
+  <include schemaLocation="PaatrykModtagerAdresseIndikator.xsd"/>
+  <include schemaLocation="PaatrykBrevdatoIndikator.xsd"/>
+  <include schemaLocation="ForsendelseAfsender.xsd"/>
+  <include schemaLocation="KonteringsGruppeTekst.xsd"/>
+  <include schemaLocation="KanalKode.xsd"/>
+  <include schemaLocation="HasteBrevIndikator.xsd"/>
+  <element name="KanalUafhaengigeParametreI" type="fjernprint:KanalUafhaengigeParametreIType"/>
+  <complexType name="KanalUafhaengigeParametreIType">
+    <sequence>
+      <element ref="fjernprint:EnhedTekst" minOccurs="0"/>
+      <element ref="fjernprint:BrugerNavn"/>
+      <element ref="fjernprint:KonteringsGruppeTekst" minOccurs="0"/>
+      <element ref="fjernprint:ForsendelseAfsender" minOccurs="0"/>
+      <element ref="fjernprint:PaatrykAfsenderAdresseIndikator" minOccurs="0"/>
+      <element ref="fjernprint:PaatrykModtagerAdresseIndikator" minOccurs="0"/>
+      <element ref="fjernprint:PaatrykBrevdatoIndikator" minOccurs="0"/>
+      <element ref="fjernprint:KanalKode" minOccurs="0"/>
+      <element ref="fjernprint:HasteBrevIndikator" minOccurs="0"/>
+    </sequence>
+  </complexType>
+</schema>

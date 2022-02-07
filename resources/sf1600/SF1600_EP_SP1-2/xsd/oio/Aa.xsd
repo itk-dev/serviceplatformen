@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:oio:dkal:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <!--
+    This is sick, but maven-jaxb2-plugin barfs on doing imports where the target-namespace
+    is the same of that of the containing entity, but only if it is in the first xsd.
+    So adding this dummy xsd to deflect attention from Afsendelse.xsd.
+    -->
+</schema>

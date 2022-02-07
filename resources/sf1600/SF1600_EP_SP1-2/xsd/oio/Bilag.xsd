@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fjernprint="urn:oio:fjernprint:1.0.0" xmlns:dkal="urn:oio:dkal:1.0.0">
+  <import namespace="urn:oio:dkal:1.0.0" schemaLocation="FilformatNavn.xsd"/>
+  <import namespace="urn:oio:dkal:1.0.0" schemaLocation="BilagIdentifikator.xsd"/>
+  <import namespace="urn:oio:dkal:1.0.0" schemaLocation="VedhaeftningIndholdURLreference.xsd"/>
+  <import namespace="urn:oio:dkal:1.0.0" schemaLocation="VedhaeftningIndholdData.xsd"/>
+  <include schemaLocation="BilagNavn.xsd"/>
+  <include schemaLocation="BilagSorteringsIndeksIdentifikator.xsd"/>
+  <include schemaLocation="VedhaeftSomIndholdDataIndikator.xsd"/>
+  <element name="Bilag" type="fjernprint:BilagType"/>
+  <complexType name="BilagType">
+    <sequence>
+      <element ref="fjernprint:BilagNavn"/>
+      <element ref="dkal:FilformatNavn"/>
+      <element ref="fjernprint:BilagSorteringsIndeksIdentifikator"/>
+      <choice>
+        <element ref="dkal:BilagIdentifikator"/>
+        <element ref="dkal:VedhaeftningIndholdData"/>
+        <sequence minOccurs="0">
+          <element ref="dkal:VedhaeftningIndholdURLreference"/>
+          <element ref="fjernprint:VedhaeftSomIndholdDataIndikator"/>
+        </sequence>
+      </choice>
+    </sequence>
+  </complexType>
+</schema>

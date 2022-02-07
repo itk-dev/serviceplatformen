@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -o errtrace -o noclobber -o nounset -o pipefail
+IFS=$'\n\t'
+
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+dir="$script_dir/.."
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+cd "$script_dir" || exit
+
+# https://digitaliseringskataloget.dk/integration/sf1600
+
+service_name=sf1600
+service_doc_url=https://docs.kombit.dk/integration/sf1600/2.5/pakke
+
+echo "${bold}Fetching $service_doc_url.${normal}"
+curl --location --silent $service_doc_url --output /tmp/$service_name.zip
+
+echo "${bold}Extracting files.${normal}"
+# Hide an error:
+#   error:  cannot create SF1600 - Print p+� Serviceplatformen v.2.5.pdf
+#           Illegal byte sequence
+(cd /tmp && unzip -qq -o /tmp/$service_name.zip > /dev/null 2>&1)
+
+mkdir -p "$dir"/resources/$service_name
+cd "$dir"/resources/$service_name
+unzip -qq -o /tmp/SF1600\ Teknisk\ Spec*.zip
+chmod -R go-w .
+
+echo "${bold}Done.${normal}"

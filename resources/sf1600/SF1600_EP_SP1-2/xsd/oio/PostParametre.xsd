@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified"
+        xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:fjernprint="urn:oio:fjernprint:1.0.0">
+  <include schemaLocation="AllokeringsIdentifikator.xsd"/>
+  <include schemaLocation="PostKategoriKode.xsd"/>
+  <include schemaLocation="ReturposthaandteringHosLeverandoerIndikator.xsd"/>
+  <include schemaLocation="InformationVedAdresseAendringIndikator.xsd"/>
+  <include schemaLocation="SideKvantitet.xsd"/>
+  <element name="PostParametre" type="fjernprint:PostParametreType"/>
+  <complexType name="PostParametreType">
+    <sequence>
+      <element ref="fjernprint:PostKategoriKode" minOccurs="0"/>
+      <element ref="fjernprint:AllokeringsIdentifikator" minOccurs="0"/>
+      <element ref="fjernprint:ReturposthaandteringHosLeverandoerIndikator" minOccurs="0"/>
+      <element ref="fjernprint:InformationVedAdresseAendringIndikator" minOccurs="0"/>
+      <element ref="fjernprint:SideKvantitet" minOccurs="0"/>
+    </sequence>
+  </complexType>
+</schema>

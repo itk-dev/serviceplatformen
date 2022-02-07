@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -o errtrace -o noclobber -o nounset -o pipefail
+IFS=$'\n\t'
+
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+dir="$script_dir/.."
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+cd "$script_dir" || exit
+
+service_name=sf1600
+service_namespace_name=SF1600
+destination=./generated-classes
+echo "${bold}Generating PHP classes.${normal}"
+cd "$dir"
+
+rm -fr "$destination"
+# @see https://github.com/WsdlToPhp/PackageGenerator/wiki/Options
+docker run --rm -it --volume "$PWD":/app --workdir /app mikaelcom/wsdltophp generate:package \
+       --standalone=false \
+       --quiet \
+       --urlorpath=./resources/$service_name/wsdl/token/PrintService.wsdl \
+       --src-dirname='/' \
+       --destination="$destination" \
+       --namespace='ItkDev\Serviceplatformen\'"$service_namespace_name" \
+       --force
+
+# rm tutorial.php
+
+echo "${bold}Done.${normal}"

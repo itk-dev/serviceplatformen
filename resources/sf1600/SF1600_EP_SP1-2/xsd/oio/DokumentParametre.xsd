@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified"
+        xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:sd="urn:oio:sagdok:3.0.0"
+        xmlns:fjernprint="urn:oio:fjernprint:1.0.0">
+  <import namespace="urn:oio:sagdok:3.0.0" schemaLocation="BrevDato.xsd"/>
+  <import namespace="urn:oio:sagdok:3.0.0" schemaLocation="TitelTekst.xsd"/>
+  <import namespace="urn:oio:sagdok:3.0.0" schemaLocation="UUIDIdentifikator.xsd"/>
+  <include schemaLocation="MeddelelsesFormatObjekt.xsd"/>
+  <element name="DokumentParametre" type="fjernprint:DokumentParametreType"/>
+  <complexType name="DokumentParametreType">
+    <sequence>
+      <element ref="sd:TitelTekst" minOccurs="0"/>
+      <element ref="sd:UUIDIdentifikator" minOccurs="0"/>
+      <element ref="sd:BrevDato" minOccurs="0"/>
+      <element ref="fjernprint:MeddelelsesFormatObjekt" minOccurs="0"/>
+    </sequence>
+  </complexType>
+</schema>

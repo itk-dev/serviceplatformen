@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fjernprint="urn:oio:fjernprint:1.0.0">
+  <include schemaLocation="Bilag.xsd"/>
+  <element name="BilagSamling" type="fjernprint:BilagSamlingType"/>
+  <complexType name="BilagSamlingType">
+    <sequence>
+      <element ref="fjernprint:Bilag" maxOccurs="100"/>
+    </sequence>
+  </complexType>
+</schema>

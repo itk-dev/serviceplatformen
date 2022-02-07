@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dkal="urn:oio:dkal:1.0.0" xmlns:fjernprint="urn:oio:fjernprint:1.0.0">
+  <import namespace="urn:oio:dkal:1.0.0" schemaLocation="AfsendelseModtager.xsd"/>
+  <include schemaLocation="ModtagerAdresse.xsd"/>
+  <element name="ForsendelseModtager" type="fjernprint:ForsendelseModtagerType"/>
+  <complexType name="ForsendelseModtagerType">
+    <sequence>
+      <element ref="dkal:AfsendelseModtager" minOccurs="0" maxOccurs="1"/>
+      <element ref="fjernprint:ModtagerAdresse" minOccurs="0" maxOccurs="1"/>
+    </sequence>
+  </complexType>
+</schema>
