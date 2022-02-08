@@ -9,11 +9,17 @@ Library for interacting with services on [Serviceplatformen](https://www.service
 
 ## Updating resources and classes
 
+We use
+[WsdlToPhp/PackageGenerator](https://github.com/WsdlToPhp/PackageGenerator) to
+generate PHP classes for talking to SOAP services. To update
+[resources](./resources) and [generated classes](./generated-classes), run
+
 ```sh
+docker run --rm --volume $PWD:/app -it itkdev/php7.4-fpm:latest composer2 install
 # Update WSDL resources.
-./bin/generate:resources
+docker run --rm --volume $PWD:/app -it itkdev/php7.4-fpm:latest bin/generate resources
 # Generate PHP classes from WSDL resources.
-./bin/generate:classes
+docker run --rm --volume $PWD:/app -it itkdev/php7.4-fpm:latest bin/generate classes
 ```
 
 ## Getting Started
