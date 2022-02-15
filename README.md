@@ -105,6 +105,9 @@ var_dump($response);
 ```
 
 ### Certificate stored in Azure Key Vault
+
+See [Storing certificates in the vault](https://github.com/itk-dev/AzureKeyVaultPhp#storing-certificates-in-the-vault) for details on storing a certificate in the Azure Key Vault.
+
 ```php
 <?php
 
