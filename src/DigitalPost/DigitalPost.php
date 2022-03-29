@@ -243,6 +243,125 @@ abstract class DigitalPost
         if (false === $response) {
             $lastError = $client->getLastError();
             /** @var SoapFault $soapError */
+            $soapError = $lastError['Drupal\os2forms_digital_post\Client\ServiceType\Afsend::afsendBrev'];
+            // Should maybe log this instead!
+            throw new \Exception($soapError->getMessage(), $soapError->getCode());
+        }
+
+        return [
+            'result' => $response->getResultat(),
+            'afsendelseIdentifikator' => $afsendelseIdentifikator,
+        ];
+    }
+
+    /**
+     * Afsend digital post eller brev til CVR-nummer.
+     */
+    protected function afsendBrevCVR(
+        string $kanalValg,
+        string $prioritet,
+        string $cvrNummerIdentifikator = null,
+        string $personName = null,
+        string $coNavn = null,
+        string $streetName = null,
+        string $streetBuildingIdentifier = null,
+        string $floorIdentifier = null,
+        string $suiteIdentifier = null,
+        string $mailDeliverySublocationIdentifier = null,
+        string $postCodeIdentifier = null,
+        string $districtSubdivisionIdentifier = null,
+        string $postOfficeBoxIdentifier = null,
+        string $countryIdentificationCode = null,
+        string $filFormatNavn = null,
+        string $meddelelseIndholdData = null,
+        string $titelTekst = null,
+        string $brevDato = null,
+        BilagSamlingType $bilagSamling = null
+    ):  array {
+        if (!$this->acquireLock()) {
+            $this->waitLock();
+        }
+
+        $invocationContext = new InvocationContextType(
+            $this->serviceOptions['service_agreement_uuid'],
+            $this->serviceOptions['user_system_uuid'],
+            $this->serviceOptions['user_uuid'],
+            $this->serviceOptions['service_uuid']
+        );
+
+        $slutBrugerIdentitetType = (new SlutbrugerIdentitetType())
+            ->setCVRnummerIdentifikator($cvrNummerIdentifikator);
+
+        $countryIdentificationCodeType = new CountryIdentificationCodeType($countryIdentificationCode);
+
+        $kontaktOplysninger = new KontaktOplysningType(
+            $personName,
+            $coNavn,
+            $streetName,
+            $streetBuildingIdentifier,
+            $floorIdentifier,
+            $suiteIdentifier,
+            $mailDeliverySublocationIdentifier,
+            $postCodeIdentifier,
+            $districtSubdivisionIdentifier,
+            $postOfficeBoxIdentifier,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            $countryIdentificationCodeType
+        );
+
+        $forsendelsesModtager = new ForsendelseModtagerType($slutBrugerIdentitetType, $kontaktOplysninger);
+
+        $dokumentParametre = new DokumentParametreType($titelTekst, $this->generateUUID(), $brevDato);
+        $digitalPostParametre = new DigitalPostParametreType($brevDato, $this->serviceOptions['digital_post_materiale_id']);
+
+        $afsendelseIdentifikator = $this->generateAfsendelseIdentifikator();
+
+        $forsendelse = new ForsendelseIType(
+            $afsendelseIdentifikator,
+            $this->serviceOptions['digital_post_materiale_id'],
+            $forsendelsesModtager,
+            $filFormatNavn,
+            $meddelelseIndholdData,
+            null,
+            $dokumentParametre,
+            null,
+            null,
+            $digitalPostParametre,
+            null,
+            $bilagSamling
+        );
+
+        $brevSPBody = new BrevSPBodyType($kanalValg, $prioritet, $forsendelse);
+        $request = new PrintAfsendBrevRequestType($brevSPBody, $invocationContext);
+
+        $certificateLocator = $this->getAzureKeyVaultCertificateLocator(
+            $this->serviceOptions['azure_tenant_id'],
+            $this->serviceOptions['azure_application_id'],
+            $this->serviceOptions['azure_client_secret'],
+            $this->serviceOptions['azure_key_vault_name'],
+            $this->serviceOptions['azure_key_vault_secret'],
+            $this->serviceOptions['azure_key_vault_secret_version']
+        );
+
+        $client = new Afsend([
+            AbstractSoapClientBase::WSDL_URL => $this->serviceOptions['service_contract'],
+            AbstractSoapClientBase::WSDL_CLASSMAP => ClassMap::get(),
+            AbstractSoapClientBase::WSDL_LOCAL_CERT => $certificateLocator->getAbsolutePathToCertificate(),
+            AbstractSoapClientBase::WSDL_LOCATION => $this->serviceOptions['service_endpoint'],
+        ]);
+
+        $response = $client->afsendBrev($request);
+
+        $this->releaseLock();
+
+        if (false === $response) {
+            $lastError = $client->getLastError();
+            /** @var SoapFault $soapError */
             $soapError = reset($lastError);
             // Should maybe log this instead!
             throw new \Exception($soapError->getMessage(), $soapError->getCode());
