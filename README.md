@@ -2,6 +2,11 @@
 
 Library for interacting with services on [Serviceplatformen](https://www.serviceplatformen.dk).
 
+## Supported services
+
+* [CPR replika opslag (SF1520_3.6): https://digitaliseringskataloget.dk/integration/sf1520?version=3.6](https://digitaliseringskataloget.dk/integration/sf1520?version=3.6)
+* [CVR-Online (SF1530_2.4): https://digitaliseringskataloget.dk/integration/sf1530](https://digitaliseringskataloget.dk/integration/sf1530)
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
