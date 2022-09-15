@@ -1,0 +1,22 @@
+MotorregisterSkatDk\MotorVehicle\MotorVehicleAType:
+    properties:
+        licenseNumber:
+            expose: true
+            access_type: public_method
+            serialized_name: licenseNumber
+            xml_element:
+                namespace: 'https://motorregister.skat.dk/'
+            accessor:
+                getter: getLicenseNumber
+                setter: setLicenseNumber
+            type: string
+        chassisNumber:
+            expose: true
+            access_type: public_method
+            serialized_name: chassisNumber
+            xml_element:
+                namespace: 'https://motorregister.skat.dk/'
+            accessor:
+                getter: getChassisNumber
+                setter: setChassisNumber
+            type: string

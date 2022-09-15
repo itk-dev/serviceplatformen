@@ -1,0 +1,186 @@
+DigitalPost\MeMo\MessageHeader\MessageHeaderAType:
+    properties:
+        messageType:
+            expose: true
+            access_type: public_method
+            serialized_name: messageType
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getMessageType
+                setter: setMessageType
+            type: string
+        messageUUID:
+            expose: true
+            access_type: public_method
+            serialized_name: messageUUID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getMessageUUID
+                setter: setMessageUUID
+            type: string
+        messageID:
+            expose: true
+            access_type: public_method
+            serialized_name: messageID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getMessageID
+                setter: setMessageID
+            type: string
+        messageCode:
+            expose: true
+            access_type: public_method
+            serialized_name: messageCode
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getMessageCode
+                setter: setMessageCode
+            type: string
+        label:
+            expose: true
+            access_type: public_method
+            serialized_name: label
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getLabel
+                setter: setLabel
+            type: string
+        notification:
+            expose: true
+            access_type: public_method
+            serialized_name: notification
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getNotification
+                setter: setNotification
+            type: string
+        additionalNotification:
+            expose: true
+            access_type: public_method
+            serialized_name: additionalNotification
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getAdditionalNotification
+                setter: setAdditionalNotification
+            type: string
+        reply:
+            expose: true
+            access_type: public_method
+            serialized_name: reply
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getReply
+                setter: setReply
+            type: bool
+        replyByDateTime:
+            expose: true
+            access_type: public_method
+            serialized_name: replyByDateTime
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getReplyByDateTime
+                setter: setReplyByDateTime
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime
+        doNotDeliverUntilDate:
+            expose: true
+            access_type: public_method
+            serialized_name: doNotDeliverUntilDate
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getDoNotDeliverUntilDate
+                setter: setDoNotDeliverUntilDate
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\Date
+        mandatory:
+            expose: true
+            access_type: public_method
+            serialized_name: mandatory
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getMandatory
+                setter: setMandatory
+            type: bool
+        legalNotification:
+            expose: true
+            access_type: public_method
+            serialized_name: legalNotification
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getLegalNotification
+                setter: setLegalNotification
+            type: bool
+        postType:
+            expose: true
+            access_type: public_method
+            serialized_name: postType
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getPostType
+                setter: setPostType
+            type: string
+        sender:
+            expose: true
+            access_type: public_method
+            serialized_name: Sender
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getSender
+                setter: setSender
+            type: DigitalPost\MeMo\Sender
+        recipient:
+            expose: true
+            access_type: public_method
+            serialized_name: Recipient
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getRecipient
+                setter: setRecipient
+            type: DigitalPost\MeMo\Recipient
+        contentData:
+            expose: true
+            access_type: public_method
+            serialized_name: ContentData
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getContentData
+                setter: setContentData
+            type: DigitalPost\MeMo\ContentData
+        forwardData:
+            expose: true
+            access_type: public_method
+            serialized_name: ForwardData
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getForwardData
+                setter: setForwardData
+            type: DigitalPost\MeMo\ForwardData
+        replyData:
+            expose: true
+            access_type: public_method
+            serialized_name: ReplyData
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getReplyData
+                setter: setReplyData
+            xml_list:
+                inline: true
+                entry_name: ReplyData
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            type: array<DigitalPost\MeMo\ReplyData>

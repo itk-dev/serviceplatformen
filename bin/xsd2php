@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -o errexit -o errtrace -o noclobber -o nounset -o pipefail
+IFS=$'\n\t'
+
+dir=$(cd "$(dirname "${BASH_SOURCE[0]}")"/../ && pwd)
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+cd "$dir"
+rm -fr lib
+mkdir -p xsd
+cd xsd
+echo "${bold}Fetching XSD${normal}"
+curl --silent --location https://www.digitaliser.dk/resource/5248921/artefact/MeMo_XSD.zip > MeMo_XSD.zip
+unzip MeMo_XSD.zip
+rm MeMo_XSD.zip
+cd -
+echo "${bold}Generating PHP classes{normal}"
+vendor/bin/xsd2php convert xsd2php-config.yml xsd/*.xsd
+rm -fr xsd

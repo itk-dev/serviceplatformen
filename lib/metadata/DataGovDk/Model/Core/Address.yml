@@ -1,0 +1,3 @@
+DataGovDk\Model\Core\Address:
+    xml_root_name: 'ns-d74db83a:Address'
+    xml_root_namespace: 'https://data.gov.dk/model/core/'

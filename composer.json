@@ -19,7 +19,9 @@
         "ext-soap": "*",
         "http-interop/http-factory-guzzle": "^1.2",
         "itk-dev/azure-key-vault-php": "^1.0",
+        "itk-dev/azure-key-vault-php": "^1.0",
         "php-http/guzzle7-adapter": "^1.0",
+        "symfony/http-client": "^5.4 || ^6.0",
         "symfony/options-resolver": "^5.4 || ^6.0",
         "symfony/string": "^5.4 || ^6.0",
         "symfony/uid": "^5.4 || ^6.0",
@@ -41,7 +43,16 @@
     "autoload": {
         "psr-4": {
             "ItkDev\\Serviceplatformen\\": "src/",
-            "ItkDev\\Serviceplatformen\\SF1600\\": "generated-classes/ItkDev/Serviceplatformen/SF1600/"
+            "ItkDev\\Serviceplatformen\\SF1600\\": "generated-classes/ItkDev/Serviceplatformen/SF1600/",
+            "DigitalPost\\MeMo\\":                                                                                  "lib/DigitalPost/MeMo/",
+            "DataGovDk\\Model\\DataTypes\\":                                                                        "lib/DataGovDk/Model/DataTypes/",
+            "DataGovDk\\Model\\Core\\":                                                                             "lib/DataGovDk/Model/Core/",
+            "WwwGs1Dk\\Gs1Standarder\\Identifikation\\GlnGlobalLocationNumber\\":                                   "lib/WwwGs1Dk/Gs1Standarder/Identifikation/GlnGlobalLocationNumber/",
+            "ServicesNsiDk\\En\\Services\\SOR\\":                                                                   "lib/ServicesNsiDk/En/Services/SOR/",
+            "MotorregisterSkatDk\\":                                                                                "lib/MotorregisterSkatDk/",
+            "KleOnlineDk\\":                                                                                        "lib/KleOnlineDk/",
+            "WwwFormOnlineDk\\":                                                                                    "lib/WwwFormOnlineDk/",
+            "WwwDstDk\\Da\\TilSalg\\Forskningsservice\\Dokumentation\\Hoejkvalitetsvariable\\Elevregister2\\Udd\\": "lib/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/"
         }
     },
     "autoload-dev": {

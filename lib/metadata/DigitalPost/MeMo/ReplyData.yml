@@ -1,0 +1,3 @@
+DigitalPost\MeMo\ReplyData:
+    xml_root_name: ReplyData
+    xml_root_namespace: 'https://DigitalPost.dk/MeMo-1'

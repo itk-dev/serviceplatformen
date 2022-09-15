@@ -1,0 +1,3 @@
+DigitalPost\MeMo\ContactInfo:
+    xml_root_name: ContactInfo
+    xml_root_namespace: 'https://DigitalPost.dk/MeMo-1'

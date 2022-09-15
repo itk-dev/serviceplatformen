@@ -1,0 +1,12 @@
+ServicesNsiDk\En\Services\SOR\EntryName:
+    xml_root_name: 'ns-f3d885d0:entryName'
+    xml_root_namespace: 'https://services.nsi.dk/en/Services/SOR'
+    properties:
+        __value:
+            expose: true
+            xml_value: true
+            access_type: public_method
+            accessor:
+                getter: value
+                setter: value
+            type: string

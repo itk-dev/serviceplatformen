@@ -1,0 +1,32 @@
+DigitalPost\MeMo\AdditionalContentData\AdditionalContentDataAType:
+    properties:
+        contentDataType:
+            expose: true
+            access_type: public_method
+            serialized_name: contentDataType
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getContentDataType
+                setter: setContentDataType
+            type: string
+        contentDataName:
+            expose: true
+            access_type: public_method
+            serialized_name: contentDataName
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getContentDataName
+                setter: setContentDataName
+            type: string
+        contentDataValue:
+            expose: true
+            access_type: public_method
+            serialized_name: contentDataValue
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getContentDataValue
+                setter: setContentDataValue
+            type: string

@@ -1,0 +1,3 @@
+DataGovDk\Model\Core\EID:
+    xml_root_name: 'ns-d74db83a:EID'
+    xml_root_namespace: 'https://data.gov.dk/model/core/'

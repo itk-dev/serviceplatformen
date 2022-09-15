@@ -1,0 +1,3 @@
+DigitalPost\MeMo\Recipient:
+    xml_root_name: Recipient
+    xml_root_namespace: 'https://DigitalPost.dk/MeMo-1'

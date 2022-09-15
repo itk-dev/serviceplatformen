@@ -1,0 +1,12 @@
+KleOnlineDk\Label:
+    xml_root_name: 'ns-83bd3f05:label'
+    xml_root_namespace: 'http://kle-online.dk/'
+    properties:
+        __value:
+            expose: true
+            xml_value: true
+            access_type: public_method
+            accessor:
+                getter: value
+                setter: value
+            type: string

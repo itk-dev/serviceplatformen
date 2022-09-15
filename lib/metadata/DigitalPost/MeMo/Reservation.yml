@@ -1,0 +1,3 @@
+DigitalPost\MeMo\Reservation:
+    xml_root_name: Reservation
+    xml_root_namespace: 'https://DigitalPost.dk/MeMo-1'

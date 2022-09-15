@@ -1,0 +1,22 @@
+WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd\Education\EducationAType:
+    properties:
+        educationCode:
+            expose: true
+            access_type: public_method
+            serialized_name: educationCode
+            xml_element:
+                namespace: 'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#'
+            accessor:
+                getter: getEducationCode
+                setter: setEducationCode
+            type: string
+        educationName:
+            expose: true
+            access_type: public_method
+            serialized_name: educationName
+            xml_element:
+                namespace: 'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#'
+            accessor:
+                getter: getEducationName
+                setter: setEducationName
+            type: string

@@ -1,0 +1,12 @@
+WwwGs1Dk\Gs1Standarder\Identifikation\GlnGlobalLocationNumber\Location:
+    xml_root_name: 'ns-b7da4ab6:location'
+    xml_root_namespace: 'https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/'
+    properties:
+        __value:
+            expose: true
+            xml_value: true
+            access_type: public_method
+            accessor:
+                getter: value
+                setter: value
+            type: string

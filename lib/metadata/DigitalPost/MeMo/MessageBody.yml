@@ -1,0 +1,3 @@
+DigitalPost\MeMo\MessageBody:
+    xml_root_name: MessageBody
+    xml_root_namespace: 'https://DigitalPost.dk/MeMo-1'

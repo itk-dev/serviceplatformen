@@ -1,0 +1,3 @@
+DigitalPost\MeMo\ForwardData:
+    xml_root_name: ForwardData
+    xml_root_namespace: 'https://DigitalPost.dk/MeMo-1'

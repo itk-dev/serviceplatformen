@@ -1,0 +1,126 @@
+DigitalPost\MeMo\ContentData\ContentDataAType:
+    properties:
+        cPRdata:
+            expose: true
+            access_type: public_method
+            serialized_name: CPRdata
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getCPRdata
+                setter: setCPRdata
+            type: DataGovDk\Model\Core\CPRdata
+        cVRdata:
+            expose: true
+            access_type: public_method
+            serialized_name: CVRdata
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getCVRdata
+                setter: setCVRdata
+            type: DataGovDk\Model\Core\CVRdata
+        motorVehicle:
+            expose: true
+            access_type: public_method
+            serialized_name: MotorVehicle
+            xml_element:
+                namespace: 'https://motorregister.skat.dk/'
+            accessor:
+                getter: getMotorVehicle
+                setter: setMotorVehicle
+            type: MotorregisterSkatDk\MotorVehicle
+        propertyNumber:
+            expose: true
+            access_type: public_method
+            serialized_name: PropertyNumber
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getPropertyNumber
+                setter: setPropertyNumber
+            type: DataGovDk\Model\Core\PropertyNumber
+        caseID:
+            expose: true
+            access_type: public_method
+            serialized_name: CaseID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getCaseID
+                setter: setCaseID
+            type: DigitalPost\MeMo\CaseID
+        kLEdata:
+            expose: true
+            access_type: public_method
+            serialized_name: KLEdata
+            xml_element:
+                namespace: 'http://kle-online.dk/'
+            accessor:
+                getter: getKLEdata
+                setter: setKLEdata
+            type: KleOnlineDk\KLEdata
+        fORMdata:
+            expose: true
+            access_type: public_method
+            serialized_name: FORMdata
+            xml_element:
+                namespace: 'http://www.form-online.dk/'
+            accessor:
+                getter: getFORMdata
+                setter: setFORMdata
+            type: WwwFormOnlineDk\FORMdata
+        productionUnit:
+            expose: true
+            access_type: public_method
+            serialized_name: ProductionUnit
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getProductionUnit
+                setter: setProductionUnit
+            type: DataGovDk\Model\Core\ProductionUnit
+        education:
+            expose: true
+            access_type: public_method
+            serialized_name: Education
+            xml_element:
+                namespace: 'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#'
+            accessor:
+                getter: getEducation
+                setter: setEducation
+            type: WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd\Education
+        address:
+            expose: true
+            access_type: public_method
+            serialized_name: Address
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getAddress
+                setter: setAddress
+            type: DataGovDk\Model\Core\Address
+        unstructuredAddress:
+            expose: true
+            access_type: public_method
+            serialized_name: UnstructuredAddress
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getUnstructuredAddress
+                setter: setUnstructuredAddress
+            type: DataGovDk\Model\Core\UnstructuredAddress
+        additionalContentData:
+            expose: true
+            access_type: public_method
+            serialized_name: AdditionalContentData
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getAdditionalContentData
+                setter: setAdditionalContentData
+            xml_list:
+                inline: true
+                entry_name: AdditionalContentData
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            type: array<DigitalPost\MeMo\AdditionalContentData>

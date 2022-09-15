@@ -1,0 +1,12 @@
+MotorregisterSkatDk\LicenseNumber:
+    xml_root_name: 'ns-0adfad31:licenseNumber'
+    xml_root_namespace: 'https://motorregister.skat.dk/'
+    properties:
+        __value:
+            expose: true
+            xml_value: true
+            access_type: public_method
+            accessor:
+                getter: value
+                setter: value
+            type: string

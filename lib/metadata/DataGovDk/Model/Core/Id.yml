@@ -1,0 +1,12 @@
+DataGovDk\Model\Core\Id:
+    xml_root_name: 'ns-d74db83a:id'
+    xml_root_namespace: 'https://data.gov.dk/model/core/'
+    properties:
+        __value:
+            expose: true
+            xml_value: true
+            access_type: public_method
+            accessor:
+                getter: value
+                setter: value
+            type: string

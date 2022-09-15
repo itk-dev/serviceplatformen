@@ -1,0 +1,3 @@
+DigitalPost\MeMo\EntryPoint:
+    xml_root_name: EntryPoint
+    xml_root_namespace: 'https://DigitalPost.dk/MeMo-1'

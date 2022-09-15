@@ -1,0 +1,3 @@
+DigitalPost\MeMo\Action:
+    xml_root_name: Action
+    xml_root_namespace: 'https://DigitalPost.dk/MeMo-1'

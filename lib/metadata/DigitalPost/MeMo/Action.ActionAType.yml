@@ -1,0 +1,62 @@
+DigitalPost\MeMo\Action\ActionAType:
+    properties:
+        label:
+            expose: true
+            access_type: public_method
+            serialized_name: label
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getLabel
+                setter: setLabel
+            type: string
+        actionCode:
+            expose: true
+            access_type: public_method
+            serialized_name: actionCode
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getActionCode
+                setter: setActionCode
+            type: string
+        startDateTime:
+            expose: true
+            access_type: public_method
+            serialized_name: startDateTime
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getStartDateTime
+                setter: setStartDateTime
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime
+        endDateTime:
+            expose: true
+            access_type: public_method
+            serialized_name: endDateTime
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getEndDateTime
+                setter: setEndDateTime
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime
+        reservation:
+            expose: true
+            access_type: public_method
+            serialized_name: Reservation
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getReservation
+                setter: setReservation
+            type: DigitalPost\MeMo\Reservation
+        entryPoint:
+            expose: true
+            access_type: public_method
+            serialized_name: EntryPoint
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getEntryPoint
+                setter: setEntryPoint
+            type: DigitalPost\MeMo\EntryPoint
