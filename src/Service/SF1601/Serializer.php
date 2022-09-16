@@ -19,7 +19,7 @@ use JMS\Serializer\SerializerInterface;
 class Serializer
 {
     // Must match xsd2php.destinations_jms in xsd2php-config.yml
-    private const namespace2metadata = [
+    private const NAMESPACE2METADATA = [
         'DigitalPost\MeMo' =>                                                                            'lib/metadata/DigitalPost/MeMo',
         'DataGovDk\Model\DataTypes' =>                                                                   'lib/metadata/DataGovDk/Model/DataTypes',
         'DataGovDk\Model\Core' =>                                                                        'lib/metadata/DataGovDk/Model/Core',
@@ -48,7 +48,7 @@ class Serializer
         if (!isset($this->serializer)) {
             $serializerBuilder = SerializerBuilder::create();
 
-            foreach (self::namespace2metadata as $namespacePrefix => $dir) {
+            foreach (self::NAMESPACE2METADATA as $namespacePrefix => $dir) {
                 $serializerBuilder->addMetadataDir(__DIR__.'/../../../'.$dir, $namespacePrefix);
             }
 

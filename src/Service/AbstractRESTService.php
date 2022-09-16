@@ -10,8 +10,10 @@
 
 namespace ItkDev\Serviceplatformen\Service;
 
+use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
+use DateTimeZone;
 use GuzzleHttp\RequestOptions;
 use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
 use Symfony\Component\HttpClient\CurlHttpClient;
@@ -160,8 +162,6 @@ abstract class AbstractRESTService
         } catch (\Exception $exception) {
             throw new ServiceException('Cannot fetch access token', 0, $exception);
         }
-
-        throw new ServiceException('Cannot fetch access token');
     }
 
     protected function configureOptions(OptionsResolver $resolver)
@@ -198,8 +198,7 @@ abstract class AbstractRESTService
      */
     protected function formatDateTime(DateTimeInterface $dateTime): string
     {
-        return (clone $dateTime)
-            ->setTimezone(new \DateTimeZone('UTC'))
+        return (new DateTimeImmutable($dateTime->format(DateTimeInterface::ATOM), new DateTimeZone('UTC')))
             ->format('Y-m-d\TH:i:s\Z');
     }
 }
