@@ -12,12 +12,12 @@ This file is part of itk-dev/serviceplatformen.
 This source file is subject to the MIT license.
 HEADER;
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setRules([
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
-        'header_comment' => ['header' => $header, 'commentType' => 'PHPDoc'],
+        'header_comment' => ['header' => $header, 'comment_type' => 'PHPDoc'],
         'list_syntax' => ['syntax' => 'short'],
         'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
         'strict_comparison' => true,
