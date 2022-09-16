@@ -10,12 +10,18 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1601;
 
+use DigitalPost\MeMo\Message;
+use DOMDocument;
+use DOMText;
 use ItkDev\Serviceplatformen\Service\AbstractRESTService;
+use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SF1601 extends AbstractRESTService
 {
+    public const TYPE_DIGITAL_POST = 'Digital Post';
+
     protected function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
@@ -29,52 +35,42 @@ class SF1601 extends AbstractRESTService
         ]);
     }
 
-    public function kombiPostAfsend(string $transactionId, array $data)
+    public function kombiPostAfsend(string $transactionId, string $type, Message $message)
     {
-        $body = <<<'XML'
-<kombi_request>
- <KombiValgKode>Digital Post</KombiValgKode>
- <memo:Message xmlns:memo="https://DigitalPost.dk/MeMo-1" memoVersion="1.1" memoSchVersion="1.1.0">
-  <memo:MessageHeader>
-   <memo:messageType>DIGITALPOST</memo:messageType>
-   <memo:messageUUID>e4cf3010-d051-43f2-8aa2-c86b05f3af17</memo:messageUUID>
-   <memo:label>ITK Development</memo:label>
-   <memo:mandatory>false</memo:mandatory>
-   <memo:legalNotification>false</memo:legalNotification>
-   <memo:Sender>
-    <memo:senderID>55133018</memo:senderID>
-    <memo:idType>CVR</memo:idType>
-    <memo:label>ITK</memo:label>
-   </memo:Sender>
-   <memo:Recipient>
-    <memo:recipientID>2611740000</memo:recipientID>
-    <memo:idType>CPR</memo:idType>
-   </memo:Recipient>
-  </memo:MessageHeader>
-  <memo:MessageBody>
-   <memo:createdDateTime>2021-12-09T10:31:35Z</memo:createdDateTime>
-   <memo:MainDocument>
-    <memo:File>
-     <memo:encodingFormat>text/plain</memo:encodingFormat>
-     <memo:filename>Message.txt</memo:filename>
-     <memo:language>da</memo:language>
-     <memo:content>RW4gbnllIGJlc2tlZA0KTWVkIGxpbmplc2tpZnQNClZpcmtlciBkZXQ/</memo:content>
-    </memo:File>
-   </memo:MainDocument>
-  </memo:MessageBody>
- </memo:Message>
-</kombi_request>
-XML;
+        $document = $this->buildKombiRequest($type, $message);
+
+//        header('content-type: text/plain'); echo var_export($document->saveXML(), true); die(__FILE__.':'.__LINE__.':'.__METHOD__);
 
         $response = $this->call('POST', $this->getOption('svc_endpoint'), [
                 'headers' => [
                     'content-type' => 'application/xml',
                     'accept' => 'application/xml',
                 ],
-                'body' => $body,
+                'body' => $document->saveXML(),
                 'transactionId' => $transactionId,
-            ] + $data);
+            ]);
 
         return $response;
+    }
+
+    private function buildKombiRequest(string $type, Message $message)
+    {
+        if (!in_array($type, [self::TYPE_DIGITAL_POST])) {
+            throw new ServiceException(sprintf('Invalid type: %s', $type));
+        }
+
+        // Build kombi document.
+        $document = new DOMDocument();
+        $document->loadXML('<kombi_request><KombiValgKode/></kombi_request>');
+        // Set KombiValgKode.
+        $document->documentElement->firstChild->appendChild(new DOMText($type));
+
+        // Serialize message and import and append it to kombi_request element.
+        $messageDocument = new DOMDocument();
+        $messageDocument->loadXML((new Serializer())->serialize($message));
+
+        $document->documentElement->appendChild($document->importNode($messageDocument->documentElement, true));
+
+        return $document;
     }
 }
