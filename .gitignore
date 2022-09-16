@@ -1,3 +1,4 @@
+composer.lock
 /vendor/
 
 ###> friendsofphp/php-cs-fixer ###
@@ -6,6 +7,8 @@
 ###< friendsofphp/php-cs-fixer ###
 
 ###> squizlabs/php_codesniffer ###
-/.phpcs-cache
+/.php-cs-fixer.cache
 /phpcs.xml
 ###< squizlabs/php_codesniffer ###
+node_modules
+yarn.lock
