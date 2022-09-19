@@ -20,7 +20,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SF1601 extends AbstractRESTService
 {
+    public const TYPE_AUTOMATISK_VALG = 'Automatisk Valg';
+    public const TYPE_FYSISK_POST = 'Fysisk Post';
     public const TYPE_DIGITAL_POST = 'Digital Post';
+    public const TYPE_NEM_SMS = 'NemSMS';
 
     protected function configureOptions(OptionsResolver $resolver)
     {
@@ -39,8 +42,6 @@ class SF1601 extends AbstractRESTService
     {
         $document = $this->buildKombiRequest($type, $message);
 
-//        header('content-type: text/plain'); echo var_export($document->saveXML(), true); die(__FILE__.':'.__LINE__.':'.__METHOD__);
-
         $response = $this->call('POST', $this->getOption('svc_endpoint'), [
                 'headers' => [
                     'content-type' => 'application/xml',
@@ -55,7 +56,7 @@ class SF1601 extends AbstractRESTService
 
     private function buildKombiRequest(string $type, Message $message)
     {
-        if (!in_array($type, [self::TYPE_DIGITAL_POST])) {
+        if (!in_array($type, [self::TYPE_AUTOMATISK_VALG, self::TYPE_DIGITAL_POST, self::TYPE_FYSISK_POST, self::TYPE_NEM_SMS])) {
             throw new ServiceException(sprintf('Invalid type: %s', $type));
         }
 

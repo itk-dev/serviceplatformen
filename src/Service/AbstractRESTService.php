@@ -17,6 +17,7 @@ use DateTimeZone;
 use GuzzleHttp\RequestOptions;
 use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
 use Symfony\Component\HttpClient\CurlHttpClient;
+use Symfony\Component\HttpClient\TraceableHttpClient;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -97,12 +98,6 @@ abstract class AbstractRESTService
             $this->client = new CurlHttpClient([
                 'local_cert' => $this->options['client_cert_pub'],
                 'local_pk' => $this->options['client_cert_key'],
-                'extra' => [
-                    'curl' => [
-//                        CURLOPT_SSLCERT => $this->options['client_cert_pub'],
-//                        CURLOPT_SSLKEY => $this->options['client_cert_key'],
-                    ],
-                ],
             ]);
         }
 
