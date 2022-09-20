@@ -11,6 +11,7 @@
 namespace ItkDev\Serviceplatformen\DigitalPost;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 use Http\Factory\Guzzle\RequestFactory;
 use ItkDev\AzureKeyVault\Authorisation\VaultToken;
@@ -30,7 +31,6 @@ use ItkDev\Serviceplatformen\SF1600\StructType\InvocationContextType;
 use ItkDev\Serviceplatformen\SF1600\StructType\KontaktOplysningType;
 use ItkDev\Serviceplatformen\SF1600\StructType\PrintAfsendBrevRequestType;
 use ItkDev\Serviceplatformen\SF1600\StructType\SlutbrugerIdentitetType;
-use Psr\Http\Client\ClientInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\String\ByteString;
 use Symfony\Component\Uid\Uuid;
@@ -43,9 +43,9 @@ abstract class DigitalPost
     /**
      * The client.
      *
-     * @var \GuzzleHttp\Client
+     * @var ClientInterface
      */
-    private Client $guzzleClient;
+    private ClientInterface $guzzleClient;
 
     public function __construct(ClientInterface $client = null)
     {
@@ -68,7 +68,7 @@ abstract class DigitalPost
         string $mailDeliverySublocationIdentifier = null,
         string $postCodeIdentifier = null,
         string $districtSubdivisionIdentifier = null,
-        string $postOfficeBoxIdentifier = null,
+        int $postOfficeBoxIdentifier = null,
         string $countryIdentificationCode = null,
         string $filFormatNavn = null,
         string $meddelelseIndholdData = null,
@@ -158,7 +158,7 @@ abstract class DigitalPost
 
         if (false === $response) {
             $lastError = $client->getLastError();
-            /** @var SoapFault $soapError */
+            /** @var \SoapFault $soapError */
             $soapError = reset($lastError);
             // Should maybe log this instead!
             throw new \Exception($soapError->getMessage(), $soapError->getCode());
@@ -242,7 +242,7 @@ abstract class DigitalPost
 
         if (false === $response) {
             $lastError = $client->getLastError();
-            /** @var SoapFault $soapError */
+            /** @var \SoapFault $soapError */
             $soapError = $lastError['Drupal\os2forms_digital_post\Client\ServiceType\Afsend::afsendBrev'];
             // Should maybe log this instead!
             throw new \Exception($soapError->getMessage(), $soapError->getCode());
@@ -270,7 +270,7 @@ abstract class DigitalPost
         string $mailDeliverySublocationIdentifier = null,
         string $postCodeIdentifier = null,
         string $districtSubdivisionIdentifier = null,
-        string $postOfficeBoxIdentifier = null,
+        int $postOfficeBoxIdentifier = null,
         string $countryIdentificationCode = null,
         string $filFormatNavn = null,
         string $meddelelseIndholdData = null,
@@ -361,7 +361,7 @@ abstract class DigitalPost
 
         if (false === $response) {
             $lastError = $client->getLastError();
-            /** @var SoapFault $soapError */
+            /** @var \SoapFault $soapError */
             $soapError = reset($lastError);
             // Should maybe log this instead!
             throw new \Exception($soapError->getMessage(), $soapError->getCode());

@@ -69,7 +69,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [ '7.4', '8.0', '8.1' ]
-    name: PHP coding Standards (${{ matrix.php }})
+    name: PHP code analysis (${{ matrix.php }})
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -90,7 +90,7 @@ jobs:
           restore-keys: ${{ matrix.php }}-composer-
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-      - name: coding-standards-check
+      - name: code-analysis
         run: composer code-analysis
 
   coding-standards-markdown:
@@ -117,33 +117,3 @@ jobs:
       - run: yarn install
       - name: coding-standards-check
         run: yarn coding-standards-check
-
-  code-analysis:
-    runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [ '7.4', '8.0', '8.1' ]
-    name: PHP code analysis (${{ matrix.php }})
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup PHP, with composer and extensions
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php}}
-          extensions: apcu, ctype, iconv, imagick, json, redis, soap, xmlreader, zip
-          coverage: none
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - name: Cache composer dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ matrix.php }}-composer-
-      - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-      - name: code-analysis
-        run: composer code-analysis
