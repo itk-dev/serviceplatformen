@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dkal="urn:oio:dkal:1.0.0" targetNamespace="urn:oio:dkal:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA">
+	<include schemaLocation="Vedhaeftning.xsd" />
+	<element name="VedhaeftningSamling" type="dkal:VedhaeftningSamlingType" />
+	<complexType name="VedhaeftningSamlingType">
+		<sequence>
+			<element ref="dkal:Vedhaeftning" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+</schema>

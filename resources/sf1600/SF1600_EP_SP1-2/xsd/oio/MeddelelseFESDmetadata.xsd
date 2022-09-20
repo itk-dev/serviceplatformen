@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:oio:dkal:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dkal="urn:oio:dkal:1.0.0">
+  <include schemaLocation="FESDsagIdentifikator.xsd"/>
+  <include schemaLocation="FESDsagsklassifikationIdentifikator.xsd"/>
+  <include schemaLocation="FESDdokumentIdentifikator.xsd"/>
+  <include schemaLocation="FESDaktoerIdentifikator.xsd"/>
+  <element name="MeddelelseFESDmetadata" type="dkal:MeddelelseFESDmetadataType"/>
+  <complexType name="MeddelelseFESDmetadataType">
+    <sequence>
+      <element ref="dkal:FESDdokumentIdentifikator" minOccurs="0"/>
+      <element ref="dkal:FESDaktoerIdentifikator" minOccurs="0"/>
+      <element ref="dkal:FESDsagIdentifikator" minOccurs="0"/>
+      <element ref="dkal:FESDsagsklassifikationIdentifikator" minOccurs="0"/>
+    </sequence>
+  </complexType>
+</schema>

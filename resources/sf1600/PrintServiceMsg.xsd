@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:tns="http://serviceplatformen.dk/xml/wsdl/soap11/Print/Print/2/"
+            xmlns:callctx="http://serviceplatformen.dk/xml/schemas/CallContext/1/"
+            xmlns:invctx="http://serviceplatformen.dk/xml/schemas/InvocationContext/1/"
+            xmlns:authctx="http://serviceplatformen.dk/xml/schemas/AuthorityContext/1/"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://serviceplatformen.dk/xml/wsdl/soap11/Print/Print/2/"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified"
+            version="2.0">
+
+    <xsd:import namespace="http://serviceplatformen.dk/xml/schemas/InvocationContext/1/" schemaLocation="sp/InvocationContext_1.xsd"/>
+    <xsd:import namespace="http://serviceplatformen.dk/xml/schemas/AuthorityContext/1/" schemaLocation="sp/AuthorityContext_1.xsd"/>
+    <xsd:import namespace="http://serviceplatformen.dk/xml/schemas/CallContext/1/" schemaLocation="sp/CallContext_1.xsd"/>
+    <xsd:include schemaLocation="xsd/PrintServiceRequestTypes.xsd"/>
+
+    <xsd:element name="PrintAfsendBrevRequest" type="tns:PrintAfsendBrevRequestType"/>
+    <xsd:complexType name="PrintAfsendBrevRequestType">
+        <xsd:sequence>
+            <xsd:element ref="invctx:InvocationContext" minOccurs="0" maxOccurs="1"/>
+            <xsd:element ref="authctx:AuthorityContext" minOccurs="0" maxOccurs="1"/>
+            <xsd:element ref="callctx:CallContext" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="BrevSPBody" type="tns:BrevSPBodyType" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="PrintAfsendBrevResponse" type="tns:PrintAfsendBrevResponseType"/>
+    <xsd:complexType name="PrintAfsendBrevResponseType">
+        <xsd:sequence>
+            <xsd:element name="resultat" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="PrintSpoergTilmeldingRequest" type="tns:PrintSpoergTilmeldingRequestType"/>
+    <xsd:complexType name="PrintSpoergTilmeldingRequestType">
+        <xsd:sequence>
+            <xsd:element ref="invctx:InvocationContext" minOccurs="0" maxOccurs="1"/>
+            <xsd:element ref="authctx:AuthorityContext" minOccurs="0" maxOccurs="1"/>
+            <xsd:element ref="callctx:CallContext" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="TilmeldingRequest" type="tns:TilmeldingRequestType" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="PrintSpoergTilmeldingResponse" type="tns:PrintSpoergTilmeldingResponseType"/>
+    <xsd:complexType name="PrintSpoergTilmeldingResponseType">
+        <xsd:sequence>
+            <xsd:element name="tilmeldt" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

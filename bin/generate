@@ -1,0 +1,148 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+use WsdlToPhp\PackageGenerator\ConfigurationReader\GeneratorOptions;
+use WsdlToPhp\PackageGenerator\Generator\Generator;
+
+$services = [
+    // https://digitaliseringskataloget.dk/integration/sf1600
+    'sf1600' => [
+        'doc_url' => 'https://docs.kombit.dk/integration/sf1600/2.5/pakke',
+        'resource_zip_glob' => 'SF1600 Teknisk Spec*.zip',
+        'wsdl_path' => 'wsdl/token/PrintService.wsdl',
+        'namespace_name' => 'SF1600',
+    ],
+];
+
+class ResourceHelper extends Helper {
+    public function run() {
+        foreach ($this->services as $name => $spec) {
+            if (!isset($spec['doc_url'], $spec['resource_zip_glob'])) {
+                throw new \RuntimeException(sprintf('Invalid spec for service %s: %s', $name, json_encode($spec)));
+            }
+
+            echo sprintf('Service %s', $name), PHP_EOL;
+
+            $url = $spec['doc_url'];
+            $tmpPath = tempnam('/tmp', sprintf('%s.zip', $name));
+
+            echo sprintf('Fetching %s …', $url);
+            [$exitCode, $output] = $this->exec(
+                sprintf('curl --location %s --silent --output %s', escapeshellarg($url), escapeshellarg($tmpPath))
+            );
+            if (0 !== $exitCode) {
+                throw new \RuntimeException(json_encode([
+                    'exit' => $exitCode,
+                    'output' => $output,
+                ], JSON_PRETTY_PRINT));
+            }
+            echo ' done', PHP_EOL;
+
+            echo 'Extracting files …';
+            // # Hide an error:
+            // #   error:  cannot create SF1600 - Print p+� Serviceplatformen v.2.5.pdf
+            // #           Illegal byte sequence
+            // (cd /tmp && unzip -qq -o /tmp/$service_name.zip > /dev/null 2>&1)
+            [$exitCode, $output] = $this->exec(
+                sprintf('cd %s && unzip -qq -o %s > /dev/null 2>&1', escapeshellarg(dirname($tmpPath)), escapeshellarg($tmpPath))
+            );
+
+            // The illegal byte sequence results in exit code 50.
+            if (!in_array($exitCode, [0, 50], true)) {
+                throw new \RuntimeException(json_encode([
+                    'exit' => $exitCode,
+                    'output' => $output,
+                ], JSON_PRETTY_PRINT));
+            }
+
+            $resourceDir = $this->getResourceDir($name);
+            if (!is_dir($resourceDir)) {
+                mkdir($resourceDir, 0755, true);
+            }
+
+            [$exitCode, $output] = $this->exec(
+                sprintf('cd %s && unzip -qq -o %s > /dev/null 2>&1', escapeshellarg($resourceDir), escapeshellarg(dirname($tmpPath).'/'.$spec['resource_zip_glob']))
+            );
+            if (0 !== $exitCode) {
+                throw new \RuntimeException(json_encode([
+                    'exit' => $exitCode,
+                    'output' => $output,
+                ], JSON_PRETTY_PRINT));
+            }
+
+            echo ' done', PHP_EOL;
+        }
+    }
+}
+
+class ClassHelper extends Helper {
+    public function run() {
+        // @see https://github.com/WsdlToPhp/PackageGenerator/wiki/Options
+        $options = GeneratorOptions::instance();
+        $options
+            ->setStandalone(false)
+            ->setSrcDirname('/')
+            ->setDestination(__DIR__.'/../generated-classes');
+
+        foreach ($this->services as $name => $spec) {
+            if (!isset($spec['wsdl_path'])) {
+                throw new \RuntimeException(sprintf('Invalid spec for service %s: %s', $name, json_encode($spec)));
+            }
+
+            echo sprintf('Service %s', $name), PHP_EOL;
+
+            $wsdlPath = $this->getResourceDir($name).'/'.$spec['wsdl_path'];
+
+            echo sprintf('Generating classes …');
+
+            $options
+                ->setOrigin($wsdlPath)
+                ->setNameSpace(sprintf('ItkDev\Serviceplatformen\%s', $spec['namespace_name'] ?? $name));
+
+            $generator = new Generator($options);
+            // Package generation
+            $generator->generatePackage();
+
+            echo ' done', PHP_EOL;
+        }
+    }
+}
+
+abstract class Helper {
+    protected array $services;
+
+    public function __construct(array $services) {
+        $this->services = $services;
+    }
+
+    protected function getResourceDir(string $name) {
+        return __DIR__.'/../resources/'.$name;
+    }
+
+    protected function exec(string $cmd): array
+    {
+        exec($cmd, $output, $exitCode);
+        return [$exitCode, $output];
+    }
+
+    public abstract function run();
+}
+
+
+$command = $argv[1] ?? null;
+
+switch ($command) {
+case 'resources':
+    (new ResourceHelper($services))->run();
+    break;
+
+case 'classes':
+    (new ClassHelper($services))->run();
+    break;
+
+default:
+    fwrite(STDERR, sprintf('Usage: %s [resources|classes]', $argv[0]).PHP_EOL);
+    exit(1);
+}

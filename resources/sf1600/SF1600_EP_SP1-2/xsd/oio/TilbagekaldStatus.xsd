@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Simon Holm Frandsen (Logica Danmark A/S) -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fjernprint="urn:oio:fjernprint:1.0.0"
+		targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified"
+		xml:lang="DA">
+	<include schemaLocation="TilbagekaldStatusKode.xsd"/>
+	<include schemaLocation="TilbagekaldFejlKode.xsd"/>
+	<include schemaLocation="TilbagekaldFejlTekst.xsd"/>
+	<element name="TilbagekaldStatus" type="fjernprint:TilbagekaldStatusType"/>
+	<complexType name="TilbagekaldStatusType">
+		<sequence>
+			<element ref="fjernprint:TilbagekaldStatusKode">
+			</element>
+			<element ref="fjernprint:TilbagekaldFejlKode" minOccurs="0">
+			</element>
+			<element ref="fjernprint:TilbagekaldFejlTekst" minOccurs="0">
+			</element>
+		</sequence>
+	</complexType>
+</schema>

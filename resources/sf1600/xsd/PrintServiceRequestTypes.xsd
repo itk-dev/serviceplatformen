@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://serviceplatformen.dk/xml/wsdl/soap11/Print/Print/2/"
+        xmlns:tns="http://serviceplatformen.dk/xml/wsdl/soap11/Print/Print/2/"
+        xmlns:oio="urn:oio:dkal:1.0.0"
+        xmlns:fjernprint="urn:oio:fjernprint:1.0.0"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified"
+        xml:lang="DA">
+
+    <import namespace="urn:oio:fjernprint:1.0.0" schemaLocation="../SF1600_EP_SP1-2/xsd/oio/ForsendelseI.xsd"/>
+    <import namespace="urn:oio:dkal:1.0.0" schemaLocation="../SF1600_EP_SP1-2/xsd/oio/SlutbrugerIdentitet.xsd"/>
+    <import namespace="urn:oio:dkal:1.0.0" schemaLocation="../SF1600_EP_SP1-2/xsd/oio/MeddelelseIndholdstypeIdentifikator.xsd"/>
+
+    <complexType name="BrevSPBodyType">
+        <sequence>
+            <element name="Kanalvalg" type="tns:KanalvalgType" minOccurs="1" maxOccurs="1"/>
+            <element name="Prioritet" type="tns:PrioritetType" minOccurs="1" maxOccurs="1"/>
+            <element name="ForsendelseI" type="fjernprint:ForsendelseIType" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="TilmeldingRequestType">
+        <sequence>
+            <element ref="oio:MeddelelseIndholdstypeIdentifikator" minOccurs="0"/>
+            <element ref="oio:SlutbrugerIdentitet" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <simpleType name="AfsendelsesIDType">
+        <restriction base="string">
+            <minLength value="1"/>
+            <maxLength value="30"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="KanalvalgType">
+        <restriction base="string">
+            <!--
+                 A: Automatisk på Serviceplatformen
+                 D: Digital post
+                 S: NemSMS note that this hits the same endpoint as D it is the content that dictates if it is send as Digital Post
+                 F: Fysisk post
+                 P: Automatisk på Fjernprint
+            -->
+            <enumeration value="A"/>
+            <enumeration value="D"/>
+            <enumeration value="S"/>
+            <enumeration value="F"/>
+            <enumeration value="P"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="PrioritetType">
+        <restriction base="string">
+            <enumeration value="D"/>
+            <enumeration value="M"/>
+        </restriction>
+    </simpleType>
+</schema>

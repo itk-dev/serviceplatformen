@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dkal="urn:oio:dkal:1.0.0" targetNamespace="urn:oio:dkal:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA">
+	<include schemaLocation="AfsendelseURLreference.xsd" />
+	<include schemaLocation="AfsendelseDatoTid.xsd" />
+	<include schemaLocation="AfsendelseTilstandNavn.xsd" />
+	<include schemaLocation="AfsendelseModtager.xsd" />
+	<include schemaLocation="MeddelelseTypeNavn.xsd" />
+	<include schemaLocation="MeddelelseIndholdstypeIdentifikator.xsd" />
+	<include schemaLocation="MeddelelseServicebeskedTekst.xsd" />
+	<include schemaLocation="MeddelelseTitelTekst.xsd" />
+	<include schemaLocation="MeddelelseIdentifikator.xsd" />
+	<include schemaLocation="MeddelelseIndholdData.xsd" />
+	<include schemaLocation="MeddelelseIndholdURLreference.xsd" />
+	<include schemaLocation="FilformatNavn.xsd" />
+	<include schemaLocation="IndholdStoerrelseMaal.xsd" />
+	<include schemaLocation="MeddelelseSvarTypeNavn.xsd" />
+	<include schemaLocation="MeddelelseSvarPostkasseIdentifikator.xsd" />
+	<include schemaLocation="MeddelelseSvarEmneIdentifikator.xsd" />
+	<include schemaLocation="MeddelelseTraadIdentifikator.xsd" />
+	<include schemaLocation="MeddelelseTidsfristDato.xsd" />
+	<include schemaLocation="MeddelelseFESDmetadata.xsd" />
+	<include schemaLocation="MeddelelseTidsfristTekst.xsd" />
+	<include schemaLocation="VedhaeftningSamlingKvantitet.xsd" />
+	<include schemaLocation="VedhaeftningSamling.xsd" />
+	<element name="Afsendelse" type="dkal:AfsendelseType" />
+	<complexType name="AfsendelseType">
+		<sequence>
+			<choice minOccurs="0">
+				<element ref="dkal:AfsendelseURLreference" />
+				<element ref="dkal:MeddelelseIdentifikator" />
+			</choice>
+			<element ref="dkal:AfsendelseTilstandNavn" minOccurs="0" />
+			<element ref="dkal:AfsendelseDatoTid" minOccurs="0" />
+			<element ref="dkal:AfsendelseModtager" minOccurs="0" />
+			<element ref="dkal:MeddelelseTypeNavn" minOccurs="0" />
+			<element ref="dkal:MeddelelseIndholdstypeIdentifikator" minOccurs="0" />
+			<element ref="dkal:IndholdStoerrelseMaal" minOccurs="0" />
+			<choice minOccurs="0">
+				<element ref="dkal:MeddelelseServicebeskedTekst" />
+				<sequence>
+					<element ref="dkal:MeddelelseTitelTekst" />
+					<choice>
+						<element ref="dkal:MeddelelseIndholdData" />
+						<element ref="dkal:MeddelelseIndholdURLreference" />
+					</choice>
+					<element ref="dkal:FilformatNavn" />
+					<element ref="dkal:MeddelelseSvarTypeNavn" minOccurs="0" />
+					<sequence minOccurs="0">
+						<element ref="dkal:MeddelelseSvarPostkasseIdentifikator" />
+						<element ref="dkal:MeddelelseSvarEmneIdentifikator" minOccurs="0" />
+					</sequence>
+					<element ref="dkal:MeddelelseTraadIdentifikator" minOccurs="0" />
+					<sequence minOccurs="0">
+						<element ref="dkal:MeddelelseTidsfristDato" />
+						<element ref="dkal:MeddelelseTidsfristTekst" minOccurs="0" />
+					</sequence>
+					<element ref="dkal:MeddelelseFESDmetadata" minOccurs="0" />
+					<element ref="dkal:VedhaeftningSamlingKvantitet" minOccurs="0" />
+					<element ref="dkal:VedhaeftningSamling" minOccurs="0" />
+				</sequence>
+			</choice>
+		</sequence>
+	</complexType>
+</schema>

@@ -47,7 +47,7 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
             throw new AzureKeyVaultCertificateLocatorException($e->getMessage(), $e->getCode());
         }
 
-        $certificateStoreData = $this->getCertificateStoreDataFromSecret($secret);
+        $certificateStoreData = $this->getCertificateStoreDataFromSecret($secret->getValue());
         $certificate = $this->extractCertificateFromStoreData($certificateStoreData);
 
         return $this->getAbsoluteTmpPathByContent($certificate);

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--edited with XMLSpy v2012 rel. 2 sp1 (x64) (http://www.altova.com) by Simon Holm Frandsen (Logica A/S)--><schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fjernprint="urn:oio:fjernprint:1.0.0">
+  <element name="KvitteringsTypeKode" type="fjernprint:KvitteringsTypeKodeType"/>
+  <simpleType name="KvitteringsTypeKodeType">
+    <restriction base="string">
+      <enumeration value="Alle"/>
+      <enumeration value="Ingen"/>
+      <enumeration value="Kun fejl"/>
+    </restriction>
+  </simpleType>
+</schema>

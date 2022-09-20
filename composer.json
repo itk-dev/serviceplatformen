@@ -7,20 +7,31 @@
         {
             "name": "Lars Steen",
             "email": "lats@aarhus.dk"
+        },
+        {
+            "name": "Mikkel Ricky",
+            "email": "rimi@aarhus.dk"
         }
     ],
     "require": {
         "php": "^7.4 || ^8.0",
-        "ext-soap": "*",
         "ext-openssl": "*",
-        "itk-dev/azure-key-vault-php": "^1.0"
+        "ext-soap": "*",
+        "http-interop/http-factory-guzzle": "^1.2",
+        "itk-dev/azure-key-vault-php": "^1.0",
+        "php-http/guzzle7-adapter": "^1.0",
+        "symfony/options-resolver": "^5.4 || ^6.0",
+        "symfony/string": "^5.4 || ^6.0",
+        "symfony/uid": "^5.4 || ^6.0",
+        "wsdltophp/packagebase": "^5.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.11",
         "phan/phan": "^5.4",
         "phpstan/phpstan": "^1.8",
         "phpunit/phpunit": "^9.0",
-        "squizlabs/php_codesniffer": "^3.7"
+        "squizlabs/php_codesniffer": "^3.7",
+        "wsdltophp/packagegenerator": "^4.1"
     },
     "config": {
         "optimize-autoloader": true,
@@ -29,7 +40,8 @@
     },
     "autoload": {
         "psr-4": {
-            "ItkDev\\Serviceplatformen\\": "src/"
+            "ItkDev\\Serviceplatformen\\": "src/",
+            "ItkDev\\Serviceplatformen\\SF1600\\": "generated-classes/ItkDev/Serviceplatformen/SF1600/"
         }
     },
     "autoload-dev": {

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dkal="urn:oio:dkal:1.0.0" targetNamespace="urn:oio:dkal:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA">
+	<include schemaLocation="VedhaeftningNavn.xsd" />
+	<include schemaLocation="FilformatNavn.xsd" />
+	<include schemaLocation="IndholdStoerrelseMaal.xsd" />
+	<include schemaLocation="BilagIdentifikator.xsd" />
+	<include schemaLocation="VedhaeftningIndholdData.xsd" />
+	<include schemaLocation="VedhaeftningIndholdURLreference.xsd" />
+	<include schemaLocation="VedhaeftningIndholdIdentifikator.xsd" />
+	<include schemaLocation="MIMEcontentIdentifikator.xsd" />
+	<include schemaLocation="VedhaeftningOprindeligModtagetDatoTid.xsd" />
+	<include schemaLocation="VedhaeftningOprindeligAfsenderCVRnummerIdentifikator.xsd" />
+	<include schemaLocation="VedhaeftningOprindeligAfsenderNavn.xsd" />
+	<element name="Vedhaeftning" type="dkal:VedhaeftningType" />
+	<complexType name="VedhaeftningType">
+		<sequence>
+			<element ref="dkal:VedhaeftningNavn" minOccurs="0" />
+			<element ref="dkal:FilformatNavn" minOccurs="0" />
+			<element ref="dkal:IndholdStoerrelseMaal" minOccurs="0" />
+			<choice>
+				<element ref="dkal:BilagIdentifikator" />
+				<sequence>
+					<choice>
+						<element ref="dkal:VedhaeftningIndholdData" />
+						<choice minOccurs="0">
+							<element ref="dkal:VedhaeftningIndholdURLreference" />
+							<element ref="dkal:VedhaeftningIndholdIdentifikator" />
+						</choice>
+					</choice>
+					<element ref="dkal:MIMEcontentIdentifikator" minOccurs="0" />
+				</sequence>
+			</choice>
+			<sequence minOccurs="0">
+				<element ref="dkal:VedhaeftningOprindeligModtagetDatoTid" />
+				<element ref="dkal:VedhaeftningOprindeligAfsenderCVRnummerIdentifikator" />
+				<element ref="dkal:VedhaeftningOprindeligAfsenderNavn" />
+			</sequence>
+		</sequence>
+	</complexType>
+</schema>

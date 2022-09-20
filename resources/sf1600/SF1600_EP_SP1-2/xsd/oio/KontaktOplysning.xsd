@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fjernprint="urn:oio:fjernprint:1.0.0" xmlns:itst="http://rep.oio.dk/itst.dk/xml/schemas/2006/01/17/" xmlns:dkcc="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/" xmlns:dkcc2005="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/03/15/" xmlns:dkcc2005-2="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/13/" xmlns:dkcc2005-3="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/">
+  <import namespace="http://rep.oio.dk/itst.dk/xml/schemas/2006/01/17/" schemaLocation="ITST_PersonName.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/03/15/" schemaLocation="DKCC_StreetName.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/" schemaLocation="DKCC_StreetBuildingIdentifier.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/" schemaLocation="DKCC_FloorIdentifier.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/" schemaLocation="DKCC_SuiteIdentifier.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/" schemaLocation="DKCC_MailDeliverySublocationIdentifier.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/03/15/" schemaLocation="DKCC_DistrictSubdivisionIdentifier.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/13/" schemaLocation="DKCC_PostOfficeBoxIdentifier.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/03/15/" schemaLocation="DKCC_PostCodeIdentifier.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/03/15/" schemaLocation="DKCC_DistrictName.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/" schemaLocation="DKCC_CountryIdentificationCode.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/" schemaLocation="DKCC_PostalAddressFirstLineText.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/" schemaLocation="DKCC_PostalAddressSecondLineText.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/" schemaLocation="DKCC_PostalAddressThirdLineText.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/" schemaLocation="DKCC_PostalAddressFourthLineText.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/" schemaLocation="DKCC_PostalAddressFifthLineText.xsd"/>
+  <import namespace="http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/" schemaLocation="DKCC_PostalAddressSixthLineText.xsd"/>
+  <include schemaLocation="CoNavn.xsd"/>
+  <element name="KontaktOplysning" type="fjernprint:KontaktOplysningType"/>
+  <complexType name="KontaktOplysningType">
+    <sequence>
+      <element ref="itst:PersonName"/>
+      <choice>
+        <sequence>
+          <element ref="fjernprint:CoNavn" minOccurs="0"/>
+          <element ref="dkcc2005:StreetName"/>
+          <element ref="dkcc:StreetBuildingIdentifier"/>
+          <element ref="dkcc:FloorIdentifier" minOccurs="0"/>
+          <element ref="dkcc:SuiteIdentifier" minOccurs="0"/>
+          <element ref="dkcc:MailDeliverySublocationIdentifier" minOccurs="0"/>
+          <element ref="dkcc2005:PostCodeIdentifier"/>
+          <element ref="dkcc2005:DistrictSubdivisionIdentifier" minOccurs="0"/>
+          <element ref="dkcc2005-2:PostOfficeBoxIdentifier" minOccurs="0"/>
+        </sequence>
+        <sequence>
+          <element ref="dkcc2005-3:PostalAddressFirstLineText"/>
+          <element ref="dkcc2005-3:PostalAddressSecondLineText" minOccurs="0"/>
+          <element ref="dkcc2005-3:PostalAddressThirdLineText" minOccurs="0"/>
+          <element ref="dkcc2005-3:PostalAddressFourthLineText" minOccurs="0"/>
+          <element ref="dkcc2005-3:PostalAddressFifthLineText" minOccurs="0"/>
+          <element ref="dkcc2005-3:PostalAddressSixthLineText" minOccurs="0"/>
+          <element ref="dkcc2005:PostCodeIdentifier" minOccurs="0"/>
+        </sequence>
+      </choice>
+      <element ref="dkcc:CountryIdentificationCode"/>
+    </sequence>
+  </complexType>
+</schema>

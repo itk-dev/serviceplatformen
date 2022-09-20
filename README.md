@@ -7,6 +7,21 @@ Library for interacting with services on [Serviceplatformen](https://www.service
 * [CPR replika opslag (SF1520_3.6): https://digitaliseringskataloget.dk/integration/sf1520?version=3.6](https://digitaliseringskataloget.dk/integration/sf1520?version=3.6)
 * [CVR-Online (SF1530_2.4): https://digitaliseringskataloget.dk/integration/sf1530](https://digitaliseringskataloget.dk/integration/sf1530)
 
+## Updating resources and classes
+
+We use
+[WsdlToPhp/PackageGenerator](https://github.com/WsdlToPhp/PackageGenerator) to
+generate PHP classes for talking to SOAP services. To update
+[resources](./resources) and [generated classes](./generated-classes), run
+
+```sh
+docker run --rm --volume $PWD:/app -it itkdev/php7.4-fpm:latest composer2 install
+# Update WSDL resources.
+docker run --rm --volume $PWD:/app -it itkdev/php7.4-fpm:latest bin/generate resources
+# Generate PHP classes from WSDL resources.
+docker run --rm --volume $PWD:/app -it itkdev/php7.4-fpm:latest bin/generate classes
+```
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your

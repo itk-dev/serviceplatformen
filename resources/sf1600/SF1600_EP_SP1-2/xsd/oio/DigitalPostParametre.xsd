@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dkal="urn:oio:dkal:1.0.0" xmlns:fjernprint="urn:oio:fjernprint:1.0.0">
+  <import namespace="urn:oio:dkal:1.0.0" schemaLocation="MeddelelseIndholdstypeIdentifikator.xsd"/>
+  <import namespace="urn:oio:dkal:1.0.0" schemaLocation="MeddelelseSvarPostkasseIdentifikator.xsd"/>
+  <import namespace="urn:oio:dkal:1.0.0" schemaLocation="MeddelelseSvarEmneIdentifikator.xsd"/>
+  <import namespace="urn:oio:dkal:1.0.0" schemaLocation="MeddelelseSvarTypeNavn.xsd"/>
+  <import namespace="urn:oio:dkal:1.0.0" schemaLocation="AfsendelseDatoTid.xsd"/>
+  <import namespace="urn:oio:dkal:1.0.0" schemaLocation="MeddelelseFESDmetadata.xsd"/>
+  <include schemaLocation="MedsendDokumentRegistreringIndikator.xsd"/>
+  <element name="DigitalPostParametre" type="fjernprint:DigitalPostParametreType"/>
+  <complexType name="DigitalPostParametreType">
+    <sequence>
+      <element ref="dkal:AfsendelseDatoTid" minOccurs="0"/>
+      <element ref="dkal:MeddelelseIndholdstypeIdentifikator" minOccurs="0"/>
+      <element ref="dkal:MeddelelseSvarTypeNavn" minOccurs="0"/>
+      <sequence minOccurs="0">
+        <element ref="dkal:MeddelelseSvarPostkasseIdentifikator" minOccurs="0"/>
+        <element ref="dkal:MeddelelseSvarEmneIdentifikator" minOccurs="0"/>
+      </sequence>
+      <element ref="dkal:MeddelelseFESDmetadata" minOccurs="0"/>
+      <element ref="fjernprint:MedsendDokumentRegistreringIndikator"/>
+    </sequence>
+  </complexType>
+</schema>

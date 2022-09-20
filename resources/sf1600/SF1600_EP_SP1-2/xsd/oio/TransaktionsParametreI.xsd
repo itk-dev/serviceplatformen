@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified"
+        xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:fjernprint="urn:oio:fjernprint:1.0.0">
+  <include schemaLocation="MasseForsendelseIdentifikator.xsd"/>
+  <include schemaLocation="AfsenderSystemIdentifikator.xsd"/>
+  <include schemaLocation="KvitteringsEmail.xsd"/>
+  <include schemaLocation="KvitteringsTypeKode.xsd"/>
+  <include schemaLocation="TransaktionsDatoTid.xsd"/>
+  <element name="TransaktionsParametreI" type="fjernprint:TransaktionsParametreIType"/>
+  <complexType name="TransaktionsParametreIType">
+    <sequence>
+      <element ref="fjernprint:TransaktionsDatoTid" minOccurs="0" maxOccurs="1"/>
+      <element ref="fjernprint:MasseForsendelseIdentifikator" minOccurs="0" maxOccurs="1"/>
+      <element ref="fjernprint:KvitteringsTypeKode" minOccurs="0" maxOccurs="1"/>
+      <element ref="fjernprint:KvitteringsEmail" minOccurs="0" maxOccurs="1"/>
+    </sequence>
+  </complexType>
+</schema>
