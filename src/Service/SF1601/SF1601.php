@@ -33,7 +33,7 @@ class SF1601 extends AbstractRESTService
             'svc_endpoint' => static function (Options $options) {
                 return $options['test_mode']
                     ? 'https://exttest.serviceplatformen.dk/service/KombiPostAfsend_1/kombi'
-                    : 'https://prod.serviceplatformen.dk/services/KombiPostAfsend_1/kombi';
+                    : 'https://prod.serviceplatformen.dk/service/KombiPostAfsend_1/kombi';
             },
         ]);
     }

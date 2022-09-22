@@ -178,7 +178,7 @@ abstract class AbstractRESTService
                 'access_token_svc' => static function (Options $options) {
                     return $options['test_mode']
                         ? 'https://exttest.serviceplatformen.dk/service/AccessTokenService_1/token'
-                        : 'https://serviceplatformen.dk/service/AccessTokenService_1/token';
+                        : 'https://prod.serviceplatformen.dk/service/AccessTokenService_1/token';
                 },
             ]);
     }
