@@ -10,6 +10,7 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1601;
 
+use DateTimeInterface;
 use DigitalPost\MeMo\Message;
 use DOMDocument;
 use DOMText;
@@ -38,7 +39,7 @@ class SF1601 extends AbstractRESTService
         ]);
     }
 
-    public function kombiPostAfsend(string $transactionId, string $type, Message $message)
+    public function kombiPostAfsend(string $transactionId, string $type, Message $message, DateTimeInterface $transactionTid = null)
     {
         $document = $this->buildKombiRequest($type, $message);
 
@@ -49,6 +50,7 @@ class SF1601 extends AbstractRESTService
                 ],
                 'body' => $document->saveXML(),
                 'transactionId' => $transactionId,
+                'transactionTid' => $transactionTid,
             ]);
 
         return $response;

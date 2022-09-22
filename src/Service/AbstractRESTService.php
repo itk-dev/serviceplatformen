@@ -84,8 +84,8 @@ abstract class AbstractRESTService
             [
                 'headers' => [
                         'Authorization' => sprintf('%s %s', $accessToken['token_type'], $accessToken['access_token']),
-                        'X-TransaktionsId' => $transactionId,
-                        'X-TransaktionsTid' => $transactionTid,
+                        'x-TransaktionsId' => $transactionId,
+                        'x-TransaktionsTid' => $transactionTid,
                     ] + $headers,
             ]
             +$options
