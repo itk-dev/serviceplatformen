@@ -16,6 +16,8 @@ use DateTimeInterface;
 use DateTimeZone;
 use GuzzleHttp\RequestOptions;
 use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
+use ItkDev\Serviceplatformen\Service\SF1601\MemoDocumentNormalizer;
+use ItkDev\Serviceplatformen\Service\SF1601\Serializer;
 use Symfony\Component\HttpClient\CurlHttpClient;
 use Symfony\Component\HttpClient\TraceableHttpClient;
 use Symfony\Component\OptionsResolver\Options;
@@ -48,6 +50,11 @@ abstract class AbstractRESTService
         return $this->options[$name];
     }
 
+    public function isTestMode(): bool
+    {
+        return (bool)$this->options['test_mode'];
+    }
+
     /**
      * Call a REST service endpoint.
      *
@@ -71,7 +78,7 @@ abstract class AbstractRESTService
 
         $transactionTid = $options['transactionTid'] ?? new DateTimeImmutable();
         if ($transactionTid instanceof DateTimeInterface) {
-            $transactionTid = $this->formatDateTime($transactionTid);
+            $transactionTid = Serializer::formatDateTimeZulu($transactionTid);
         }
         unset($options['transactionTid']);
 
@@ -181,19 +188,5 @@ abstract class AbstractRESTService
                         : 'https://prod.serviceplatformen.dk/service/AccessTokenService_1/token';
                 },
             ]);
-    }
-
-    /**
-     * Format date time as Zulu time.
-     *
-     * @see https://stackoverflow.com/a/57701653/2502647
-     *
-     * @param DateTimeInterface $dateTime
-     * @return string
-     */
-    protected function formatDateTime(DateTimeInterface $dateTime): string
-    {
-        return (new DateTimeImmutable($dateTime->format(DateTimeInterface::ATOM), new DateTimeZone('UTC')))
-            ->format('Y-m-d\TH:i:s\Z');
     }
 }

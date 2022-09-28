@@ -10,6 +10,11 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1601;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+use DateTimeZone;
+use DOMDocument;
+use DOMXPath;
 use GoetasWebservices\Xsd\XsdToPhpRuntime\Jms\Handler\BaseTypesHandler;
 use GoetasWebservices\Xsd\XsdToPhpRuntime\Jms\Handler\XmlSchemaDateHandler;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
@@ -40,7 +45,36 @@ class Serializer
      */
     public function serialize($data): string
     {
-        return $this->serializer()->serialize($data, 'xml');
+        $xml = $this->serializer()->serialize($data, 'xml');
+
+        return $this->normalizeXml($xml);
+    }
+
+    /**
+     * Format date time as Zulu time.
+     *
+     * @see https://stackoverflow.com/a/57701653/2502647
+     *
+     * @param DateTimeInterface $dateTime
+     * @return string
+     */
+    public static function formatDateTimeZulu(DateTimeInterface $dateTime): string
+    {
+        return (new DateTimeImmutable($dateTime->format(DateTimeInterface::ATOM), new DateTimeZone('UTC')))
+            ->format('Y-m-d\TH:i:s\Z');
+    }
+
+    private function normalizeXml(string $xml): string
+    {
+        $document = new DOMDocument();
+        $document->loadXML($xml);
+
+        if ('Message' === $document->documentElement->nodeName
+            && MemoDocumentNormalizer::MEMO_NAMESPACE === $document->documentElement->namespaceURI) {
+            $document = (new MemoDocumentNormalizer())->normalizeDocument($document);
+        }
+
+        return $document->saveXML();
     }
 
     private function serializer(): SerializerInterface
