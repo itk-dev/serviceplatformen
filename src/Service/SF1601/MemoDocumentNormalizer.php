@@ -13,7 +13,7 @@ namespace ItkDev\Serviceplatformen\Service\SF1601;
 use DOMDocument;
 use DOMXPath;
 
-class MemoDocumentNormalizer
+class MemoDocumentNormalizer implements DocumentNormalizerInterface
 {
     public const MEMO_NAMESPACE = 'https://DigitalPost.dk/MeMo-1';
 

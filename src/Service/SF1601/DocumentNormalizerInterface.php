@@ -12,7 +12,7 @@ namespace ItkDev\Serviceplatformen\Service\SF1601;
 
 use DOMDocument;
 
-abstract class AbstractDocumentNormalizer
+interface DocumentNormalizerInterface
 {
-    abstract public function normalizeDocument(DOMDocument $document): DOMDocument;
+    public function normalizeDocument(DOMDocument $document): DOMDocument;
 }
