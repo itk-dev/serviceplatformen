@@ -10,16 +10,11 @@
 
 namespace ItkDev\Serviceplatformen\Service;
 
-use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
-use DateTimeZone;
-use GuzzleHttp\RequestOptions;
 use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
-use ItkDev\Serviceplatformen\Service\SF1601\MemoDocumentNormalizer;
 use ItkDev\Serviceplatformen\Service\SF1601\Serializer;
 use Symfony\Component\HttpClient\CurlHttpClient;
-use Symfony\Component\HttpClient\TraceableHttpClient;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\HttpClient\HttpClientInterface;

@@ -70,7 +70,7 @@ class Serializer
         $document->loadXML($xml);
 
         if ('Message' === $document->documentElement->nodeName
-            && MemoDocumentNormalizer::MEMO_NAMESPACE === $document->documentElement->namespaceURI) {
+            && MemoDocumentNormalizer::MEMO_NAMESPACE_URI === $document->documentElement->namespaceURI) {
             $document = (new MemoDocumentNormalizer())->normalizeDocument($document);
         }
 

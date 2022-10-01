@@ -213,7 +213,13 @@ reviewer to merge it for you.
 ### Coding standards
 
 ```sh
-composer coding-standards-check
+docker run --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer coding-standards-check
+```
+
+Apply coding standards:
+
+```sh
+docker run --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer coding-standards-apply
 ```
 
 ```sh
