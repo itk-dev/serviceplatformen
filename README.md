@@ -6,6 +6,9 @@ Library for interacting with services on [Serviceplatformen](https://www.service
 
 * [CPR replika opslag (SF1520_3.6): https://digitaliseringskataloget.dk/integration/sf1520?version=3.6](https://digitaliseringskataloget.dk/integration/sf1520?version=3.6)
 * [CVR-Online (SF1530_2.4): https://digitaliseringskataloget.dk/integration/sf1530](https://digitaliseringskataloget.dk/integration/sf1530)
+* Parts of [Afsend post (SF1601):
+  https://digitaliseringskataloget.dk/integration/sf1601](https://digitaliseringskataloget.dk/integration/sf1601).
+  See [SF1601: Afsend post](docs/SF1601.md) for details.
 
 ## Updating resources and classes
 
