@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<memo:Message xmlns:dmv="https://motorregister.skat.dk/"
+              xmlns:form="http://www.form-online.dk/"
+              xmlns:gln="https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/"
+              xmlns:grd="https://data.gov.dk/model/core/"
+              xmlns:kle="http://kle-online.dk/"
+              xmlns:memo="https://DigitalPost.dk/MeMo-1"
+              xmlns:pnum="https://indberet.virk.dk/myndigheder/stat/ERST/P-enhedsloesningen"
+              xmlns:rid="https://www.nets.eu/dk-da/l%C3%B8sninger/nemid/nemid-tjenesteudbyder/supplerende-tjenester/pid-rid-cpr-tjenester"
+              xmlns:sor="https://services.nsi.dk/en/Services/SOR"
+              xmlns:udd="https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#">
+  <memo:MessageHeader>
+    <memo:replyByDateTime>2001-01-01T00:00:00Z</memo:replyByDateTime>
+    <memo:Recipient>
+      <memo:AttentionData>
+        <grd:ProductionUnit>
+          <grd:productionUnitNumber>1234567890</grd:productionUnitNumber>
+        </grd:ProductionUnit>
+      </memo:AttentionData>
+    </memo:Recipient>
+    <memo:ContentData>
+      <dmv:MotorVehicle>
+        <dmv:licenseNumber>AB12345</dmv:licenseNumber>
+      </dmv:MotorVehicle>
+    </memo:ContentData>
+  </memo:MessageHeader>
+</memo:Message>

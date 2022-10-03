@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--*********************************************************************************************************
+
+MeMo example for "Scenarie 1"
+
+Date: 20191031
+CDS
+
+20200319: Changed according to MeMo version 0.9
+20200812: Changes according to MeMo version 1.0
+
+***********************************************************************************************************-->
+<memo:Message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:memo="https://DigitalPost.dk/MeMo-1" memoVersion="1.0" memoSchVersion="1.0.0" xmlns:gln="https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/" xmlns:udd="https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#" xmlns:rid="https://www.nets.eu/dk-da/l%C3%B8sninger/nemid/nemid-tjenesteudbyder/supplerende-tjenester/pid-rid-cpr-tjenester" xmlns:pnum="https://indberet.virk.dk/myndigheder/stat/ERST/P-enhedsloesningen" xmlns:form="http://www.form-online.dk/" xmlns:kle="http://kle-online.dk/" xmlns:dmv="https://motorregister.skat.dk/" xmlns:grd="https://data.gov.dk/model/core/" xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+  <memo:MessageHeader>
+    <memo:messageType>DIGITALPOST</memo:messageType>
+    <memo:messageUUID>8c2ea15d-61fb-4ba9-9366-42f8b194c365</memo:messageUUID>
+    <memo:messageID>MSG-12345</memo:messageID>
+    <memo:messageCode>Synsindkaldelse</memo:messageCode>
+    <memo:label>Periodisk syn</memo:label>
+    <memo:mandatory>false</memo:mandatory>
+    <memo:legalNotification>false</memo:legalNotification>
+    <memo:Sender>
+      <memo:senderID>44332211</memo:senderID>
+      <memo:idType>CVR</memo:idType>
+      <memo:label>Trafik-, Bygge og Boligstyrelsen</memo:label>
+      <memo:AttentionData>
+        <memo:AttentionPerson>
+          <memo:label>Jens Jensen</memo:label>
+        </memo:AttentionPerson>
+        <memo:ContentResponsible>
+          <memo:label>Færdselsstyrelsen</memo:label>
+        </memo:ContentResponsible>
+      </memo:AttentionData>
+    </memo:Sender>
+    <memo:Recipient>
+      <memo:recipientID>11223344</memo:recipientID>
+      <memo:idType>CVR</memo:idType>
+      <memo:label>Vognmandsvirksomhed AS</memo:label>
+      <memo:AttentionData>
+        <grd:ProductionUnit>
+          <grd:productionUnitNumber>1234567890</grd:productionUnitNumber>
+          <grd:productionUnitName>Vognmandsvirksomheden, afdeling Hedensted</grd:productionUnitName>
+        </grd:ProductionUnit>
+      </memo:AttentionData>
+    </memo:Recipient>
+    <memo:ContentData>
+      <dmv:MotorVehicle>
+        <dmv:licenseNumber>AB12345</dmv:licenseNumber>
+        <dmv:chassisNumber>WFR18ZZ67W094959</dmv:chassisNumber>
+      </dmv:MotorVehicle>
+      <kle:KLEdata>
+        <kle:subjectKey>83.11.05</kle:subjectKey>
+        <kle:version>2.4</kle:version>
+        <kle:activityFacet>A01</kle:activityFacet>
+        <kle:label>Vedligeholdelse/renovering af køretøjer</kle:label>
+      </kle:KLEdata>
+      <form:FORMdata>
+        <form:taskKey>59.10.05.10</form:taskKey>
+        <form:version>Opgavenøglen v2.12</form:version>
+        <form:label>Syn af køretøjer</form:label>
+      </form:FORMdata>
+    </memo:ContentData>
+  </memo:MessageHeader>
+  <memo:MessageBody>
+    <memo:createdDateTime>2020-05-03T12:00:00Z</memo:createdDateTime>
+    <memo:MainDocument>
+      <memo:documentID>456</memo:documentID>
+      <memo:label>Synsindkaldelse</memo:label>
+      <memo:File>
+        <memo:encodingFormat>application/pdf</memo:encodingFormat>
+        <memo:filename>Bilsynsindkaldelse.pdf</memo:filename>
+        <memo:language>da</memo:language>
+        <memo:content>VGhpcyBpcyBhIHRlc3Q=</memo:content>
+      </memo:File>
+      <memo:Action>
+        <memo:label>Find synshal</memo:label>
+        <memo:actionCode>SELVBETJENING</memo:actionCode>
+        <memo:EntryPoint>
+          <memo:url>http://www.fstyr.dk/DA/Syn-af-Koretojer/Find-synshal.aspx</memo:url>
+        </memo:EntryPoint>
+      </memo:Action>
+    </memo:MainDocument>
+  </memo:MessageBody>
+</memo:Message>

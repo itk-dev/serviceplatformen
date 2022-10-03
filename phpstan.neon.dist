@@ -1,0 +1,12 @@
+parameters:
+  level: 5
+  paths:
+    - src
+    - tests
+
+  ignoreErrors:
+    -
+      # Ignore some warnings in generated code.
+      message: '/Parameter #1 .+ of method .+ expects .+, .+AType given./'
+      paths:
+        - tests/Unit/Service/SF1601/*

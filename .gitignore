@@ -12,3 +12,4 @@ generated-classes/tutorial.php
 ###< squizlabs/php_codesniffer ###
 node_modules
 yarn.lock
+.phpunit.result.cache

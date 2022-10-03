@@ -100,7 +100,7 @@
             "phan --allow-polyfill-parser"
         ],
          "code-analysis/phpstan": [
-            "phpstan analyse --level=5 src tests"
+            "phpstan analyse"
         ],
         "code-analysis": [
             "@code-analysis/phan",
