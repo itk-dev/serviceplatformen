@@ -49,8 +49,8 @@ class SF1601 extends AbstractRESTService
     {
         $document = $this->buildKombiRequestDocument($type, $message);
         $xpath = new DOMXPath($document);
-        $xpath->registerNamespace(MemoDocumentNormalizer::MEMO_NAMESPACE_PREFIX, MemoDocumentNormalizer::MEMO_NAMESPACE_URI);
-        foreach ($xpath->query(sprintf('//%s:Message', MemoDocumentNormalizer::MEMO_NAMESPACE_PREFIX)) as $element) {
+        $xpath->registerNamespace('memo', 'https://DigitalPost.dk/MeMo-1');
+        foreach ($xpath->query('//memo:Message') as $element) {
             $this->lastKombiMemoMessage = $element;
             break;
         }

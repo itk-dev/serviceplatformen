@@ -18,11 +18,11 @@ generate PHP classes for talking to SOAP services. To update
 [resources](./resources) and [generated classes](./generated-classes), run
 
 ```sh
-docker run --rm --volume $PWD:/app -it itkdev/php7.4-fpm:latest composer2 install
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer2 install
 # Update WSDL resources.
-docker run --rm --volume $PWD:/app -it itkdev/php7.4-fpm:latest bin/generate resources
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest bin/generate resources
 # Generate PHP classes from WSDL resources.
-docker run --rm --volume $PWD:/app -it itkdev/php7.4-fpm:latest bin/generate classes
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest bin/generate classes
 ```
 
 ## Getting Started
@@ -58,13 +58,13 @@ composer install
 Unit tests:
 
 ```sh
-composer tests/unit
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer2 tests/unit
 ```
 
 End to end tests:
 
 ```sh
-composer tests/end-to-end
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer2 tests/end-to-end
 ```
 
 ### And coding style tests
@@ -216,13 +216,13 @@ reviewer to merge it for you.
 ### Coding standards
 
 ```sh
-docker run --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer coding-standards-check
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer2 coding-standards-check
 ```
 
 Apply coding standards:
 
 ```sh
-docker run --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer coding-standards-apply
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer2 coding-standards-apply
 ```
 
 ```sh

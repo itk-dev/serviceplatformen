@@ -31,7 +31,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.11",
-        "goetas-webservices/xsd2php": "^0.4.5",
+        "goetas-webservices/xsd2php": "dev-feature-xml-namespace-prefix",
         "phan/phan": "^5.4",
         "phpstan/phpstan": "^1.8",
         "phpunit/phpunit": "^9.0",
@@ -106,5 +106,11 @@
             "@code-analysis/phan",
             "@code-analysis/phpstan"
         ]
+    },
+    "repositories": {
+        "goetas-webservices/xsd2php": {
+            "type": "vcs",
+            "url": "https://github.com/rimi-itk/xsd2php"
+        }
     }
 }

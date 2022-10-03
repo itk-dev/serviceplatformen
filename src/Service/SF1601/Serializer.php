@@ -17,6 +17,7 @@ use DOMDocument;
 use DOMXPath;
 use GoetasWebservices\Xsd\XsdToPhpRuntime\Jms\Handler\BaseTypesHandler;
 use GoetasWebservices\Xsd\XsdToPhpRuntime\Jms\Handler\XmlSchemaDateHandler;
+use ItkDev\Serviceplatformen\Service\SF1601\Xsd\XsdToPhpRuntime\Jms\Handler\MeMoXmlSchemaDateHandler;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
@@ -69,11 +70,6 @@ class Serializer
         $document = new DOMDocument();
         $document->loadXML($xml);
 
-        if ('Message' === $document->documentElement->nodeName
-            && MemoDocumentNormalizer::MEMO_NAMESPACE_URI === $document->documentElement->namespaceURI) {
-            $document = (new MemoDocumentNormalizer())->normalizeDocument($document);
-        }
-
         return $document->saveXML();
     }
 
@@ -88,8 +84,8 @@ class Serializer
 
             $serializerBuilder->configureHandlers(function (HandlerRegistryInterface $handler) use ($serializerBuilder) {
                 $serializerBuilder->addDefaultHandlers();
-                $handler->registerSubscribingHandler(new BaseTypesHandler()); // XMLSchema List handling
-                $handler->registerSubscribingHandler(new XmlSchemaDateHandler()); // XMLSchema date handling
+                $handler->registerSubscribingHandler(new BaseTypesHandler());
+                $handler->registerSubscribingHandler(new MeMoXmlSchemaDateHandler());
             });
 
             $this->serializer = $serializerBuilder->build();

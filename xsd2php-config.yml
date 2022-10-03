@@ -34,3 +34,16 @@ xsd2php:
     'KleOnlineDk':                                                                                 'lib/metadata/KleOnlineDk/'
     'WwwFormOnlineDk':                                                                             'lib/metadata/WwwFormOnlineDk/'
     'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd': 'lib/metadata/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/'
+
+  xml_namespaces:
+    # prefix: namespace
+    'memo': 'https://DigitalPost.dk/MeMo-1'
+    'gln': 'https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/'
+    'udd': 'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#'
+    'rid': 'https://www.nets.eu/dk-da/l%%C3%%B8sninger/nemid/nemid-tjenesteudbyder/supplerende-tjenester/pid-rid-cpr-tjenester'
+    'pnum': 'https://indberet.virk.dk/myndigheder/stat/ERST/P-enhedsloesningen'
+    'form': 'http://www.form-online.dk/'
+    'kle': 'http://kle-online.dk/'
+    'dmv': 'https://motorregister.skat.dk/'
+    'grd': 'https://data.gov.dk/model/core/'
+    'sor': 'https://services.nsi.dk/en/Services/SOR'
