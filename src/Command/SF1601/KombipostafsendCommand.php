@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 
 /**
@@ -9,8 +8,9 @@
  * This source file is subject to the MIT license.
  */
 
-require __DIR__.'/../../vendor/autoload.php';
+namespace ItkDev\Serviceplatformen\Command\SF1601;
 
+use DateTime;
 use DigitalPost\MeMo\File;
 use DigitalPost\MeMo\MainDocument;
 use DigitalPost\MeMo\Message;
@@ -18,9 +18,9 @@ use DigitalPost\MeMo\MessageBody;
 use DigitalPost\MeMo\MessageHeader;
 use DigitalPost\MeMo\Recipient;
 use DigitalPost\MeMo\Sender;
+use DOMDocument;
 use ItkDev\Serviceplatformen\Service\SF1601\Serializer;
 use ItkDev\Serviceplatformen\Service\SF1601\SF1601;
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,9 +32,9 @@ use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class kombipostafsend extends Command
+class KombipostafsendCommand extends Command
 {
-    protected static $defaultName = 'sf1601:kombipostafsend';
+    protected static $defaultName = 'serviceplatformen:sf1601:kombipostafsend';
 
     private array $inputOptions = [];
 
@@ -48,8 +48,8 @@ class kombipostafsend extends Command
             new InputOption('sender-id-type', null, InputOption::VALUE_REQUIRED, 'sender-id-type', 'CVR'),
             new InputOption('sender-id', null, InputOption::VALUE_REQUIRED, 'sender-id'),
             new InputOption('sender-label', null, InputOption::VALUE_REQUIRED, 'sender-label'),
-            new InputOption('client-cert-pub', null, InputOption::VALUE_REQUIRED, 'client-cert-pub'),
-            new InputOption('client-cert-key', null, InputOption::VALUE_REQUIRED, 'client-cert-key'),
+            new InputOption('client-cert-pub-file', null, InputOption::VALUE_REQUIRED, 'client-cert-pub file'),
+            new InputOption('client-cert-key-file', null, InputOption::VALUE_REQUIRED, 'client-cert-key file'),
             new InputOption('file', null, InputOption::VALUE_REQUIRED, 'file to send'),
             new InputOption('memo', null, InputOption::VALUE_REQUIRED, 'memo document to send'),
         ];
@@ -59,7 +59,8 @@ class kombipostafsend extends Command
         $this->inputOptions = array_combine(array_map(fn (InputOption $option) => $option->getName(), $inputOptions), $inputOptions);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $io = new SymfonyStyle($input, $output);
 
         $resolver = new OptionsResolver();
@@ -87,12 +88,14 @@ class kombipostafsend extends Command
                     ->setLabel($options['header-label'])
                     ->setMandatory(false)
                     ->setLegalNotification(false)
-                    ->setSender((new Sender())
+                    ->setSender(
+                        (new Sender())
                         ->setIdType($options['sender-id-type'])
                         ->setSenderID($options['sender-id'])
                         ->setLabel($options['sender-label'])
                     )
-                    ->setRecipient((new Recipient())
+                    ->setRecipient(
+                        (new Recipient())
                         ->setIdType($options['recipient-id-type'])
                         ->setRecipientID($options['recipient-id'])
                     )
@@ -116,15 +119,16 @@ class kombipostafsend extends Command
                                         ->setFilename(basename($filename))
                                         ->setContent(file_get_contents($filename))
                                 ])
-                        ))
+                        )
+                )
             ;
         }
 
         $service = new SF1601([
             'authority_cvr' => $options['sender-id'],
 
-            'client_cert_pub' => $options['client-cert-pub'],
-            'client_cert_key' => $options['client-cert-key'],
+            'client_cert_pub' => $options['client-cert-pub-file'],
+            'client_cert_key' => $options['client-cert-key-file'],
 
             'test_mode' => !$options['production'],
         ]);
@@ -164,8 +168,8 @@ class kombipostafsend extends Command
                 'sender-id-type',
                 'sender-id',
                 'sender-label',
-                'client-cert-pub',
-                'client-cert-key',
+                'client-cert-pub-file',
+                'client-cert-key-file',
             ])
             ->setDefaults([
                 'production' => false,
@@ -183,11 +187,3 @@ class kombipostafsend extends Command
         ;
     }
 }
-
-$application = new Application('SF1601', '1.0.0');
-$command = new kombipostafsend();
-
-$application->add($command);
-
-$application->setDefaultCommand($command->getName(), true);
-$application->run();

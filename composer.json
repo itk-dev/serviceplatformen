@@ -13,6 +13,9 @@
             "email": "rimi@aarhus.dk"
         }
     ],
+    "bin": [
+        "bin/serviceplatformen-sf1600-kombipostafsend"
+    ],
     "require": {
         "php": "^7.4 || ^8.0",
         "ext-dom": "*",
