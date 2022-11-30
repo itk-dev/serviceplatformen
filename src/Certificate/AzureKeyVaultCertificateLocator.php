@@ -39,6 +39,20 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
     /**
      * {@inheritDoc}
      */
+    public function getCertificates(): array
+    {
+        try {
+            $secret = $this->vaultSecret->getSecret($this->certificateName, $this->version);
+        } catch (SecretException $e) {
+            throw new AzureKeyVaultCertificateLocatorException($e->getMessage(), $e->getCode());
+        }
+
+        return $this->getCertificateStoreDataFromSecret($secret->getValue());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getAbsolutePathToCertificate(): string
     {
         try {

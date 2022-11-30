@@ -12,6 +12,7 @@ namespace ItkDev\Serviceplatformen\Service;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
 use ItkDev\Serviceplatformen\Service\SF1601\Serializer;
 use Symfony\Component\HttpClient\CurlHttpClient;
@@ -98,8 +99,6 @@ abstract class AbstractRESTService
     {
         if (null === $this->client) {
             $this->client = new CurlHttpClient([
-                'local_cert' => $this->options['client_cert_pub'],
-                'local_pk' => $this->options['client_cert_key'],
             ]);
         }
 
@@ -108,15 +107,39 @@ abstract class AbstractRESTService
 
     private function request(string $method, string $url, array $options): ResponseInterface
     {
-        return $this->client()->request($method, $url, $options);
+        try {
+            // Write certicates to temporary files.
+            $certificateFilename = tempnam(sys_get_temp_dir(), 'cert');
+            file_put_contents($certificateFilename, $this->getCertificate());
+
+            $privateKeyFilename = tempnam(sys_get_temp_dir(), 'cert');
+            file_put_contents($privateKeyFilename, $this->getPrivateKey());
+
+            $response = $this->client()->request($method, $url, $options + [
+                    'local_cert' => $certificateFilename,
+                    'local_pk' => $privateKeyFilename,
+                ]);
+
+            // Force the request to complete so we can unlink temporary files (i.e. make the request synchronous).
+            $response->getStatusCode();
+
+            return $response;
+        } finally {
+            if (isset($certificateFilename) && file_exists($certificateFilename)) {
+                unlink($certificateFilename);
+            }
+            if (isset($privateKeyFilename) && file_exists($privateKeyFilename)) {
+                unlink($privateKeyFilename);
+            }
+        }
     }
 
     private function fetchSAMLToken(): string
     {
         // @todo Cache the token
         try {
-            // There must be a better way to get the first certificate in a pem file.
-            $content = file_get_contents($this->options['client_cert_pub']);
+            // Public certificate on a single line.
+            $content = $this->getCertificate();
             $stuff = preg_split('/^-+(BEGIN|END) CERTIFICATE-+$/m', $content);
             $useKey = str_replace("\n", '', $stuff[1]);
 
@@ -161,17 +184,41 @@ abstract class AbstractRESTService
         }
     }
 
+    private function getCertificate(): string
+    {
+        return $this->getCertificatePart('cert');
+    }
+
+    private function getPrivateKey(): string
+    {
+        return $this->getCertificatePart('pkey');
+    }
+
+    private function getCertificatePart(string $part): string
+    {
+        $certificateLocator = $this->options['certificate_locator'];
+        assert($certificateLocator instanceof CertificateLocatorInterface);
+        $certificates = $certificateLocator->getCertificates();
+
+        if (isset($certificates[$part])) {
+            return $certificates[$part];
+        }
+
+        throw new \RuntimeException(sprintf('Cannot get certificate part %s', $part));
+    }
+
+
     protected function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setRequired([
-                'client_cert_pub',
-                'client_cert_key',
+                'certificate_locator',
                 'authority_cvr',
             ])
             ->setDefaults([
                 'debug' => false,
                 'test_mode' => true,
+                'certificate_passphrase' => '',
                 'saml_token_svc' => static function (Options $options) {
                     return $options['test_mode']
                         ? 'https://adgangsstyring.eksterntest-stoettesystemerne.dk/runtime/api/rest/wstrust/v1/issue'
@@ -182,6 +229,7 @@ abstract class AbstractRESTService
                         ? 'https://exttest.serviceplatformen.dk/service/AccessTokenService_1/token'
                         : 'https://prod.serviceplatformen.dk/service/AccessTokenService_1/token';
                 },
-            ]);
+            ])
+            ->setAllowedTypes('certificate_locator', CertificateLocatorInterface::class);
     }
 }

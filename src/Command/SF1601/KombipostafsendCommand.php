@@ -19,9 +19,18 @@ use DigitalPost\MeMo\MessageHeader;
 use DigitalPost\MeMo\Recipient;
 use DigitalPost\MeMo\Sender;
 use DOMDocument;
+use GuzzleHttp\Client;
+use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
+use Http\Factory\Guzzle\RequestFactory;
+use ItkDev\AzureKeyVault\Authorisation\VaultToken;
+use ItkDev\AzureKeyVault\KeyVault\VaultSecret;
+use ItkDev\Serviceplatformen\Certificate\AzureKeyVaultCertificateLocator;
+use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
+use ItkDev\Serviceplatformen\Certificate\FilesystemCertificateLocator;
 use ItkDev\Serviceplatformen\Service\SF1601\Serializer;
 use ItkDev\Serviceplatformen\Service\SF1601\SF1601;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -48,8 +57,8 @@ class KombipostafsendCommand extends Command
             new InputOption('sender-id-type', null, InputOption::VALUE_REQUIRED, 'sender-id-type', 'CVR'),
             new InputOption('sender-id', null, InputOption::VALUE_REQUIRED, 'sender-id'),
             new InputOption('sender-label', null, InputOption::VALUE_REQUIRED, 'sender-label'),
-            new InputOption('client-cert-pub-file', null, InputOption::VALUE_REQUIRED, 'client-cert-pub file'),
-            new InputOption('client-cert-key-file', null, InputOption::VALUE_REQUIRED, 'client-cert-key file'),
+            new InputOption('certificate', null, InputOption::VALUE_REQUIRED, 'Path to certificate or a Azure Key Vault spec'),
+            new InputOption('certificate-passphrase', null, InputOption::VALUE_REQUIRED, 'certificate passphrase', ''),
             new InputOption('file', null, InputOption::VALUE_REQUIRED, 'file to send'),
             new InputOption('memo', null, InputOption::VALUE_REQUIRED, 'memo document to send'),
         ];
@@ -75,61 +84,13 @@ class KombipostafsendCommand extends Command
         }
         $io->definitionList(...$list);
 
-        $messageUUID = Serializer::createUuid();
-        $messageID = Serializer::createUuid();
+        $message = $this->buildMessage($options);
 
-        $message = (new Message())
-            ->setMessageHeader(
-                (new MessageHeader())
-                    ->setMessageType('Digital post')
-                    ->setMessageType('DIGITALPOST')
-                    ->setMessageUUID($messageUUID)
-                    ->setMessageID($messageID)
-                    ->setLabel($options['header-label'])
-                    ->setMandatory(false)
-                    ->setLegalNotification(false)
-                    ->setSender(
-                        (new Sender())
-                        ->setIdType($options['sender-id-type'])
-                        ->setSenderID($options['sender-id'])
-                        ->setLabel($options['sender-label'])
-                    )
-                    ->setRecipient(
-                        (new Recipient())
-                        ->setIdType($options['recipient-id-type'])
-                        ->setRecipientID($options['recipient-id'])
-                    )
-            )
-        ;
-
-        if (isset($options['file'])) {
-            $filename = $options['file'];
-            $mimeType = (new MimeTypes())->guessMimeType($filename);
-
-            $message
-                ->setMessageBody(
-                    (new MessageBody())
-                        ->setCreatedDateTime(new DateTime())
-                        ->setMainDocument(
-                            (new MainDocument())
-                                ->setFile([
-                                    (new File())
-                                        ->setEncodingFormat($mimeType)
-                                        ->setLanguage('da')
-                                        ->setFilename(basename($filename))
-                                        ->setContent(file_get_contents($filename))
-                                ])
-                        )
-                )
-            ;
-        }
+        $certificateLocator = $this->getCertificateLocator($options['certificate'], $options['certificate-passphrase']);
 
         $service = new SF1601([
             'authority_cvr' => $options['sender-id'],
-
-            'client_cert_pub' => $options['client-cert-pub-file'],
-            'client_cert_key' => $options['client-cert-key-file'],
-
+            'certificate_locator' => $certificateLocator,
             'test_mode' => !$options['production'],
         ]);
 
@@ -158,6 +119,44 @@ class KombipostafsendCommand extends Command
         return static::SUCCESS;
     }
 
+    private function getCertificateLocator(string $spec, string $passphrase): CertificateLocatorInterface
+    {
+        if (false !== strpos($spec, '=')) {
+            // Check if spec is a colon separated
+            parse_str($spec, $options);
+
+            $httpClient = new GuzzleAdapter(new Client());
+            $requestFactory = new RequestFactory();
+
+            $vaultToken = new VaultToken($httpClient, $requestFactory);
+
+            $token = $vaultToken->getToken(
+                $options['tenant-id'] ?? $options['tenant_id'] ?? null,
+                $options['client-id'] ?? $options['client_id'] ?? null,
+                $options['client-secret'] ?? $options['client_secret'] ?? null
+            );
+
+            $vault = new VaultSecret(
+                $httpClient,
+                $requestFactory,
+                $options['name'] ?? null,
+                $token->getAccessToken()
+            );
+
+            return new AzureKeyVaultCertificateLocator(
+                $vault,
+                $options['secret'] ?? null,
+                $options['version'] ?? null
+            );
+        } else {
+            $certificatepath = realpath($spec) ?: null;
+            if (null === $certificatepath) {
+                throw new InvalidOptionException(sprintf('Invalid path %s', $spec));
+            }
+            return new FilesystemCertificateLocator($certificatepath, $passphrase);
+        }
+    }
+
     private function configureOptions(OptionsResolver $resolver)
     {
         $resolver
@@ -168,13 +167,13 @@ class KombipostafsendCommand extends Command
                 'sender-id-type',
                 'sender-id',
                 'sender-label',
-                'client-cert-pub-file',
-                'client-cert-key-file',
+                'certificate',
             ])
             ->setDefaults([
                 'production' => false,
                 'file' => null,
                 'memo' => null,
+                'certificate-passphrase' => '',
             ])
             ->setNormalizer('production', static fn (Options $options, $value) => (bool)$value)
             ->setNormalizer('file', static function (Options $options, $value) {
@@ -182,8 +181,62 @@ class KombipostafsendCommand extends Command
                     return $value;
                 }
 
-                throw new InvalidOptionsException('One and only one of options "file" or "memo" need to be set');
+                throw new InvalidOptionsException('One and only one of options "file" and "memo" need to be set');
             })
         ;
+    }
+
+    private function buildMessage(array $options): Message
+    {
+        $messageUUID = Serializer::createUuid();
+        $messageID = Serializer::createUuid();
+
+        $message = (new Message())
+            ->setMessageHeader(
+                (new MessageHeader())
+                    ->setMessageType('Digital post')
+                    ->setMessageType('DIGITALPOST')
+                    ->setMessageUUID($messageUUID)
+                    ->setMessageID($messageID)
+                    ->setLabel($options['header-label'])
+                    ->setMandatory(false)
+                    ->setLegalNotification(false)
+                    ->setSender(
+                        (new Sender())
+                            ->setIdType($options['sender-id-type'])
+                            ->setSenderID($options['sender-id'])
+                            ->setLabel($options['sender-label'])
+                    )
+                    ->setRecipient(
+                        (new Recipient())
+                            ->setIdType($options['recipient-id-type'])
+                            ->setRecipientID($options['recipient-id'])
+                    )
+            )
+        ;
+
+        if (isset($options['file'])) {
+            $filename = $options['file'];
+            $mimeType = (new MimeTypes())->guessMimeType($filename);
+
+            $message
+                ->setMessageBody(
+                    (new MessageBody())
+                        ->setCreatedDateTime(new DateTime())
+                        ->setMainDocument(
+                            (new MainDocument())
+                                ->setFile([
+                                    (new File())
+                                        ->setEncodingFormat($mimeType)
+                                        ->setLanguage('da')
+                                        ->setFilename(basename($filename))
+                                        ->setContent(file_get_contents($filename))
+                                ])
+                        )
+                )
+            ;
+        }
+
+        return $message;
     }
 }
