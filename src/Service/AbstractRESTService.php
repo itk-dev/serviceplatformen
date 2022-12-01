@@ -12,11 +12,17 @@ namespace ItkDev\Serviceplatformen\Service;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
 use ItkDev\Serviceplatformen\Service\SF1601\Serializer;
+use phpDocumentor\Reflection\Element;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Adapter\NullAdapter;
 use Symfony\Component\HttpClient\CurlHttpClient;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
@@ -61,8 +67,8 @@ abstract class AbstractRESTService
      */
     protected function call(string $method, string $url, array $options): ResponseInterface
     {
-        $samlToken = $this->fetchSAMLToken();
-        $accessToken = $this->fetchAccessToken($samlToken);
+        $samlToken = $this->getSAMLToken();
+        $accessToken = $this->getAccessToken($samlToken);
 
         // @todo Can we just generate the transaction id?
         if (!isset($options['transactionId'])) {
@@ -98,8 +104,6 @@ abstract class AbstractRESTService
     {
         if (null === $this->client) {
             $this->client = new CurlHttpClient([
-                'local_cert' => $this->options['client_cert_pub'],
-                'local_pk' => $this->options['client_cert_key'],
             ]);
         }
 
@@ -108,15 +112,111 @@ abstract class AbstractRESTService
 
     private function request(string $method, string $url, array $options): ResponseInterface
     {
-        return $this->client()->request($method, $url, $options);
+        // Write certicates to temporary files.
+        $certificateFilename = tempnam(sys_get_temp_dir(), 'cert');
+        file_put_contents($certificateFilename, $this->getCertificate());
+
+        $privateKeyFilename = tempnam(sys_get_temp_dir(), 'cert');
+        file_put_contents($privateKeyFilename, $this->getPrivateKey());
+
+        return $this->client()->request($method, $url, $options + [
+                'local_cert' => $certificateFilename,
+                'local_pk' => $privateKeyFilename,
+                'on_progress' => function (int $dlNow, int $dlSize, array $info) use (&$certificateFilename, &$privateKeyFilename): void {
+                    // Delete temporary certificate files when receiving response headers.
+                    if (!empty($info['response_headers'])) {
+                        if (isset($certificateFilename) && file_exists($certificateFilename)) {
+                            unlink($certificateFilename);
+                            $certificateFilename = null;
+                        }
+                        if (isset($privateKeyFilename) && file_exists($privateKeyFilename)) {
+                            unlink($privateKeyFilename);
+                            $privateKeyFilename = null;
+                        }
+                    }
+                },
+            ]);
     }
 
+    /**
+     * Get SAML token.
+     *
+     * @return string
+     */
+    private function getSAMLToken(): string
+    {
+        $cache = $this->getCache();
+        $cacheKey = $this->getCacheKey(__METHOD__, [
+            'AnvenderKontekst' => ['Cvr' => $this->options['authority_cvr']],
+            'AppliesTo' => ['EndpointReference' => ['Address' => $this->options['svc_entity_id']]],
+        ]);
+
+        $expirationTimeOffset = '-15 minutes';
+
+        $token = $cache->get($cacheKey, function (ItemInterface $item) use ($expirationTimeOffset) {
+            $token = $this->fetchSAMLToken();
+
+            // Set cache expiration time a litte before actual token expiration time.
+            $expirationTime = $this->getSAMLTokenExpirationTime($token)
+                ->modify($expirationTimeOffset);
+            $item->expiresAt($expirationTime);
+
+            return $token;
+        });
+
+        // Check SAML token expiration time (with offset) to make sure that it still valid.
+        if (null !== $token && $this->getSAMLTokenExpirationTime($token)->modify($expirationTimeOffset) <= new \DateTimeImmutable()) {
+            // Remove expired token from cache and get a new token.
+            $cache->delete($cacheKey);
+            return $this->getSAMLToken();
+        }
+
+        return $token;
+    }
+
+    private function getCache()
+    {
+        return $this->options['cache'];
+    }
+
+    private function getCacheKey(string $key, array $payload): string
+    {
+        return preg_replace(
+            '#[{}()/\\\\@:]+#',
+            '_',
+            $key . '|' . sha1(json_encode($payload))
+        );
+    }
+
+    private function getSAMLTokenExpirationTime(string $token): \DateTimeImmutable
+    {
+        $sxe = new \SimpleXMLElement(base64_decode($token));
+        $sxe->registerXPathNamespace('assertion', 'urn:oasis:names:tc:SAML:2.0:assertion');
+        $nodes = $sxe->xpath('//assertion:Conditions/@NotOnOrAfter');
+        if (empty($nodes)) {
+            throw new \RuntimeException('Cannot get SAML token expiration time');
+        }
+        $notOnOrAfter = reset($nodes);
+
+        return new \DateTimeImmutable((string)$notOnOrAfter);
+    }
+
+    /**
+     * Fetch SAML token.
+     *
+     * @return string
+     * @throws ServiceException
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
     private function fetchSAMLToken(): string
     {
-        // @todo Cache the token
         try {
-            // There must be a better way to get the first certificate in a pem file.
-            $content = file_get_contents($this->options['client_cert_pub']);
+            // Public certificate on a single line.
+            $content = $this->getCertificate();
             $stuff = preg_split('/^-+(BEGIN|END) CERTIFICATE-+$/m', $content);
             $useKey = str_replace("\n", '', $stuff[1]);
 
@@ -145,9 +245,32 @@ abstract class AbstractRESTService
         throw new ServiceException('Cannot fetch SAML token');
     }
 
+    private function getAccessToken(string $samlToken): array
+    {
+        $cache = $this->getCache();
+        $cacheKey = $this->getCacheKey(__METHOD__, [
+            'access_token_svc' => $this->options['access_token_svc'],
+            'saml_token' => $samlToken,
+        ]);
+
+        // Cache expire offset in seconds (cf. ItemInterface::expiresAfter).
+        $expiresAfterOffset = 60;
+
+        $token = $cache->get($cacheKey, function (ItemInterface $item) use ($samlToken, $expiresAfterOffset) {
+            $token = $this->fetchAccessToken($samlToken);
+
+            // Set cache expiration time a litte before actual token expiration time.
+            $expiresAfter = max(0, $token['expires_in'] - $expiresAfterOffset);
+            $item->expiresAfter($expiresAfter);
+
+            return $token;
+        });
+
+        return $token;
+    }
+
     private function fetchAccessToken(string $samlToken): array
     {
-        // @todo Cache the token
         try {
             $params = ['saml-token' => $samlToken];
 
@@ -161,17 +284,43 @@ abstract class AbstractRESTService
         }
     }
 
+    private function getCertificate(): string
+    {
+        return $this->getCertificatePart('cert');
+    }
+
+    private function getPrivateKey(): string
+    {
+        return $this->getCertificatePart('pkey');
+    }
+
+    private function getCertificatePart(string $part): string
+    {
+        $certificateLocator = $this->options['certificate_locator'];
+        assert($certificateLocator instanceof CertificateLocatorInterface);
+        $certificates = $certificateLocator->getCertificates();
+
+        if (isset($certificates[$part])) {
+            return $certificates[$part];
+        }
+
+        throw new \RuntimeException(sprintf('Cannot get certificate part %s', $part));
+    }
+
     protected function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setRequired([
-                'client_cert_pub',
-                'client_cert_key',
+                'certificate_locator',
                 'authority_cvr',
             ])
             ->setDefaults([
                 'debug' => false,
                 'test_mode' => true,
+                'cache' => static function (Options $options) {
+                    return new FilesystemAdapter();
+                },
+                'certificate_passphrase' => '',
                 'saml_token_svc' => static function (Options $options) {
                     return $options['test_mode']
                         ? 'https://adgangsstyring.eksterntest-stoettesystemerne.dk/runtime/api/rest/wstrust/v1/issue'
@@ -182,6 +331,8 @@ abstract class AbstractRESTService
                         ? 'https://exttest.serviceplatformen.dk/service/AccessTokenService_1/token'
                         : 'https://prod.serviceplatformen.dk/service/AccessTokenService_1/token';
                 },
-            ]);
+            ])
+            ->setAllowedTypes('certificate_locator', CertificateLocatorInterface::class)
+            ->setAllowedTypes('cache', CacheInterface::class);
     }
 }

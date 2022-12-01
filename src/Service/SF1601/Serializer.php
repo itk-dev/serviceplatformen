@@ -21,6 +21,7 @@ use ItkDev\Serviceplatformen\Service\SF1601\Xsd\XsdToPhpRuntime\Jms\Handler\MeMo
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
+use Symfony\Component\Uid\Uuid;
 
 class Serializer
 {
@@ -63,6 +64,11 @@ class Serializer
     {
         return (new DateTimeImmutable($dateTime->format(DateTimeInterface::ATOM), new DateTimeZone('UTC')))
             ->format('Y-m-d\TH:i:s\Z');
+    }
+
+    public static function createUuid(): string
+    {
+        return Uuid::v4()->toRfc4122();
     }
 
     private function normalizeXml(string $xml): string

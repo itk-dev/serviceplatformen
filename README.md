@@ -25,6 +25,19 @@ docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:lates
 docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest bin/generate classes
 ```
 
+## Test commands
+
+```sh
+vendor/bin/serviceplatformen-sf1600-kombipostafsend --help
+```
+
+Use `bin/serviceplatformen-sf1600-kombipostafsend` (symlinked to
+`bin/SF1601/kombipostafsend`) during development of this library. i.e.
+
+```sh
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest bin/serviceplatformen-sf1600-kombipostafsend
+```
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your
