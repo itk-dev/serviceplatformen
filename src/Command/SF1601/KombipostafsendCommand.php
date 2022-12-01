@@ -11,6 +11,7 @@
 namespace ItkDev\Serviceplatformen\Command\SF1601;
 
 use DateTime;
+use DigitalPost\MeMo\AdditionalDocument;
 use DigitalPost\MeMo\File;
 use DigitalPost\MeMo\MainDocument;
 use DigitalPost\MeMo\Message;
@@ -61,6 +62,7 @@ class KombipostafsendCommand extends Command
             new InputOption('certificate-passphrase', null, InputOption::VALUE_REQUIRED, 'certificate passphrase', ''),
             new InputOption('file', null, InputOption::VALUE_REQUIRED, 'file to send'),
             new InputOption('memo', null, InputOption::VALUE_REQUIRED, 'memo document to send'),
+            new InputOption('attachment', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'attachments'),
         ];
         $this->setDefinition(new InputDefinition($inputOptions));
 
@@ -80,7 +82,7 @@ class KombipostafsendCommand extends Command
 
         $list = [];
         foreach ($options as $name => $value) {
-            $list[] = [$name => $value];
+            $list[] = [$name => is_scalar($value) ? $value : json_encode($value)];
         }
         $io->definitionList(...$list);
 
@@ -173,6 +175,7 @@ class KombipostafsendCommand extends Command
                 'production' => false,
                 'file' => null,
                 'memo' => null,
+                'attachment' => null,
                 'certificate-passphrase' => '',
             ])
             ->setNormalizer('production', static fn (Options $options, $value) => (bool)$value)
@@ -215,27 +218,42 @@ class KombipostafsendCommand extends Command
             )
         ;
 
-        if (isset($options['file'])) {
-            $filename = $options['file'];
-            $mimeType = (new MimeTypes())->guessMimeType($filename);
+        $body = (new MessageBody())
+                ->setCreatedDateTime(new DateTime());
 
-            $message
-                ->setMessageBody(
-                    (new MessageBody())
-                        ->setCreatedDateTime(new DateTime())
-                        ->setMainDocument(
-                            (new MainDocument())
-                                ->setFile([
-                                    (new File())
-                                        ->setEncodingFormat($mimeType)
-                                        ->setLanguage('da')
-                                        ->setFilename(basename($filename))
-                                        ->setContent(file_get_contents($filename))
-                                ])
-                        )
-                )
-            ;
+        if (isset($options['file'])) {
+            $mimeTypes = new MimeTypes();
+
+            $filename = $options['file'];
+            $mainDocument = (new MainDocument())
+                ->setFile([
+                    (new File())
+                        ->setEncodingFormat($mimeTypes->guessMimeType($filename))
+                        ->setLanguage('da')
+                        ->setFilename(basename($filename))
+                        ->setContent(file_get_contents($filename))
+                ]);
+
+            $body->setMainDocument($mainDocument);
+
+            if (!empty($options['attachment'])) {
+                $additionalDocuments = [];
+                foreach ($options['attachment'] as $index => $filename) {
+                    $additionalDocuments[] = (new AdditionalDocument())
+                        ->setLabel(sprintf('Attachment %d', $index+1))
+                        ->setFile([
+                            (new File())
+                                ->setEncodingFormat($mimeTypes->guessMimeType($filename))
+                                ->setLanguage('da')
+                                ->setFilename(basename($filename))
+                                ->setContent(file_get_contents($filename))
+                        ]);
+                }
+                $body->setAdditionalDocument($additionalDocuments);
+            }
         }
+
+        $message->setMessageBody($body);
 
         return $message;
     }
