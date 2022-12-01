@@ -107,31 +107,30 @@ abstract class AbstractRESTService
 
     private function request(string $method, string $url, array $options): ResponseInterface
     {
-        try {
-            // Write certicates to temporary files.
-            $certificateFilename = tempnam(sys_get_temp_dir(), 'cert');
-            file_put_contents($certificateFilename, $this->getCertificate());
+        // Write certicates to temporary files.
+        $certificateFilename = tempnam(sys_get_temp_dir(), 'cert');
+        file_put_contents($certificateFilename, $this->getCertificate());
 
-            $privateKeyFilename = tempnam(sys_get_temp_dir(), 'cert');
-            file_put_contents($privateKeyFilename, $this->getPrivateKey());
+        $privateKeyFilename = tempnam(sys_get_temp_dir(), 'cert');
+        file_put_contents($privateKeyFilename, $this->getPrivateKey());
 
-            $response = $this->client()->request($method, $url, $options + [
-                    'local_cert' => $certificateFilename,
-                    'local_pk' => $privateKeyFilename,
-                ]);
-
-            // Force the request to complete so we can unlink temporary files (i.e. make the request synchronous).
-            $response->getStatusCode();
-
-            return $response;
-        } finally {
-            if (isset($certificateFilename) && file_exists($certificateFilename)) {
-                unlink($certificateFilename);
-            }
-            if (isset($privateKeyFilename) && file_exists($privateKeyFilename)) {
-                unlink($privateKeyFilename);
-            }
-        }
+        return $this->client()->request($method, $url, $options + [
+                'local_cert' => $certificateFilename,
+                'local_pk' => $privateKeyFilename,
+                'on_progress' => function (int $dlNow, int $dlSize, array $info) use (&$certificateFilename, &$privateKeyFilename): void {
+                    // Delete temporary certificate files when receiving response headers.
+                    if (!empty($info['response_headers'])) {
+                        if (isset($certificateFilename) && file_exists($certificateFilename)) {
+                            unlink($certificateFilename);
+                            $certificateFilename = null;
+                        }
+                        if (isset($privateKeyFilename) && file_exists($privateKeyFilename)) {
+                            unlink($privateKeyFilename);
+                            $privateKeyFilename = null;
+                        }
+                    }
+                },
+            ]);
     }
 
     private function fetchSAMLToken(): string
