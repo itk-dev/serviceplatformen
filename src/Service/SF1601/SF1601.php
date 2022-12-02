@@ -30,6 +30,27 @@ class SF1601 extends AbstractRESTService
     public const TYPE_DIGITAL_POST = 'Digital Post';
     public const TYPE_NEM_SMS = 'NemSMS';
 
+    // @see https://www.digitaliser.dk/resource/6103074/artefact/VejledningtilActionsogfristeriMeMo.pdf?artefact=true&PID=6104122
+    public const ACTION_AFTALE = 'AFTALE';
+    public const ACTION_BETALING = 'BETALING';
+    public const ACTION_SELVBETJENING = 'SELVBETJENING';
+    public const ACTION_INFORMATION = 'INFORMATION';
+    public const ACTION_UNDERSKRIV = 'UNDERSKRIV';
+    public const ACTION_BEKRAEFT = 'BEKRAEFT';
+    public const ACTION_FORBEREDELSE = 'FORBEREDELSE';
+    public const ACTION_TILMELDING = 'TILMELDING';
+
+    public const ACTIONS = [
+        self::ACTION_AFTALE,
+        self::ACTION_BETALING,
+        self::ACTION_SELVBETJENING,
+        self::ACTION_INFORMATION,
+        self::ACTION_UNDERSKRIV,
+        self::ACTION_BEKRAEFT,
+        self::ACTION_FORBEREDELSE,
+        self::ACTION_TILMELDING,
+    ];
+
     private ?DOMElement $lastKombiMemoMessage = null;
 
     protected function configureOptions(OptionsResolver $resolver)
