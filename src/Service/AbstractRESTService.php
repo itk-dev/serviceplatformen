@@ -149,7 +149,7 @@ abstract class AbstractRESTService
             'AppliesTo' => ['EndpointReference' => ['Address' => $this->options['svc_entity_id']]],
         ]);
 
-        $expirationTimeOffset = '-15 minutes';
+        $expirationTimeOffset = $this->options['saml_token_expiration_time_offset'];
 
         $token = $cache->get($cacheKey, function (ItemInterface $item) use ($expirationTimeOffset) {
             $token = $this->fetchSAMLToken();
@@ -251,14 +251,11 @@ abstract class AbstractRESTService
             'saml_token' => $samlToken,
         ]);
 
-        // Cache expire offset in seconds (cf. ItemInterface::expiresAfter).
-        $expiresAfterOffset = 60;
-
-        $token = $cache->get($cacheKey, function (ItemInterface $item) use ($samlToken, $expiresAfterOffset) {
+        $token = $cache->get($cacheKey, function (ItemInterface $item) use ($samlToken) {
             $token = $this->fetchAccessToken($samlToken);
 
             // Set cache expiration time a litte before actual token expiration time.
-            $expiresAfter = max(0, $token['expires_in'] - $expiresAfterOffset);
+            $expiresAfter = max(0, $token['expires_in'] - $this->options['access_token_expires_after_offset']);
             $item->expiresAfter($expiresAfter);
 
             return $token;
@@ -324,12 +321,16 @@ abstract class AbstractRESTService
                         ? 'https://adgangsstyring.eksterntest-stoettesystemerne.dk/runtime/api/rest/wstrust/v1/issue'
                         : 'https://adgangsstyring.stoettesystemerne.dk/runtime/api/rest/wstrust/v1/issue';
                 },
+                'saml_token_expiration_time_offset' => '-15 minutes',
                 'access_token_svc' => static function (Options $options) {
                     return $options['test_mode']
                         ? 'https://exttest.serviceplatformen.dk/service/AccessTokenService_1/token'
                         : 'https://prod.serviceplatformen.dk/service/AccessTokenService_1/token';
                 },
+                'access_token_expires_after_offset' => 60,
             ])
+            ->setInfo('saml_token_expiration_time_offset', 'Offset used when checking if SAML token is expired. By default the SAML token expires 8 hours after being issued.')
+            ->setInfo('access_token_expires_after_offset', 'Offset in seconds used when checking if the access token is expired. By default an access token expires in 3600 seconds.')
             ->setAllowedTypes('certificate_locator', CertificateLocatorInterface::class)
             ->setAllowedTypes('cache', CacheInterface::class);
     }
