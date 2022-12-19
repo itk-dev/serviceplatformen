@@ -258,6 +258,7 @@ HELP;
                 $vault,
                 $options['secret'],
                 $options['version'],
+                $passphrase
             );
         } else {
             $certificatepath = realpath($spec) ?: null;
