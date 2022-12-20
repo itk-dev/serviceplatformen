@@ -54,6 +54,7 @@
             "ItkDev\\Serviceplatformen\\": "src/",
             "ItkDev\\Serviceplatformen\\SF1600\\": "generated-classes/ItkDev/Serviceplatformen/SF1600/",
             "DigitalPost\\MeMo\\":                                                                                  "lib/DigitalPost/MeMo/",
+            "DataGovDk\\Model\\DataTypes\\":                                                                        "lib/DataGovDk/Model/DataTypes/",
             "DataGovDk\\Model\\Core\\":                                                                             "lib/DataGovDk/Model/Core/",
             "WwwGs1Dk\\Gs1Standarder\\Identifikation\\GlnGlobalLocationNumber\\":                                   "lib/WwwGs1Dk/Gs1Standarder/Identifikation/GlnGlobalLocationNumber/",
             "ServicesNsiDk\\En\\Services\\SOR\\":                                                                   "lib/ServicesNsiDk/En/Services/SOR/",

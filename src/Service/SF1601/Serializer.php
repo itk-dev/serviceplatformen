@@ -28,6 +28,7 @@ class Serializer
     // Must match xsd2php.destinations_jms in xsd2php-config.yml
     private const NAMESPACE2METADATA = [
         'DigitalPost\MeMo' =>                                                                            'lib/metadata/DigitalPost/MeMo',
+        'DataGovDk\Model\DataTypes' =>                                                                   'lib/metadata/DataGovDk/Model/DataTypes',
         'DataGovDk\Model\Core' =>                                                                        'lib/metadata/DataGovDk/Model/Core',
         'WwwGs1Dk\Gs1Standarder\Identifikation\GlnGlobalLocationNumber' =>                               'lib/metadata/WwwGs1Dk/Gs1Standarder/Identifikation/GlnGlobalLocationNumber',
         'ServicesNsiDk\En\Services\SOR' =>                                                               'lib/metadata/ServicesNsiDk/En/Services/SOR',
