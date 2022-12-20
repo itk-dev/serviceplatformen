@@ -12,7 +12,7 @@ namespace ItkDev\Serviceplatformen\Certificate;
 
 abstract class AbstractCertificateLocator implements CertificateLocatorInterface
 {
-    private $passphrase;
+    protected $passphrase;
 
     /**
      * AbstractCertificateLocator constructor.
@@ -37,6 +37,6 @@ abstract class AbstractCertificateLocator implements CertificateLocatorInterface
      */
     public function hasPassphrase(): bool
     {
-        return empty($this->passphrase);
+        return !empty($this->passphrase);
     }
 }
