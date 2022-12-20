@@ -317,8 +317,7 @@ HELP;
             ->setRecipientID($options['recipient-id']);
 
         $messageHeader = (new MessageHeader())
-                    ->setMessageType('Digital post')
-                    ->setMessageType('DIGITALPOST')
+                    ->setMessageType(SF1601::MESSAGE_TYPE_DIGITAL_POST)
                     ->setMessageUUID($messageUUID)
                     ->setMessageID($messageID)
                     ->setLabel($options['header-label'])

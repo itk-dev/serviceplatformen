@@ -26,29 +26,45 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 class SF1601 extends AbstractRESTService
 {
     public const TYPE_AUTOMATISK_VALG = 'Automatisk Valg';
-    public const TYPE_FYSISK_POST = 'Fysisk Post';
     public const TYPE_DIGITAL_POST = 'Digital Post';
+    public const TYPE_FYSISK_POST = 'Fysisk Post';
     public const TYPE_NEM_SMS = 'NemSMS';
+
+    public const TYPES = [
+        self::TYPE_AUTOMATISK_VALG,
+        self::TYPE_DIGITAL_POST,
+        self::TYPE_FYSISK_POST,
+        self::TYPE_NEM_SMS,
+    ];
+
+    // Where the hell are these documented?!
+    public const MESSAGE_TYPE_DIGITAL_POST = 'DIGITALPOST';
+    public const MESSAGE_TYPE_NEM_SMS = 'NEMSMS';
+
+    public const MESSAGE_TYPES = [
+        self::MESSAGE_TYPE_DIGITAL_POST,
+        self::MESSAGE_TYPE_NEM_SMS,
+    ];
 
     // @see https://www.digitaliser.dk/resource/6103074/artefact/VejledningtilActionsogfristeriMeMo.pdf?artefact=true&PID=6104122
     public const ACTION_AFTALE = 'AFTALE';
-    public const ACTION_BETALING = 'BETALING';
-    public const ACTION_SELVBETJENING = 'SELVBETJENING';
-    public const ACTION_INFORMATION = 'INFORMATION';
-    public const ACTION_UNDERSKRIV = 'UNDERSKRIV';
     public const ACTION_BEKRAEFT = 'BEKRAEFT';
+    public const ACTION_BETALING = 'BETALING';
     public const ACTION_FORBEREDELSE = 'FORBEREDELSE';
+    public const ACTION_INFORMATION = 'INFORMATION';
+    public const ACTION_SELVBETJENING = 'SELVBETJENING';
     public const ACTION_TILMELDING = 'TILMELDING';
+    public const ACTION_UNDERSKRIV = 'UNDERSKRIV';
 
     public const ACTIONS = [
         self::ACTION_AFTALE,
-        self::ACTION_BETALING,
-        self::ACTION_SELVBETJENING,
-        self::ACTION_INFORMATION,
-        self::ACTION_UNDERSKRIV,
         self::ACTION_BEKRAEFT,
+        self::ACTION_BETALING,
         self::ACTION_FORBEREDELSE,
+        self::ACTION_INFORMATION,
+        self::ACTION_SELVBETJENING,
         self::ACTION_TILMELDING,
+        self::ACTION_UNDERSKRIV,
     ];
 
     private ?DOMElement $lastKombiMemoMessage = null;
