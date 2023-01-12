@@ -86,7 +86,7 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
         $certificateStoreData = [];
         $passphrase = $this->hasPassphrase()
             ? $this->getPassphrase()
-            : null;
+            : '';
 
         if (!openssl_pkcs12_read($decodedSecretValue, $certificateStoreData, $passphrase)) {
             throw new AzureKeyVaultCertificateLocatorException('Could not read certificate.');
