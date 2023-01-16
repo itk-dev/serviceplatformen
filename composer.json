@@ -18,6 +18,7 @@
     ],
     "require": {
         "php": "^7.4 || ^8.0",
+        "composer-runtime-api": "^2.2",
         "ext-dom": "*",
         "ext-openssl": "*",
         "ext-soap": "*",
