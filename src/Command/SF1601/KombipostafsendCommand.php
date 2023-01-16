@@ -10,9 +10,12 @@
 
 namespace ItkDev\Serviceplatformen\Command\SF1601;
 
+use DataGovDk\Model\Core\Address;
 use DateTime;
 use DigitalPost\MeMo\Action;
 use DigitalPost\MeMo\AdditionalDocument;
+use DigitalPost\MeMo\AttentionData;
+use DigitalPost\MeMo\AttentionPerson;
 use DigitalPost\MeMo\EntryPoint;
 use DigitalPost\MeMo\File;
 use DigitalPost\MeMo\MainDocument;
@@ -315,6 +318,26 @@ HELP;
         $recipient = (new Recipient())
             ->setIdType($options['recipient-id-type'])
             ->setRecipientID($options['recipient-id']);
+
+        $recipient->setLabel('Anders And');
+        $address = (new Address())
+            ->setAddressLabel('Paradisæblevej')
+            ->setHouseNumber('13')
+            ->setFloor('st.')
+            ->setDoor('mf.')
+            ->setZipCode('1234')
+            ->setCity('Andeby')
+            ->setCountry('DA')
+        ;
+        $attentionData = (new AttentionData())
+            ->setAttentionPerson(
+                (new AttentionPerson())
+                ->setLabel($recipient->getLabel())
+                ->setPersonID($options['recipient-id'])
+            )
+            ->setAddress($address);
+
+        $recipient->setAttentionData($attentionData);
 
         $messageHeader = (new MessageHeader())
                     ->setMessageType(SF1601::MESSAGE_TYPE_DIGITAL_POST)

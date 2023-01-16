@@ -10,4 +10,5 @@ parameters:
       messages:
         - '#should return DigitalPost\\MeMo\\(.+) but returns DigitalPost\\MeMo\\\1\\\1AType.#'
         - '#expects DigitalPost\\MeMo\\(.+)(\|null)?, DigitalPost\\MeMo\\\1\\\1AType given.#'
+        - '#expects DataGovDk\\Model\\Core\\(.+)(\|null)?, DataGovDk\\Model\\Core\\\1\\\1AType given.#'
         - '#expects array<DigitalPost\\MeMo\\(.+)>(\|null)?, array<int, DigitalPost\\MeMo\\\1\\\1AType> given.#'
