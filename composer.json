@@ -14,7 +14,7 @@
         }
     ],
     "bin": [
-        "bin/serviceplatformen-sf1600-kombipostafsend"
+        "bin/serviceplatformen-sf1601-kombipostafsend"
     ],
     "require": {
         "php": "^7.4 || ^8.0",

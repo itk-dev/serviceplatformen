@@ -229,18 +229,20 @@ reviewer to merge it for you.
 ### Coding standards
 
 ```sh
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer2 coding-standards-check
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer install
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer coding-standards-check
 ```
 
 Apply coding standards:
 
 ```sh
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer2 coding-standards-apply
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer install
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer coding-standards-apply
 ```
 
 ```sh
-docker run --volume ${PWD}:/app --workdir /app node:16 yarn install
-docker run --volume ${PWD}:/app --workdir /app node:16 yarn coding-standards-check
+docker run --volume ${PWD}:/app --workdir /app node:18 yarn install
+docker run --volume ${PWD}:/app --workdir /app node:18 yarn coding-standards-check
 ```
 
 ## Versioning
