@@ -148,4 +148,17 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
         $streamMetaData = stream_get_meta_data($tmpFile);
         return $streamMetaData['uri'];
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
+    {
+        return parent::jsonSerialize() + [
+                'vaultSecret' => $this->hideSecret($this->vaultSecret),
+                'certificateName' => $this->certificateName,
+                'version' => $this->version,
+            ];
+    }
 }

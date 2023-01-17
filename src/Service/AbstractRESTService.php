@@ -182,7 +182,7 @@ abstract class AbstractRESTService
         return preg_replace(
             '#[{}()/\\\\@:]+#',
             '_',
-            $key . '|' . sha1(json_encode($payload))
+            $key . '|' . sha1(json_encode($payload+$this->options))
         );
     }
 
