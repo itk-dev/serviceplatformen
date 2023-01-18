@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema elementFormDefault="qualified" attributeFormDefault="unqualified" targetNamespace="urn:oio:fjernprint:1.0.0" xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fjernprint="urn:oio:fjernprint:1.0.0">
+  <element name="KuvertTypeKode" type="fjernprint:KuvertTypeKodeType"/>
+  <simpleType name="KuvertTypeKodeType">
+    <restriction base="string">
+      <enumeration value="C4"/>
+      <enumeration value="C5"/>
+      <enumeration value="MA"/>
+    </restriction>
+  </simpleType>
+</schema>

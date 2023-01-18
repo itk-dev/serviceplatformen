@@ -18,6 +18,15 @@ use ItkDev\Serviceplatformen\Certificate\Exception\CertificateLocatorException;
 interface CertificateLocatorInterface
 {
     /**
+     * Returns the certificate parts.
+     *
+     * @return array the certificate parts.
+     *
+     * @throws CertificateLocatorException
+     */
+    public function getCertificates(): array;
+
+    /**
      * Returns the absolute path to the certificate.
      *
      * @return string the absolute path to the certificate.

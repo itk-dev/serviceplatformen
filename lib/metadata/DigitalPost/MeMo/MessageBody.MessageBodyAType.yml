@@ -1,0 +1,50 @@
+DigitalPost\MeMo\MessageBody\MessageBodyAType:
+    properties:
+        createdDateTime:
+            expose: true
+            access_type: public_method
+            serialized_name: createdDateTime
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getCreatedDateTime
+                setter: setCreatedDateTime
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime
+        mainDocument:
+            expose: true
+            access_type: public_method
+            serialized_name: MainDocument
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getMainDocument
+                setter: setMainDocument
+            type: DigitalPost\MeMo\MainDocument
+        additionalDocument:
+            expose: true
+            access_type: public_method
+            serialized_name: AdditionalDocument
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getAdditionalDocument
+                setter: setAdditionalDocument
+            xml_list:
+                inline: true
+                entry_name: AdditionalDocument
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            type: array<DigitalPost\MeMo\AdditionalDocument>
+        technicalDocument:
+            expose: true
+            access_type: public_method
+            serialized_name: TechnicalDocument
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getTechnicalDocument
+                setter: setTechnicalDocument
+            xml_list:
+                inline: true
+                entry_name: TechnicalDocument
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            type: array<DigitalPost\MeMo\TechnicalDocument>

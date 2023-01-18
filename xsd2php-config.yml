@@ -1,0 +1,49 @@
+# https://github.com/goetas-webservices/xsd2php#usage
+
+xsd2php:
+  namespaces:
+    'https://DigitalPost.dk/MeMo-1':                                                                           'DigitalPost\MeMo'
+    'https://data.gov.dk/model/dataTypes/':                                                                    'DataGovDk\Model\DataTypes'
+    'https://data.gov.dk/model/core/':                                                                         'DataGovDk\Model\Core'
+    'https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/':                            'WwwGs1Dk\Gs1Standarder\Identifikation\GlnGlobalLocationNumber'
+    'https://services.nsi.dk/en/Services/SOR':                                                                 'ServicesNsiDk\En\Services\SOR'
+    'https://motorregister.skat.dk/':                                                                          'MotorregisterSkatDk'
+    'http://kle-online.dk/':                                                                                   'KleOnlineDk'
+    'http://www.form-online.dk/':                                                                              'WwwFormOnlineDk'
+    'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#': 'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd'
+
+  destinations_php:
+    # These must also be set in autoload.psr-4 in composer.json.
+    'DigitalPost\MeMo':                                                                            'lib/DigitalPost/MeMo/'
+    'DataGovDk\Model\DataTypes':                                                                   'lib/DataGovDk/Model/DataTypes/'
+    'DataGovDk\Model\Core':                                                                        'lib/DataGovDk/Model/Core/'
+    'WwwGs1Dk\Gs1Standarder\Identifikation\GlnGlobalLocationNumber':                               'lib/WwwGs1Dk/Gs1Standarder/Identifikation/GlnGlobalLocationNumber/'
+    'ServicesNsiDk\En\Services\SOR':                                                               'lib/ServicesNsiDk/En/Services/SOR/'
+    'MotorregisterSkatDk':                                                                         'lib/MotorregisterSkatDk/'
+    'KleOnlineDk':                                                                                 'lib/KleOnlineDk/'
+    'WwwFormOnlineDk':                                                                             'lib/WwwFormOnlineDk/'
+    'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd': 'lib/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/'
+
+  destinations_jms:
+    'DigitalPost\MeMo':                                                                            'lib/metadata/DigitalPost/MeMo/'
+    'DataGovDk\Model\DataTypes':                                                                   'lib/metadata/DataGovDk/Model/DataTypes/'
+    'DataGovDk\Model\Core':                                                                        'lib/metadata/DataGovDk/Model/Core/'
+    'WwwGs1Dk\Gs1Standarder\Identifikation\GlnGlobalLocationNumber':                               'lib/metadata/WwwGs1Dk/Gs1Standarder/Identifikation/GlnGlobalLocationNumber/'
+    'ServicesNsiDk\En\Services\SOR':                                                               'lib/metadata/ServicesNsiDk/En/Services/SOR/'
+    'MotorregisterSkatDk':                                                                         'lib/metadata/MotorregisterSkatDk/'
+    'KleOnlineDk':                                                                                 'lib/metadata/KleOnlineDk/'
+    'WwwFormOnlineDk':                                                                             'lib/metadata/WwwFormOnlineDk/'
+    'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd': 'lib/metadata/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/'
+
+  xml_namespaces:
+    # prefix: namespace
+    'memo': 'https://DigitalPost.dk/MeMo-1'
+    'gln': 'https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/'
+    'udd': 'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#'
+    'rid': 'https://www.nets.eu/dk-da/l%%C3%%B8sninger/nemid/nemid-tjenesteudbyder/supplerende-tjenester/pid-rid-cpr-tjenester'
+    'pnum': 'https://indberet.virk.dk/myndigheder/stat/ERST/P-enhedsloesningen'
+    'form': 'http://www.form-online.dk/'
+    'kle': 'http://kle-online.dk/'
+    'dmv': 'https://motorregister.skat.dk/'
+    'grd': 'https://data.gov.dk/model/core/'
+    'sor': 'https://services.nsi.dk/en/Services/SOR'

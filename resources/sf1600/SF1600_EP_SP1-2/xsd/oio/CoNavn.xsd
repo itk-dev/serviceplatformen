@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--edited with XMLSpy v2012 rel. 2 sp1 (x64) (http://www.altova.com) by Simon Holm Frandsen (Logica A/S)-->
+<schema elementFormDefault="qualified" attributeFormDefault="unqualified" targetNamespace="urn:oio:fjernprint:1.0.0"
+        xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:itst="http://rep.oio.dk/itst.dk/xml/schemas/2006/01/17/">
+  <import namespace="http://rep.oio.dk/itst.dk/xml/schemas/2006/01/17/" schemaLocation="ITST_PersonName.xsd"/>
+  <element name="CoNavn" type="itst:PersonNameType"/>
+</schema>

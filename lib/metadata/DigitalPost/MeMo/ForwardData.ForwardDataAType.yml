@@ -1,0 +1,62 @@
+DigitalPost\MeMo\ForwardData\ForwardDataAType:
+    properties:
+        messageUUID:
+            expose: true
+            access_type: public_method
+            serialized_name: messageUUID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getMessageUUID
+                setter: setMessageUUID
+            type: string
+        originalMessageDateTime:
+            expose: true
+            access_type: public_method
+            serialized_name: originalMessageDateTime
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getOriginalMessageDateTime
+                setter: setOriginalMessageDateTime
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime
+        originalSender:
+            expose: true
+            access_type: public_method
+            serialized_name: originalSender
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getOriginalSender
+                setter: setOriginalSender
+            type: string
+        originalContentResponsible:
+            expose: true
+            access_type: public_method
+            serialized_name: originalContentResponsible
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getOriginalContentResponsible
+                setter: setOriginalContentResponsible
+            type: string
+        contactPointID:
+            expose: true
+            access_type: public_method
+            serialized_name: contactPointID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getContactPointID
+                setter: setContactPointID
+            type: string
+        comment:
+            expose: true
+            access_type: public_method
+            serialized_name: comment
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getComment
+                setter: setComment
+            type: string

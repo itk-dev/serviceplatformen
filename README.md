@@ -2,15 +2,53 @@
 
 Library for interacting with services on [Serviceplatformen](https://www.serviceplatformen.dk).
 
+## Supported services
+
+* [CPR replika opslag (SF1520_3.6): https://digitaliseringskataloget.dk/integration/sf1520?version=3.6](https://digitaliseringskataloget.dk/integration/sf1520?version=3.6)
+* [CVR-Online (SF1530_2.4): https://digitaliseringskataloget.dk/integration/sf1530](https://digitaliseringskataloget.dk/integration/sf1530)
+* Parts of [Afsend post (SF1601):
+  https://digitaliseringskataloget.dk/integration/sf1601](https://digitaliseringskataloget.dk/integration/sf1601).
+  See [SF1601: Afsend post](docs/SF1601.md) for details.
+
+## Updating resources and classes
+
+We use
+[WsdlToPhp/PackageGenerator](https://github.com/WsdlToPhp/PackageGenerator) to
+generate PHP classes for talking to SOAP services. To update
+[resources](./resources) and [generated classes](./generated-classes), run
+
+```sh
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer install
+# Update WSDL resources.
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest bin/generate resources
+# Generate PHP classes from WSDL resources.
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest bin/generate classes
+```
+
+## Test commands
+
+```sh
+vendor/bin/serviceplatformen-sf1601-kombipostafsend --help
+```
+
+Use `bin/serviceplatformen-sf1601-kombipostafsend` (symlinked to
+`bin/SF1601/kombipostafsend`) during development of this library. i.e.
+
+```sh
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest bin/serviceplatformen-sf1601-kombipostafsend
+```
+
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your
+local machine for development and testing purposes. See deployment for notes on
+how to deploy the project on a live system.
 
 ### Prerequisites
 
-- Git 2.25 or above.
-- PHP 7.3 or above.
-- Composer 1.9 or above.
+* Git 2.25 or above.
+* PHP 7.3 or above.
+* Composer 1.9 or above.
 
 ### Installing
 
@@ -31,43 +69,48 @@ composer install
 ## Running the tests
 
 Unit tests:
+
 ```sh
-composer tests/unit
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer2 tests/unit
 ```
 
 End to end tests:
+
 ```sh
-composer tests/end-to-end
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer2 tests/end-to-end
 ```
 
 ### And coding style tests
 
 PHP_CodeSniffer
+
 ```sh
-composer check-coding-standards/phpcs
+composer coding-standards-check/phpcs
 ```
 
 PHP-CS-Fixer
-```
-composer check-coding-standards/php-cs-fixer 
+
+```sh
+composer coding-standards-check/php-cs-fixer
 ```
 
 ### Static code analysis
 
 Phan
-```
+
+```sh
 composer static-code-analysis/phan
 ```
 
 ## Deployment
 
-```
+```sh
 composer require itk-dev/serviceplatformen
 ```
 
 ## Usage
 
-### Certificate stored on local filesystem.
+### Certificate stored on local filesystem
 
 ```php
 <?php
@@ -105,6 +148,11 @@ var_dump($response);
 ```
 
 ### Certificate stored in Azure Key Vault
+
+See [Storing certificates in the
+vault](https://github.com/itk-dev/AzureKeyVaultPhp#storing-certificates-in-the-vault)
+for details on storing a certificate in the Azure Key Vault.
+
 ```php
 <?php
 
@@ -117,7 +165,7 @@ use ItkDev\Serviceplatformen\Request\InvocationContextRequestGenerator;
 use ItkDev\Serviceplatformen\Service\PersonBaseDataExtendedService;
 
 $vaultToken = new VaultToken(
-    $httpClient, // PSR-18 compatible http client 
+    $httpClient, // PSR-18 compatible http client
     $requestFactory // PSR-17 compatible request factory
 );
 
@@ -170,15 +218,39 @@ var_dump($response);
 ### Pull Request Process
 
 Before creating a pull request make sure you have considered the following:
-- Updating the README.md with details of changes that are relevant.
-- Updating the CHANGELOG.md with new features/changes/bug fixes etc.
 
-You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
+* Updating the README.md with details of changes that are relevant.
+* Updating the CHANGELOG.md with new features/changes/bug fixes etc.
+
+You may merge the Pull Request in once you have the sign-off of one other
+developer, or if you do not have permission to do that, you may request the
+reviewer to merge it for you.
+
+### Coding standards
+
+```sh
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer install
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer coding-standards-check
+```
+
+Apply coding standards:
+
+```sh
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer install
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer coding-standards-apply
+```
+
+```sh
+docker run --volume ${PWD}:/app --workdir /app node:18 yarn install
+docker run --volume ${PWD}:/app --workdir /app node:18 yarn coding-standards-check
+```
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available,
+see the [tags on this repository](https://github.com/your/project/tags).
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the
+[LICENSE.md](LICENSE.md) file for details

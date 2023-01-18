@@ -1,0 +1,62 @@
+DigitalPost\MeMo\Sender\SenderAType:
+    properties:
+        senderID:
+            expose: true
+            access_type: public_method
+            serialized_name: senderID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getSenderID
+                setter: setSenderID
+            type: string
+        idType:
+            expose: true
+            access_type: public_method
+            serialized_name: idType
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getIdType
+                setter: setIdType
+            type: string
+        idTypeLabel:
+            expose: true
+            access_type: public_method
+            serialized_name: idTypeLabel
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getIdTypeLabel
+                setter: setIdTypeLabel
+            type: string
+        label:
+            expose: true
+            access_type: public_method
+            serialized_name: label
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getLabel
+                setter: setLabel
+            type: string
+        attentionData:
+            expose: true
+            access_type: public_method
+            serialized_name: AttentionData
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getAttentionData
+                setter: setAttentionData
+            type: DigitalPost\MeMo\AttentionData
+        contactPoint:
+            expose: true
+            access_type: public_method
+            serialized_name: ContactPoint
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getContactPoint
+                setter: setContactPoint
+            type: DigitalPost\MeMo\ContactPoint

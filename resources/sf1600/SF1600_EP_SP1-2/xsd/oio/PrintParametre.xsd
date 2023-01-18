@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified"
+        xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:fjernprint="urn:oio:fjernprint:1.0.0">
+  <include schemaLocation="SimplexDuplexKode.xsd"/>
+  <include schemaLocation="FarveSHKode.xsd"/>
+  <include schemaLocation="KuvertTypeKode.xsd"/>
+  <element name="PrintParametre" type="fjernprint:PrintParametreType"/>
+  <complexType name="PrintParametreType">
+    <sequence>
+      <element ref="fjernprint:SimplexDuplexKode" minOccurs="0"/>
+      <element ref="fjernprint:FarveSHKode" minOccurs="0"/>
+      <element ref="fjernprint:KuvertTypeKode" minOccurs="0"/>
+    </sequence>
+  </complexType>
+</schema>

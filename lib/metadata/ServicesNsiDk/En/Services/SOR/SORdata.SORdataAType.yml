@@ -1,0 +1,22 @@
+ServicesNsiDk\En\Services\SOR\SORdata\SORdataAType:
+    properties:
+        sorIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: sorIdentifier
+            xml_element:
+                namespace: 'https://services.nsi.dk/en/Services/SOR'
+            accessor:
+                getter: getSorIdentifier
+                setter: setSorIdentifier
+            type: string
+        entryName:
+            expose: true
+            access_type: public_method
+            serialized_name: entryName
+            xml_element:
+                namespace: 'https://services.nsi.dk/en/Services/SOR'
+            accessor:
+                getter: getEntryName
+                setter: setEntryName
+            type: string

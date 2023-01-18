@@ -1,0 +1,22 @@
+DigitalPost\MeMo\ContentResponsible\ContentResponsibleAType:
+    properties:
+        contentResponsibleID:
+            expose: true
+            access_type: public_method
+            serialized_name: contentResponsibleID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getContentResponsibleID
+                setter: setContentResponsibleID
+            type: string
+        label:
+            expose: true
+            access_type: public_method
+            serialized_name: label
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getLabel
+                setter: setLabel
+            type: string

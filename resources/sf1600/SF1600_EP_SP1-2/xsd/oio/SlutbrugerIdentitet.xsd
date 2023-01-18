@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:oio:dkal:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dkal="urn:oio:dkal:1.0.0" xmlns:adir="urn:oio:adir:dagpenge:2009.07.01">
+  <import namespace="urn:oio:adir:dagpenge:2009.07.01" schemaLocation="CPRnummerIdentifikator.xsd"/>
+  <import namespace="urn:oio:adir:dagpenge:2009.07.01" schemaLocation="CVRnummerIdentifikator.xsd"/>
+  <element name="SlutbrugerIdentitet" type="dkal:SlutbrugerIdentitetType"/>
+  <complexType name="SlutbrugerIdentitetType">
+    <choice>
+      <element ref="adir:CPRnummerIdentifikator"/>
+      <element ref="adir:CVRnummerIdentifikator"/>
+    </choice>
+  </complexType>
+</schema>

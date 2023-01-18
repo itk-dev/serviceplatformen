@@ -1,0 +1,40 @@
+DigitalPost\MeMo\Message\MessageAType:
+    properties:
+        memoVersion:
+            expose: true
+            access_type: public_method
+            serialized_name: memoVersion
+            accessor:
+                getter: getMemoVersion
+                setter: setMemoVersion
+            xml_attribute: true
+            type: float
+        memoSchVersion:
+            expose: true
+            access_type: public_method
+            serialized_name: memoSchVersion
+            accessor:
+                getter: getMemoSchVersion
+                setter: setMemoSchVersion
+            xml_attribute: true
+            type: string
+        messageHeader:
+            expose: true
+            access_type: public_method
+            serialized_name: MessageHeader
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getMessageHeader
+                setter: setMessageHeader
+            type: DigitalPost\MeMo\MessageHeader
+        messageBody:
+            expose: true
+            access_type: public_method
+            serialized_name: MessageBody
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getMessageBody
+                setter: setMessageBody
+            type: DigitalPost\MeMo\MessageBody

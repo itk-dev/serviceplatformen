@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--edited with XMLSpy v2009 sp1 (http://www.altova.com) by Simon Holm Frandsen (Logica Danmark A/S)-->
+<schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified"
+        xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fjernprint="urn:oio:fjernprint:1.0.0">
+  <import namespace="urn:oio:dkal:1.0.0" schemaLocation="UUID.xsd"/>
+  <element name="AfsendelseIdentifikator" type="fjernprint:AfsendelseIdentifikatorType"/>
+  <simpleType name="AfsendelseIdentifikatorType">
+    <restriction base="string">
+      <minLength value="1"/>
+      <maxLength value="38"/>
+    </restriction>
+  </simpleType>
+</schema>

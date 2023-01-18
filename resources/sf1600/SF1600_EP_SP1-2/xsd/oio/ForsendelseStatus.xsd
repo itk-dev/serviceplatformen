@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 rel. 2 (x64) (http://www.altova.com) by Simon Holm Frandsen (Logica) -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fjernprint="urn:oio:fjernprint:1.0.0"
+		targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified"
+		xml:lang="DA">
+	<include schemaLocation="AfsendelseIdentifikator.xsd"/>
+	<include schemaLocation="TilbagekaldStatus.xsd"/>
+	<element name="ForsendelseStatus" type="fjernprint:ForsendelseStatusType"/>
+	<complexType name="ForsendelseStatusType">
+		<sequence>
+			<element ref="fjernprint:AfsendelseIdentifikator">
+			</element>
+			<element ref="fjernprint:TilbagekaldStatus">
+			</element>
+		</sequence>
+	</complexType>
+</schema>

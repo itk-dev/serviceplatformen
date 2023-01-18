@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema elementFormDefault="qualified" targetNamespace="http://rep.oio.dk/itst.dk/xml/schemas/2006/01/17/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:itst="http://rep.oio.dk/itst.dk/xml/schemas/2006/01/17/">
+  <element name="PersonName" type="itst:PersonNameType"/>
+  <simpleType name="PersonNameType">
+    <restriction base="string">
+      <minLength value="1"/>
+      <maxLength value="130"/>
+    </restriction>
+  </simpleType>
+</schema>

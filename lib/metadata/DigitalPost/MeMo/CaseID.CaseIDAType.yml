@@ -1,0 +1,22 @@
+DigitalPost\MeMo\CaseID\CaseIDAType:
+    properties:
+        caseID:
+            expose: true
+            access_type: public_method
+            serialized_name: caseID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getCaseID
+                setter: setCaseID
+            type: string
+        caseSystem:
+            expose: true
+            access_type: public_method
+            serialized_name: caseSystem
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getCaseSystem
+                setter: setCaseSystem
+            type: string

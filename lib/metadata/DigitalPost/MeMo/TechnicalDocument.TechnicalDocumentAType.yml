@@ -1,0 +1,36 @@
+DigitalPost\MeMo\TechnicalDocument\TechnicalDocumentAType:
+    properties:
+        technicalDocumentID:
+            expose: true
+            access_type: public_method
+            serialized_name: technicalDocumentID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getTechnicalDocumentID
+                setter: setTechnicalDocumentID
+            type: string
+        label:
+            expose: true
+            access_type: public_method
+            serialized_name: label
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getLabel
+                setter: setLabel
+            type: string
+        file:
+            expose: true
+            access_type: public_method
+            serialized_name: File
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getFile
+                setter: setFile
+            xml_list:
+                inline: true
+                entry_name: File
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            type: array<DigitalPost\MeMo\File>

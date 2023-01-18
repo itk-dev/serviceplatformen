@@ -1,0 +1,122 @@
+DigitalPost\MeMo\AttentionData\AttentionDataAType:
+    properties:
+        attentionPerson:
+            expose: true
+            access_type: public_method
+            serialized_name: AttentionPerson
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getAttentionPerson
+                setter: setAttentionPerson
+            type: DigitalPost\MeMo\AttentionPerson
+        productionUnit:
+            expose: true
+            access_type: public_method
+            serialized_name: ProductionUnit
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getProductionUnit
+                setter: setProductionUnit
+            type: DataGovDk\Model\Core\ProductionUnit
+        globalLocationNumber:
+            expose: true
+            access_type: public_method
+            serialized_name: GlobalLocationNumber
+            xml_element:
+                namespace: 'https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/'
+            accessor:
+                getter: getGlobalLocationNumber
+                setter: setGlobalLocationNumber
+            type: WwwGs1Dk\Gs1Standarder\Identifikation\GlnGlobalLocationNumber\GlobalLocationNumber
+        eMail:
+            expose: true
+            access_type: public_method
+            serialized_name: EMail
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getEMail
+                setter: setEMail
+            type: DigitalPost\MeMo\EMail
+        sEnumber:
+            expose: true
+            access_type: public_method
+            serialized_name: SEnumber
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getSEnumber
+                setter: setSEnumber
+            type: DataGovDk\Model\Core\SEnumber
+        telephone:
+            expose: true
+            access_type: public_method
+            serialized_name: Telephone
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getTelephone
+                setter: setTelephone
+            type: DigitalPost\MeMo\Telephone
+        eID:
+            expose: true
+            access_type: public_method
+            serialized_name: EID
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getEID
+                setter: setEID
+            type: DataGovDk\Model\Core\EID
+        contentResponsible:
+            expose: true
+            access_type: public_method
+            serialized_name: ContentResponsible
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getContentResponsible
+                setter: setContentResponsible
+            type: DigitalPost\MeMo\ContentResponsible
+        generatingSystem:
+            expose: true
+            access_type: public_method
+            serialized_name: GeneratingSystem
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getGeneratingSystem
+                setter: setGeneratingSystem
+            type: DigitalPost\MeMo\GeneratingSystem
+        sORdata:
+            expose: true
+            access_type: public_method
+            serialized_name: SORdata
+            xml_element:
+                namespace: 'https://services.nsi.dk/en/Services/SOR'
+            accessor:
+                getter: getSORdata
+                setter: setSORdata
+            type: ServicesNsiDk\En\Services\SOR\SORdata
+        address:
+            expose: true
+            access_type: public_method
+            serialized_name: Address
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getAddress
+                setter: setAddress
+            type: DataGovDk\Model\Core\Address
+        unstructuredAddress:
+            expose: true
+            access_type: public_method
+            serialized_name: UnstructuredAddress
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getUnstructuredAddress
+                setter: setUnstructuredAddress
+            type: DataGovDk\Model\Core\UnstructuredAddress

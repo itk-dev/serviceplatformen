@@ -10,9 +10,11 @@
 
 namespace ItkDev\Serviceplatformen\Certificate;
 
-abstract class AbstractCertificateLocator implements CertificateLocatorInterface
+use phpDocumentor\Reflection\Types\Mixed_;
+
+abstract class AbstractCertificateLocator implements CertificateLocatorInterface, \JsonSerializable
 {
-    private $passphrase;
+    protected $passphrase;
 
     /**
      * AbstractCertificateLocator constructor.
@@ -37,6 +39,22 @@ abstract class AbstractCertificateLocator implements CertificateLocatorInterface
      */
     public function hasPassphrase(): bool
     {
-        return empty($this->passphrase);
+        return !empty($this->passphrase);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
+    {
+        return [
+            'passphrase' => $this->hideSecret($this->passphrase),
+        ];
+    }
+
+    protected function hideSecret(string $secret): string
+    {
+        return sprintf('inv-sha1(%s)', sha1($secret));
     }
 }

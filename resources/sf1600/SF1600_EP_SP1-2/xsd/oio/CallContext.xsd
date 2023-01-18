@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified" version="1.0" targetNamespace="http://serviceplatformen.dk/xml/schemas/CallContext/1/" xmlns:tns="http://serviceplatformen.dk/xml/schemas/CallContext/1/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="CallContext" type="tns:CallContextType"/>
+  <xsd:complexType name="CallContextType">
+    <xsd:all>
+      <xsd:element name="OnBehalfOfUser" minOccurs="0" maxOccurs="1">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="255"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="CallersServiceCallIdentifier" minOccurs="0" maxOccurs="1">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="255"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="AccountingInfo" minOccurs="0" maxOccurs="1">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="255"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:all>
+  </xsd:complexType>
+</xsd:schema>

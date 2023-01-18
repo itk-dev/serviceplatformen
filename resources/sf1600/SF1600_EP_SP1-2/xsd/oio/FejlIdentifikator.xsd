@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dkal="urn:oio:dkal:1.0.0" targetNamespace="urn:oio:dkal:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA">
+	<element name="FejlIdentifikator" type="dkal:FejlIdentifikatorType" />
+	<simpleType name="FejlIdentifikatorType">
+		<restriction base="string">
+			<maxLength value="26" />
+		</restriction>
+	</simpleType>
+</schema>

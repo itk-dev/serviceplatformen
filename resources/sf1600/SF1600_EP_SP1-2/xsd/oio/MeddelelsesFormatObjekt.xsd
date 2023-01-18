@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--edited with XMLSpy v2012 rel. 2 sp1 (x64) (http://www.altova.com) by Simon Holm Frandsen (Logica A/S)--><schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="urn:oio:fjernprint:1.0.0">
+  <element name="MeddelelsesFormatObjekt" type="ns1:MeddelelsesFormatObjektType"/>
+  <complexType name="MeddelelsesFormatObjektType">
+    <sequence>
+      <any namespace="##any" processContents="strict"/>
+    </sequence>
+  </complexType>
+</schema>

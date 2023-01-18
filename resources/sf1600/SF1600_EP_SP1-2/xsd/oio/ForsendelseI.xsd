@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fjernprint="urn:oio:fjernprint:1.0.0" xmlns:dkal="urn:oio:dkal:1.0.0">
+  <import namespace="urn:oio:dkal:1.0.0" schemaLocation="FilformatNavn.xsd"/>
+  <import namespace="urn:oio:dkal:1.0.0" schemaLocation="MeddelelseIndholdData.xsd"/>
+  <include schemaLocation="AfsendelseIdentifikator.xsd"/>
+  <include schemaLocation="DokumentParametre.xsd"/>
+  <include schemaLocation="KanalUafhaengigeParametreI.xsd"/>
+  <include schemaLocation="DigitalPostParametre.xsd"/>
+  <include schemaLocation="PostParametre.xsd"/>
+  <include schemaLocation="TransaktionsParametreI.xsd"/>
+  <include schemaLocation="PrintParametre.xsd"/>
+  <include schemaLocation="ForsendelseTypeIdentifikator.xsd"/>
+  <include schemaLocation="ForsendelseModtager.xsd"/>
+  <include schemaLocation="BilagSamling.xsd"/>
+  <element name="ForsendelseI" type="fjernprint:ForsendelseIType"/>
+  <complexType name="ForsendelseIType">
+    <sequence>
+      <element ref="fjernprint:AfsendelseIdentifikator"/>
+      <element ref="fjernprint:ForsendelseTypeIdentifikator" minOccurs="0"/>
+      <element ref="fjernprint:ForsendelseModtager" minOccurs="0"/>
+      <element ref="dkal:FilformatNavn"/>
+      <element ref="dkal:MeddelelseIndholdData"/>
+      <element ref="fjernprint:TransaktionsParametreI" minOccurs="0"/>
+      <element ref="fjernprint:DokumentParametre"/>
+      <element ref="fjernprint:KanalUafhaengigeParametreI" minOccurs="0"/>
+      <element ref="fjernprint:PrintParametre" minOccurs="0"/>
+      <element ref="fjernprint:DigitalPostParametre" minOccurs="0"/>
+      <element ref="fjernprint:PostParametre" minOccurs="0"/>
+      <element ref="fjernprint:BilagSamling" minOccurs="0"/>
+    </sequence>
+  </complexType>
+</schema>

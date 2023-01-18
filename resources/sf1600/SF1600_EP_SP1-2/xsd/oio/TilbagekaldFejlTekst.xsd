@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 rel. 2 sp1 (x64) (http://www.altova.com) by Simon Holm Frandsen (Logica A/S) -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fjernprint="urn:oio:fjernprint:1.0.0" targetNamespace="urn:oio:fjernprint:1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xml:lang="DA">
+	<element name="TilbagekaldFejlTekst" type="fjernprint:TilbagekaldFejlTekstType"/>
+	<simpleType name="TilbagekaldFejlTekstType">
+		<restriction base="string">
+			<maxLength value="2000"/>
+		</restriction>
+	</simpleType>
+</schema>

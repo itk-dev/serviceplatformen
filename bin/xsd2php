@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -o errexit -o errtrace -o noclobber -o nounset -o pipefail
+IFS=$'\n\t'
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+# XSD archive url (cf. https://www.digitaliser.dk/resource/5248921)
+XSD_ARCHIVE_URL="https://www.digitaliser.dk/resource/5248921/artefact/MeMo_XSD.zip?artefact=true&PID=6075979"
+
+project_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")"/../ && pwd)
+xsd_dir=/tmp/MeMo/xsd
+# Relative to project_dir
+lib_dir="lib"
+
+echo "${bold}Fetching XSD${normal}"
+
+mkdir -p "$xsd_dir"
+curl --silent --location "$XSD_ARCHIVE_URL" >| "$xsd_dir"/MeMo_XSD.zip
+unzip -q -o "$xsd_dir"/MeMo_XSD.zip -d "$xsd_dir"
+
+echo "${bold}Generating PHP classes in $lib_dir${normal}"
+
+cd "$project_dir"
+# Remove old generated files
+rm -fr "$lib_dir"
+# Generate PHP classes
+"$project_dir"/vendor/bin/xsd2php convert xsd2php-config.yml "$xsd_dir"/MeMo*.xsd
+# Clean up
+rm -fr "$xsd_dir"
+
+echo "${bold}Done${normal}"
