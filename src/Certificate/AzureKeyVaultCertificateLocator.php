@@ -39,6 +39,20 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
     /**
      * {@inheritDoc}
      */
+    public function getCertificates(): array
+    {
+        try {
+            $secret = $this->vaultSecret->getSecret($this->certificateName, $this->version);
+        } catch (SecretException $e) {
+            throw new AzureKeyVaultCertificateLocatorException($e->getMessage(), $e->getCode());
+        }
+
+        return $this->getCertificateStoreDataFromSecret($secret->getValue());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getAbsolutePathToCertificate(): string
     {
         try {
@@ -72,7 +86,7 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
         $certificateStoreData = [];
         $passphrase = $this->hasPassphrase()
             ? $this->getPassphrase()
-            : null;
+            : '';
 
         if (!openssl_pkcs12_read($decodedSecretValue, $certificateStoreData, $passphrase)) {
             throw new AzureKeyVaultCertificateLocatorException('Could not read certificate.');
@@ -133,5 +147,18 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
         fwrite($tmpFile, $content);
         $streamMetaData = stream_get_meta_data($tmpFile);
         return $streamMetaData['uri'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
+    {
+        return parent::jsonSerialize() + [
+                'vaultSecret' => $this->hideSecret($this->vaultSecret),
+                'certificateName' => $this->certificateName,
+                'version' => $this->version,
+            ];
     }
 }

@@ -1,0 +1,22 @@
+DataGovDk\Model\Core\EID\EIDAType:
+    properties:
+        eID:
+            expose: true
+            access_type: public_method
+            serialized_name: eID
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getEID
+                setter: setEID
+            type: string
+        label:
+            expose: true
+            access_type: public_method
+            serialized_name: label
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getLabel
+                setter: setLabel
+            type: string

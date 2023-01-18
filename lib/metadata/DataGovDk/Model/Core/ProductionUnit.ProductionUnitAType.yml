@@ -1,0 +1,22 @@
+DataGovDk\Model\Core\ProductionUnit\ProductionUnitAType:
+    properties:
+        productionUnitNumber:
+            expose: true
+            access_type: public_method
+            serialized_name: productionUnitNumber
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getProductionUnitNumber
+                setter: setProductionUnitNumber
+            type: int
+        productionUnitName:
+            expose: true
+            access_type: public_method
+            serialized_name: productionUnitName
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getProductionUnitName
+                setter: setProductionUnitName
+            type: string

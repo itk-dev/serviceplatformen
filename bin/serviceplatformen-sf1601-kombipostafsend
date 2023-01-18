@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * This file is part of itk-dev/serviceplatformen.
+ *
+ * (c) 2020 ITK Development
+ *
+ * This source file is subject to the MIT license.
+ */
+
+// @see https://getcomposer.org/doc/articles/vendor-binaries.md#finding-the-composer-autoloader-from-a-binary
+require $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
+
+use ItkDev\Serviceplatformen\Command\SF1601\KombipostafsendCommand;
+use Symfony\Component\Console\Application;
+
+$application = new Application('SF1601', '1.0.0');
+$command = new KombipostafsendCommand();
+
+$application->add($command);
+
+$application->setDefaultCommand($command->getName(), true);
+$application->run();

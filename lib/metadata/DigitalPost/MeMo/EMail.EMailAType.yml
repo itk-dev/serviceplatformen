@@ -1,0 +1,22 @@
+DigitalPost\MeMo\EMail\EMailAType:
+    properties:
+        emailAddress:
+            expose: true
+            access_type: public_method
+            serialized_name: emailAddress
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getEmailAddress
+                setter: setEmailAddress
+            type: string
+        relatedAgent:
+            expose: true
+            access_type: public_method
+            serialized_name: relatedAgent
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getRelatedAgent
+                setter: setRelatedAgent
+            type: string

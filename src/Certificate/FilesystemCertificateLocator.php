@@ -11,6 +11,7 @@
 namespace ItkDev\Serviceplatformen\Certificate;
 
 use InvalidArgumentException;
+use ItkDev\Serviceplatformen\Certificate\Exception\CertificateLocatorException;
 
 /**
  * Class FilesystemCertificateLocator
@@ -57,5 +58,34 @@ class FilesystemCertificateLocator extends AbstractCertificateLocator implements
     public function getAbsolutePathToCertificate(): string
     {
         return $this->pathToCertificate;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCertificates(): array
+    {
+        $certificateStoreData = [];
+        $passphrase = $this->hasPassphrase()
+            ? $this->getPassphrase()
+            : null;
+
+        $content = file_get_contents($this->pathToCertificate);
+        if (!openssl_pkcs12_read($content, $certificateStoreData, $passphrase)) {
+            throw new CertificateLocatorException('Could not read certificate.');
+        }
+
+        return $certificateStoreData;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
+    {
+        return parent::jsonSerialize() + [
+                'pathToCertificate' => $this->pathToCertificate,
+            ];
     }
 }

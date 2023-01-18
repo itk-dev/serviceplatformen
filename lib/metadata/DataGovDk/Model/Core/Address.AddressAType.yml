@@ -1,0 +1,102 @@
+DataGovDk\Model\Core\Address\AddressAType:
+    properties:
+        id:
+            expose: true
+            access_type: public_method
+            serialized_name: id
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getId
+                setter: setId
+            type: string
+        addressLabel:
+            expose: true
+            access_type: public_method
+            serialized_name: addressLabel
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getAddressLabel
+                setter: setAddressLabel
+            type: string
+        houseNumber:
+            expose: true
+            access_type: public_method
+            serialized_name: houseNumber
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getHouseNumber
+                setter: setHouseNumber
+            type: string
+        door:
+            expose: true
+            access_type: public_method
+            serialized_name: door
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getDoor
+                setter: setDoor
+            type: string
+        floor:
+            expose: true
+            access_type: public_method
+            serialized_name: floor
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getFloor
+                setter: setFloor
+            type: string
+        co:
+            expose: true
+            access_type: public_method
+            serialized_name: co
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getCo
+                setter: setCo
+            type: string
+        zipCode:
+            expose: true
+            access_type: public_method
+            serialized_name: zipCode
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getZipCode
+                setter: setZipCode
+            type: string
+        city:
+            expose: true
+            access_type: public_method
+            serialized_name: city
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getCity
+                setter: setCity
+            type: string
+        country:
+            expose: true
+            access_type: public_method
+            serialized_name: country
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getCountry
+                setter: setCountry
+            type: string
+        addressPoint:
+            expose: true
+            access_type: public_method
+            serialized_name: AddressPoint
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getAddressPoint
+                setter: setAddressPoint
+            type: DataGovDk\Model\Core\AddressPoint

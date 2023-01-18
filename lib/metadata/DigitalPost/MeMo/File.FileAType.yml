@@ -1,0 +1,42 @@
+DigitalPost\MeMo\File\FileAType:
+    properties:
+        encodingFormat:
+            expose: true
+            access_type: public_method
+            serialized_name: encodingFormat
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getEncodingFormat
+                setter: setEncodingFormat
+            type: string
+        filename:
+            expose: true
+            access_type: public_method
+            serialized_name: filename
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getFilename
+                setter: setFilename
+            type: string
+        language:
+            expose: true
+            access_type: public_method
+            serialized_name: language
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getLanguage
+                setter: setLanguage
+            type: string
+        content:
+            expose: true
+            access_type: public_method
+            serialized_name: content
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getContent
+                setter: setContent
+            type: GoetasWebservices\Xsd\XsdToPhp\Jms\Base64Encoded

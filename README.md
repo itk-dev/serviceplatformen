@@ -6,6 +6,9 @@ Library for interacting with services on [Serviceplatformen](https://www.service
 
 * [CPR replika opslag (SF1520_3.6): https://digitaliseringskataloget.dk/integration/sf1520?version=3.6](https://digitaliseringskataloget.dk/integration/sf1520?version=3.6)
 * [CVR-Online (SF1530_2.4): https://digitaliseringskataloget.dk/integration/sf1530](https://digitaliseringskataloget.dk/integration/sf1530)
+* Parts of [Afsend post (SF1601):
+  https://digitaliseringskataloget.dk/integration/sf1601](https://digitaliseringskataloget.dk/integration/sf1601).
+  See [SF1601: Afsend post](docs/SF1601.md) for details.
 
 ## Updating resources and classes
 
@@ -15,11 +18,24 @@ generate PHP classes for talking to SOAP services. To update
 [resources](./resources) and [generated classes](./generated-classes), run
 
 ```sh
-docker run --rm --volume $PWD:/app -it itkdev/php7.4-fpm:latest composer2 install
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer install
 # Update WSDL resources.
-docker run --rm --volume $PWD:/app -it itkdev/php7.4-fpm:latest bin/generate resources
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest bin/generate resources
 # Generate PHP classes from WSDL resources.
-docker run --rm --volume $PWD:/app -it itkdev/php7.4-fpm:latest bin/generate classes
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest bin/generate classes
+```
+
+## Test commands
+
+```sh
+vendor/bin/serviceplatformen-sf1601-kombipostafsend --help
+```
+
+Use `bin/serviceplatformen-sf1601-kombipostafsend` (symlinked to
+`bin/SF1601/kombipostafsend`) during development of this library. i.e.
+
+```sh
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest bin/serviceplatformen-sf1601-kombipostafsend
 ```
 
 ## Getting Started
@@ -55,13 +71,13 @@ composer install
 Unit tests:
 
 ```sh
-composer tests/unit
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer2 tests/unit
 ```
 
 End to end tests:
 
 ```sh
-composer tests/end-to-end
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer2 tests/end-to-end
 ```
 
 ### And coding style tests
@@ -213,12 +229,20 @@ reviewer to merge it for you.
 ### Coding standards
 
 ```sh
-composer coding-standards-check
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer install
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer coding-standards-check
+```
+
+Apply coding standards:
+
+```sh
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer install
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer coding-standards-apply
 ```
 
 ```sh
-docker run --volume ${PWD}:/app --workdir /app node:16 yarn install
-docker run --volume ${PWD}:/app --workdir /app node:16 yarn coding-standards-check
+docker run --volume ${PWD}:/app --workdir /app node:18 yarn install
+docker run --volume ${PWD}:/app --workdir /app node:18 yarn coding-standards-check
 ```
 
 ## Versioning

@@ -1,0 +1,82 @@
+DigitalPost\MeMo\Reservation\ReservationAType:
+    properties:
+        description:
+            expose: true
+            access_type: public_method
+            serialized_name: description
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getDescription
+                setter: setDescription
+            type: string
+        reservationUUID:
+            expose: true
+            access_type: public_method
+            serialized_name: reservationUUID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getReservationUUID
+                setter: setReservationUUID
+            type: string
+        abstract:
+            expose: true
+            access_type: public_method
+            serialized_name: abstract
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getAbstract
+                setter: setAbstract
+            type: string
+        location:
+            expose: true
+            access_type: public_method
+            serialized_name: location
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getLocation
+                setter: setLocation
+            type: string
+        startDateTime:
+            expose: true
+            access_type: public_method
+            serialized_name: startDateTime
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getStartDateTime
+                setter: setStartDateTime
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime
+        endDateTime:
+            expose: true
+            access_type: public_method
+            serialized_name: endDateTime
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getEndDateTime
+                setter: setEndDateTime
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime
+        organizerMail:
+            expose: true
+            access_type: public_method
+            serialized_name: organizerMail
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getOrganizerMail
+                setter: setOrganizerMail
+            type: string
+        organizerName:
+            expose: true
+            access_type: public_method
+            serialized_name: organizerName
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getOrganizerName
+                setter: setOrganizerName
+            type: string

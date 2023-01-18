@@ -1,0 +1,22 @@
+DataGovDk\Model\Core\CVRdata\CVRdataAType:
+    properties:
+        cvrNumber:
+            expose: true
+            access_type: public_method
+            serialized_name: cvrNumber
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getCvrNumber
+                setter: setCvrNumber
+            type: string
+        companyName:
+            expose: true
+            access_type: public_method
+            serialized_name: companyName
+            xml_element:
+                namespace: 'https://data.gov.dk/model/core/'
+            accessor:
+                getter: getCompanyName
+                setter: setCompanyName
+            type: string

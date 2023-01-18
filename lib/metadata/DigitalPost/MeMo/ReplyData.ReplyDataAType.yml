@@ -1,0 +1,106 @@
+DigitalPost\MeMo\ReplyData\ReplyDataAType:
+    properties:
+        messageID:
+            expose: true
+            access_type: public_method
+            serialized_name: messageID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getMessageID
+                setter: setMessageID
+            type: string
+        messageUUID:
+            expose: true
+            access_type: public_method
+            serialized_name: messageUUID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getMessageUUID
+                setter: setMessageUUID
+            type: string
+        replyUUID:
+            expose: true
+            access_type: public_method
+            serialized_name: replyUUID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getReplyUUID
+                setter: setReplyUUID
+            type: string
+        senderID:
+            expose: true
+            access_type: public_method
+            serialized_name: senderID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getSenderID
+                setter: setSenderID
+            type: string
+        recipientID:
+            expose: true
+            access_type: public_method
+            serialized_name: recipientID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getRecipientID
+                setter: setRecipientID
+            type: string
+        caseID:
+            expose: true
+            access_type: public_method
+            serialized_name: caseID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getCaseID
+                setter: setCaseID
+            type: string
+        contactPointID:
+            expose: true
+            access_type: public_method
+            serialized_name: contactPointID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getContactPointID
+                setter: setContactPointID
+            type: string
+        generatingSystemID:
+            expose: true
+            access_type: public_method
+            serialized_name: generatingSystemID
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getGeneratingSystemID
+                setter: setGeneratingSystemID
+            type: string
+        comment:
+            expose: true
+            access_type: public_method
+            serialized_name: comment
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getComment
+                setter: setComment
+            type: string
+        additionalReplyData:
+            expose: true
+            access_type: public_method
+            serialized_name: AdditionalReplyData
+            xml_element:
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            accessor:
+                getter: getAdditionalReplyData
+                setter: setAdditionalReplyData
+            xml_list:
+                inline: true
+                entry_name: AdditionalReplyData
+                namespace: 'https://DigitalPost.dk/MeMo-1'
+            type: array<DigitalPost\MeMo\AdditionalReplyData>
