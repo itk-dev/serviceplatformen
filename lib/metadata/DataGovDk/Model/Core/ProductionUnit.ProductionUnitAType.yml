@@ -4,8 +4,6 @@ DataGovDk\Model\Core\ProductionUnit\ProductionUnitAType:
             expose: true
             access_type: public_method
             serialized_name: productionUnitNumber
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getProductionUnitNumber
                 setter: setProductionUnitNumber
@@ -14,8 +12,6 @@ DataGovDk\Model\Core\ProductionUnit\ProductionUnitAType:
             expose: true
             access_type: public_method
             serialized_name: productionUnitName
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getProductionUnitName
                 setter: setProductionUnitName

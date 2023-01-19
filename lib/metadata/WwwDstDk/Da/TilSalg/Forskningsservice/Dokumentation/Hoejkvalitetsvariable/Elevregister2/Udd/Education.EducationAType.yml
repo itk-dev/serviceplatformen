@@ -4,8 +4,6 @@ WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevre
             expose: true
             access_type: public_method
             serialized_name: educationCode
-            xml_element:
-                namespace: 'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#'
             accessor:
                 getter: getEducationCode
                 setter: setEducationCode
@@ -14,8 +12,6 @@ WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevre
             expose: true
             access_type: public_method
             serialized_name: educationName
-            xml_element:
-                namespace: 'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#'
             accessor:
                 getter: getEducationName
                 setter: setEducationName

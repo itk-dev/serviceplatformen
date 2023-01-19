@@ -4,8 +4,6 @@ DataGovDk\Model\Core\CPRdata\CPRdataAType:
             expose: true
             access_type: public_method
             serialized_name: cprNumber
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getCprNumber
                 setter: setCprNumber
@@ -14,8 +12,6 @@ DataGovDk\Model\Core\CPRdata\CPRdataAType:
             expose: true
             access_type: public_method
             serialized_name: name
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getName
                 setter: setName

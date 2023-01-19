@@ -35,6 +35,7 @@
         "wsdltophp/packagebase": "^5.0"
     },
     "require-dev": {
+        "cweagans/composer-patches": "^1.7",
         "friendsofphp/php-cs-fixer": "^3.11",
         "goetas-webservices/xsd2php": "dev-feature-xml-namespace-prefix",
         "phan/phan": "^5.4",
@@ -48,7 +49,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "cweagans/composer-patches": true
+        }
     },
     "autoload": {
         "psr-4": {
@@ -118,6 +122,13 @@
         "goetas-webservices/xsd2php": {
             "type": "vcs",
             "url": "https://github.com/rimi-itk/xsd2php"
+        }
+    },
+    "extra": {
+        "patches": {
+            "goetas-webservices/xsd2php": {
+                "https://github.com/rimi-itk/xsd2php/compare/feature-xml-namespace-prefix...rimi-itk:xsd2php:unique-paths": "https://github.com/rimi-itk/xsd2php/compare/feature-xml-namespace-prefix...rimi-itk:xsd2php:unique-paths.diff"
+            }
         }
     }
 }

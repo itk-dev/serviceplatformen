@@ -4,8 +4,6 @@ DataGovDk\Model\Core\AddressPoint\AddressPointAType:
             expose: true
             access_type: public_method
             serialized_name: geographicEastingMeasure
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getGeographicEastingMeasure
                 setter: setGeographicEastingMeasure
@@ -14,8 +12,6 @@ DataGovDk\Model\Core\AddressPoint\AddressPointAType:
             expose: true
             access_type: public_method
             serialized_name: geographicNorthingMeasure
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getGeographicNorthingMeasure
                 setter: setGeographicNorthingMeasure
@@ -24,8 +20,6 @@ DataGovDk\Model\Core\AddressPoint\AddressPointAType:
             expose: true
             access_type: public_method
             serialized_name: geographicHeightMeasure
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getGeographicHeightMeasure
                 setter: setGeographicHeightMeasure

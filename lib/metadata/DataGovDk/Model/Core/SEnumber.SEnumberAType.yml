@@ -4,8 +4,6 @@ DataGovDk\Model\Core\SEnumber\SEnumberAType:
             expose: true
             access_type: public_method
             serialized_name: seNumber
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getSeNumber
                 setter: setSeNumber
@@ -14,8 +12,6 @@ DataGovDk\Model\Core\SEnumber\SEnumberAType:
             expose: true
             access_type: public_method
             serialized_name: companyName
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getCompanyName
                 setter: setCompanyName

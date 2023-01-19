@@ -4,8 +4,6 @@ DataGovDk\Model\Core\EID\EIDAType:
             expose: true
             access_type: public_method
             serialized_name: eID
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getEID
                 setter: setEID
@@ -14,8 +12,6 @@ DataGovDk\Model\Core\EID\EIDAType:
             expose: true
             access_type: public_method
             serialized_name: label
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getLabel
                 setter: setLabel

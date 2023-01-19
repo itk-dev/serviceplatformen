@@ -4,8 +4,6 @@ DataGovDk\Model\Core\PropertyNumber\PropertyNumberAType:
             expose: true
             access_type: public_method
             serialized_name: propertyNumber
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getPropertyNumber
                 setter: setPropertyNumber

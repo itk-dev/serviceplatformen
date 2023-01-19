@@ -4,8 +4,6 @@ DataGovDk\Model\Core\UnstructuredAddress\UnstructuredAddressAType:
             expose: true
             access_type: public_method
             serialized_name: unstructured
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getUnstructured
                 setter: setUnstructured

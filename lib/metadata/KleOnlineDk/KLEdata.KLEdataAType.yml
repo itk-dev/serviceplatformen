@@ -4,8 +4,6 @@ KleOnlineDk\KLEdata\KLEdataAType:
             expose: true
             access_type: public_method
             serialized_name: subjectKey
-            xml_element:
-                namespace: 'http://kle-online.dk/'
             accessor:
                 getter: getSubjectKey
                 setter: setSubjectKey
@@ -14,8 +12,6 @@ KleOnlineDk\KLEdata\KLEdataAType:
             expose: true
             access_type: public_method
             serialized_name: version
-            xml_element:
-                namespace: 'http://kle-online.dk/'
             accessor:
                 getter: getVersion
                 setter: setVersion
@@ -24,8 +20,6 @@ KleOnlineDk\KLEdata\KLEdataAType:
             expose: true
             access_type: public_method
             serialized_name: activityFacet
-            xml_element:
-                namespace: 'http://kle-online.dk/'
             accessor:
                 getter: getActivityFacet
                 setter: setActivityFacet
@@ -34,8 +28,6 @@ KleOnlineDk\KLEdata\KLEdataAType:
             expose: true
             access_type: public_method
             serialized_name: label
-            xml_element:
-                namespace: 'http://kle-online.dk/'
             accessor:
                 getter: getLabel
                 setter: setLabel

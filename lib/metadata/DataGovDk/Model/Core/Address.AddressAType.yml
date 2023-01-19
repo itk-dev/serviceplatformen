@@ -4,8 +4,6 @@ DataGovDk\Model\Core\Address\AddressAType:
             expose: true
             access_type: public_method
             serialized_name: id
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getId
                 setter: setId
@@ -14,8 +12,6 @@ DataGovDk\Model\Core\Address\AddressAType:
             expose: true
             access_type: public_method
             serialized_name: addressLabel
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getAddressLabel
                 setter: setAddressLabel
@@ -24,8 +20,6 @@ DataGovDk\Model\Core\Address\AddressAType:
             expose: true
             access_type: public_method
             serialized_name: houseNumber
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getHouseNumber
                 setter: setHouseNumber
@@ -34,8 +28,6 @@ DataGovDk\Model\Core\Address\AddressAType:
             expose: true
             access_type: public_method
             serialized_name: door
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getDoor
                 setter: setDoor
@@ -44,8 +36,6 @@ DataGovDk\Model\Core\Address\AddressAType:
             expose: true
             access_type: public_method
             serialized_name: floor
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getFloor
                 setter: setFloor
@@ -54,8 +44,6 @@ DataGovDk\Model\Core\Address\AddressAType:
             expose: true
             access_type: public_method
             serialized_name: co
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getCo
                 setter: setCo
@@ -64,8 +52,6 @@ DataGovDk\Model\Core\Address\AddressAType:
             expose: true
             access_type: public_method
             serialized_name: zipCode
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getZipCode
                 setter: setZipCode
@@ -74,8 +60,6 @@ DataGovDk\Model\Core\Address\AddressAType:
             expose: true
             access_type: public_method
             serialized_name: city
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getCity
                 setter: setCity
@@ -84,8 +68,6 @@ DataGovDk\Model\Core\Address\AddressAType:
             expose: true
             access_type: public_method
             serialized_name: country
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getCountry
                 setter: setCountry
@@ -94,8 +76,6 @@ DataGovDk\Model\Core\Address\AddressAType:
             expose: true
             access_type: public_method
             serialized_name: AddressPoint
-            xml_element:
-                namespace: 'https://data.gov.dk/model/core/'
             accessor:
                 getter: getAddressPoint
                 setter: setAddressPoint

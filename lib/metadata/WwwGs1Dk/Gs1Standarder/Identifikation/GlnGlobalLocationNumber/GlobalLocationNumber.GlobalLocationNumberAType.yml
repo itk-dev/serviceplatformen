@@ -4,8 +4,6 @@ WwwGs1Dk\Gs1Standarder\Identifikation\GlnGlobalLocationNumber\GlobalLocationNumb
             expose: true
             access_type: public_method
             serialized_name: globalLocationNumber
-            xml_element:
-                namespace: 'https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/'
             accessor:
                 getter: getGlobalLocationNumber
                 setter: setGlobalLocationNumber
@@ -14,8 +12,6 @@ WwwGs1Dk\Gs1Standarder\Identifikation\GlnGlobalLocationNumber\GlobalLocationNumb
             expose: true
             access_type: public_method
             serialized_name: location
-            xml_element:
-                namespace: 'https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/'
             accessor:
                 getter: getLocation
                 setter: setLocation
