@@ -5,7 +5,7 @@ namespace DataGovDk\Model\Core;
 /**
  * Class representing SeNumber
  */
-class SeNumber
+class SeNumber0
 {
     /**
      * @var string $__value
