@@ -43,7 +43,7 @@ sts-applies-to:
     'http://stoettesystemerne.dk/service/organisation/3'
 
 authority-cvr:
-    the authority cvr number certificate is granted for, i.e. Aarhus Kommune
+    the authority cvr for which certificate is granted, i.e. Aarhus Kommune
     '55133018'
 HELP;
 
@@ -68,7 +68,7 @@ HELP;
             'sts_applies_to' => $options['sts-applies-to'],
         ]);
 
-        $token = $sf1514->fetchSAMLToken();
+        $token = $sf1514->getSAMLToken();
 
         if ($token !== null) {
             $output->writeln('Success getting SAML Token with provided information.');

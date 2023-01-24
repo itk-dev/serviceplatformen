@@ -10,6 +10,7 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class SF1514
 {
@@ -43,6 +44,67 @@ class SF1514
         return (bool)$this->options['test_mode'];
     }
 
+
+    public function getSAMLToken(): ?string
+    {
+        $cache = $this->getCache();
+
+        $cacheKey = $this->getCacheKey(__METHOD__, [
+            'AnvenderKontekst' => ['Cvr' => $this->options['authority_cvr']],
+            'AppliesTo' => ['EndpointReference' => ['Address' => $this->options['sts_applies_to']]],
+        ]);
+
+        $expirationTimeOffset = $this->options['saml_token_expiration_time_offset'];
+
+        $token = $cache->get($cacheKey, function (ItemInterface $item) use ($expirationTimeOffset) {
+            $token = $this->fetchSAMLToken();
+
+            // Set cache expiration time a litte before actual token expiration time.
+            $expirationTime = $this->getSAMLTokenExpirationTime($token)
+                ->modify($expirationTimeOffset);
+            $item->expiresAt($expirationTime);
+
+            return $token;
+        });
+
+        // Check SAML token expiration time (with offset) to make sure that it is still valid.
+        if (null !== $token && $this->getSAMLTokenExpirationTime($token)->modify($expirationTimeOffset) <= new \DateTimeImmutable()) {
+            // Remove expired token from cache and get a new token.
+            $cache->delete($cacheKey);
+            return $this->getSAMLToken();
+        }
+
+        return $token;
+    }
+
+    private function getCache()
+    {
+        return $this->options['cache'];
+    }
+
+    private function getCacheKey(string $key, array $payload): string
+    {
+        return preg_replace(
+            '#[{}()/\\\\@:]+#',
+            '_',
+            $key . '|' . sha1(json_encode($payload+$this->options))
+        );
+    }
+
+    private function getSAMLTokenExpirationTime(string $token): \DateTimeImmutable
+    {
+        $sxe = new \SimpleXMLElement($token);
+
+        $sxe->registerXPathNamespace('assertion', 'urn:oasis:names:tc:SAML:2.0:assertion');
+        $nodes = $sxe->xpath('//assertion:Conditions/@NotOnOrAfter');
+
+        if (empty($nodes)) {
+            throw new \RuntimeException('Cannot get SAML token expiration time');
+        }
+        $notOnOrAfter = reset($nodes);
+
+        return new \DateTimeImmutable((string)$notOnOrAfter);
+    }
 
     public function fetchSAMLToken(): ?string
     {

@@ -50,7 +50,7 @@ sts-applies-to:
     'http://stoettesystemerne.dk/service/organisation/3'
 
 authority-cvr:
-    the authority cvr number certificate is granted for, i.e. Aarhus Kommune
+    the authority cvr for which certificate is granted, i.e. Aarhus Kommune
     '55133018'
 HELP;
 
@@ -68,11 +68,7 @@ HELP;
             array_filter(array_filter($input->getOptions()), fn ($name) => isset($this->inputOptions[$name]), ARRAY_FILTER_USE_KEY)
         );
 
-
         $userId = $options['user-id'];
-
-        // This is only needed in here
-        unset($options['user-id']);
 
         $propertyAccessor = new PropertyAccessor();
 

@@ -379,7 +379,7 @@ class SF1500
      */
     private function fetchSAMLToken(): ?string
     {
-        return $this->sf1514->fetchSAMLToken();
+        return $this->sf1514->getSAMLToken();
     }
 
     private function getPrivateKey(): string
