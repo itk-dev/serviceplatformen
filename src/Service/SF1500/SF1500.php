@@ -1,28 +1,41 @@
 <?php
 
+/**
+ * This file is part of itk-dev/serviceplatformen.
+ *
+ * (c) 2020 ITK Development
+ *
+ * This source file is subject to the MIT license.
+ */
+
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
 use ItkDev\Serviceplatformen\Service\SoapClient;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Contracts\Cache\CacheInterface;
 
 class SF1500
 {
+    private SoapClient $client;
     private PropertyAccessor $propertyAccessor;
     private SF1500XMLBuilder $xmlBuilder;
     private SF1514 $sf1514;
     private array $options;
 
-    public function __construct(PropertyAccessor $propertyAccessor, array $options)
+    public function __construct(SoapClient $client, SF1514 $sf1514, SF1500XMLBuilder $xmlBuilder, PropertyAccessor $propertyAccessor, array $options)
     {
+        $this->client = $client;
+        $this->sf1514 = $sf1514;
+        $this->xmlBuilder = $xmlBuilder;
+        $this->propertyAccessor = $propertyAccessor;
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
         $this->options = $resolver->resolve($options);
-        $this->propertyAccessor = $propertyAccessor;
-        $this->setUpXMLBuilder();
-        $this->setUpSF1514();
     }
 
     /**
@@ -437,7 +450,7 @@ class SF1500
         $request = $this->createXMLRequest($header, $body);
         $request = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
 
-        $response = SoapClient::doSOAP($endpoint, $request, $action);
+        $response = $this->client->doSoap($endpoint, $request, $action);
 
         return $this->responseXMLToArray($response);
     }
@@ -455,7 +468,7 @@ class SF1500
         $request = $this->createXMLRequest($header, $body);
 
         $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-        $response = SoapClient::doSOAP($endpoint, $requestSigned, $action);
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action);
 
         return $this->responseXMLToArray($response);
     }
@@ -474,7 +487,7 @@ class SF1500
         $request = $this->createXMLRequest($header, $body);
 
         $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-        $response = SoapClient::doSOAP($endpoint, $requestSigned, $action);
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action);
 
         return $this->responseXMLToArray($response);
     }
@@ -493,7 +506,7 @@ class SF1500
         $request = $this->createXMLRequest($header, $body);
 
         $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-        $response = SoapClient::doSOAP($endpoint, $requestSigned, $action);
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action);
 
         return $this->responseXMLToArray($response);
     }
@@ -512,7 +525,7 @@ class SF1500
         $request = $this->createXMLRequest($header, $body);
 
         $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-        $response = SoapClient::doSOAP($endpoint, $requestSigned, $action);
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action);
 
         return $this->responseXMLToArray($response);
     }
@@ -531,7 +544,7 @@ class SF1500
         $request = $this->createXMLRequest($header, $body);
 
         $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-        $response = SoapClient::doSOAP($endpoint, $requestSigned, $action);
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action);
 
         return $this->responseXMLToArray($response);
     }
@@ -605,7 +618,6 @@ class SF1500
      */
     private function getValue($data, array $keys, $defaultValue = null)
     {
-
         // @see https://symfony.com/doc/current/components/property_access.html#reading-from-arrays
         $propertyPath = '[' . implode('][', $keys) . ']';
 
@@ -616,25 +628,31 @@ class SF1500
         return $defaultValue;
     }
 
-    /**
-     * Sets up SF1500 XML Builder.
-     */
-    private function setUpXMLBuilder()
-    {
-        $this->xmlBuilder = new SF1500XMLBuilder();
-    }
-
-    private function setUpSF1514()
-    {
-        $this->sf1514 = new SF1514($this->options);
-    }
-
     private function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired([
-            'certificate_locator',
-            'authority_cvr',
-            'sts_applies_to',
-        ]);
+        $resolver
+            ->setRequired([
+                'certificate_locator',
+                'authority_cvr',
+                'sts_applies_to',
+            ])
+            ->setDefaults([
+                'debug' => false,
+                'test_mode' => true,
+                'cache' => static function (Options $options) {
+                    return new FilesystemAdapter();
+                },
+                'certificate_passphrase' => '',
+                'saml_token_svc' => static function (Options $options) {
+                    return $options['test_mode']
+                        ? 'https://adgangsstyring.eksterntest-stoettesystemerne.dk/runtime/services/kombittrust/14/certificatemixed'
+                        : 'https://adgangsstyring.stoettesystemerne.dk/runtime/services/kombittrust/14/certificatemixed';
+                },
+                'saml_token_expiration_time_offset' => '-15 minutes',
+            ])
+            ->setInfo('saml_token_expiration_time_offset', 'Offset used when checking if SAML token is expired. By default the SAML token expires 8 hours after being issued.')
+            ->setAllowedTypes('certificate_locator', CertificateLocatorInterface::class)
+            ->setAllowedTypes('cache', CacheInterface::class)
+        ;
     }
 }

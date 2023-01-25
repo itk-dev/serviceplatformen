@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * This file is part of itk-dev/serviceplatformen.
+ *
+ * (c) 2020 ITK Development
+ *
+ * This source file is subject to the MIT license.
+ */
+
 namespace ItkDev\Serviceplatformen\Service\SF1514;
 
 use DOMXPath;
@@ -14,16 +22,18 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 class SF1514
 {
-    private array $options;
-
     const TOKENTYPE_SAML20 = 'http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0';
     const TOKENTYPE_STATUS = 'http://docs.oasis-open.org/ws-sx/ws-trust/200512/RSTR/Status';
 
     const KEYTYPE_BEARER = 'http://docs.oasis-open.org/ws-sx/ws-trust/200512/Bearer';
     const KEYTYPE_PUBLIC = 'http://docs.oasis-open.org/ws-sx/ws-trust/200512/PublicKey';
 
-    public function __construct(array $options = [])
+    private SoapClient $soapClient;
+    private array $options;
+
+    public function __construct(SoapClient $client, array $options = [])
     {
+        $this->soapClient = $client;
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
 
@@ -59,7 +69,11 @@ class SF1514
         $token = $cache->get($cacheKey, function (ItemInterface $item) use ($expirationTimeOffset) {
             $token = $this->fetchSAMLToken();
 
-            // Set cache expiration time a litte before actual token expiration time.
+            if ($token === null) {
+                throw new ServiceException('Could not fetch SAML Token.');
+            }
+
+            // Set cache expiration time a little before actual token expiration time.
             $expirationTime = $this->getSAMLTokenExpirationTime($token)
                 ->modify($expirationTimeOffset);
             $item->expiresAt($expirationTime);
@@ -119,14 +133,14 @@ class SF1514
 
         $xml = $this->buildSAMLTokenRequestXML($useKey, $this->getPrivateKey(), $cvr, $appliesTo);
 
-        $responseSecurityTokenService = SoapClient::doSOAP($endpointSecurityTokenService, $xml);
+        $responseSecurityTokenService = $this->soapClient->doSoap($endpointSecurityTokenService, $xml, null, true);
 
         // Parse the RSTR that is returned.
         [$domSecurityTokenService, $xpath, $token] = $this->parseRequestSecurityTokenResponse($responseSecurityTokenService);
 
         [$domSecurityTokenService, $token] = $this->getDecrypted($domSecurityTokenService, $xpath, $token, $this->getPrivateKey());
 
-        return $token != null ? $domSecurityTokenService->saveXML($token) : null;
+        return $token !== null ? $domSecurityTokenService->saveXML($token) : null;
     }
 
     private function getCertificate(): string
@@ -339,7 +353,6 @@ class SF1514
      */
     public function getDecrypted(\DOMDocument $dom, $xpath, $token, $pkey, $type = self::TOKENTYPE_SAML20)
     {
-
         $doc = $dom->documentElement;
         $xpath->registerNamespace('xenc', 'http://www.w3.org/2001/04/xmlenc#');
         $xpath->registerNamespace('ds', 'http://www.w3.org/2000/09/xmldsig#');

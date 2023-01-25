@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * This file is part of itk-dev/serviceplatformen.
+ *
+ * (c) 2020 ITK Development
+ *
+ * This source file is subject to the MIT license.
+ */
+
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
 /**
@@ -7,7 +15,6 @@ namespace ItkDev\Serviceplatformen\Service\SF1500;
  */
 class SF1500XMLBuilder
 {
-
     /**
      * Builds XML body for bruger laes.
      */
@@ -47,7 +54,6 @@ XML;
      */
     public function buildBodyBrugerListXML(array $uuids)
     {
-
         $uuidsXML = '';
 
         foreach ($uuids as $uuid) {
@@ -212,7 +218,6 @@ XML;
      */
     public function buildHeaderXML($to, $action, $tokenRaw)
     {
-
         $timestampXML = $this->buildTimestampHeaderXML($this->generateUuid());
         $actionXML = '<a:Action s:mustUnderstand="1" u:Id="_2">' . $action . '</a:Action>';
         $messageXML = '<a:MessageID u:Id="_3">urn:uuid:' . $this->generateUuid() . '</a:MessageID>';
@@ -267,7 +272,6 @@ XML;
      */
     public function buildSignedRequest($requestSimple, $privKey)
     {
-
         $documentRequest = new \DOMDocument('1.0', 'utf-8');
         $documentRequest->preserveWhiteSpace = false;
         $documentRequest->formatOutput = false;
@@ -287,7 +291,7 @@ XML;
         ];
 
         foreach ($referenceIds as &$value) {
-            $isSTR = ($value == 'SecurityTokenReference');
+            $isSTR = ($value === 'SecurityTokenReference');
 
             $tags = $documentRequest->getElementsByTagName($value);
 

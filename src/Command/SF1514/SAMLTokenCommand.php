@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * This file is part of itk-dev/serviceplatformen.
+ *
+ * (c) 2020 ITK Development
+ *
+ * This source file is subject to the MIT license.
+ */
+
 namespace ItkDev\Serviceplatformen\Command\SF1514;
 
 use ItkDev\Serviceplatformen\Certificate\FilesystemCertificateLocator;
@@ -19,8 +27,9 @@ class SAMLTokenCommand extends Command
     protected function configure()
     {
         $inputOptions = [
+            new InputOption('production', null, InputOption::VALUE_NONE, 'production mode'),
             new InputOption('certificate', null, InputOption::VALUE_REQUIRED, 'path to certificate'),
-            new InputOption('passphrase', null, InputOption::VALUE_REQUIRED, 'passphrase to certificate'),
+            new InputOption('passphrase', null, InputOption::VALUE_OPTIONAL, 'passphrase to certificate'),
             new InputOption('authority-cvr', null, InputOption::VALUE_REQUIRED, 'authority cvr', '55133018'),
             new InputOption('sts-applies-to', null, InputOption::VALUE_REQUIRED, 'service SAML token should apply to'),
         ];
@@ -37,6 +46,7 @@ certificate:
 passphrase:
     the passphrase for p12 certificate, i.e.
     'XYZ'
+    defaults to the empty string if not provided
 
 sts-applies-to:
     the service SAML token should grant access to, i.e. SF1500 Organisation
@@ -62,11 +72,18 @@ HELP;
 
         $certificateLocator = new FilesystemCertificateLocator($options['certificate'], $options['passphrase']);
 
-        $sf1514 = new SF1514([
+        $soapClient = new SoapClient([
+            'cache_expiration_time' => 'tomorrow 7am',
+        ]);
+
+        $sf1514Options = [
             'certificate_locator' => $certificateLocator,
             'authority_cvr' => $options['authority-cvr'],
             'sts_applies_to' => $options['sts-applies-to'],
-        ]);
+            'test_mode' => !$options['production'],
+        ];
+
+        $sf1514 = new SF1514($soapClient, $sf1514Options);
 
         $token = $sf1514->getSAMLToken();
 
@@ -87,6 +104,10 @@ HELP;
                 'passphrase',
                 'authority-cvr',
                 'sts-applies-to',
+            ])
+            ->setDefaults([
+                'passphrase' => '',
+                'production' => false,
             ])
         ;
     }
