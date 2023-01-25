@@ -67,6 +67,7 @@ HELP;
 
         $this->setHelp($help);
 
+        // Index by option name.
         $this->inputOptions = array_combine(array_map(fn (InputOption $option) => $option->getName(), $inputOptions), $inputOptions);
     }
 

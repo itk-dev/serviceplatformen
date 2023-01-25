@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added support for 
+  [SF1500](https://digitaliseringskataloget.dk/integration/sf1500)
+- Added support for 
+  [SF1514](https://digitaliseringskataloget.dk/integration/sf1514)
+
 ## [1.2.0] - 2023-01-18
 
 ### Added
