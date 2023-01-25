@@ -27,6 +27,8 @@ class SF1500LookupCommand extends Command
 {
     protected static $defaultName = 'serviceplatformen:sf1500:lookup';
 
+    private array $inputOptions = [];
+
     protected function configure()
     {
         $inputOptions = [

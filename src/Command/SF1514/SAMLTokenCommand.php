@@ -24,6 +24,8 @@ class SAMLTokenCommand extends Command
 {
     protected static $defaultName = 'serviceplatformen:sf1514:saml-token';
 
+    private array $inputOptions = [];
+
     protected function configure()
     {
         $inputOptions = [
