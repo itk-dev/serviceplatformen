@@ -35,7 +35,7 @@
         "symfony/cache": "^5.4 || ^6.0",
         "symfony/http-client": "^5.4 || ^6.0",
         "symfony/options-resolver": "^5.4 || ^6.0",
-        "symfony/property-access": "^5.4 || ^6.0",
+        "symfony/property-access": "^4.4 || ^5.4 || ^6.0",
         "symfony/string": "^5.4 || ^6.0",
         "symfony/uid": "^5.4 || ^6.0",
         "wsdltophp/packagebase": "^5.0"
