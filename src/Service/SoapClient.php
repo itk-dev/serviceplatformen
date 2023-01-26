@@ -31,7 +31,7 @@ class SoapClient
     /**
      * Executes Soap request.
      */
-    public function doSoap($url, $request, $action = null, $noCache = false)
+    public function doSoap($url, $request, $action = null, $noCache = false, $cacheKeyOptions = [])
     {
         if ($noCache) {
             return $this->call($url, $request, $action);
@@ -40,9 +40,7 @@ class SoapClient
         $cache = $this->getCache();
 
         $cacheKey = $this->getCacheKey(__METHOD__, [
-            'url' => $url,
-            'request' => $request,
-            'action' => $action,
+            $cacheKeyOptions
         ]);
 
         $expirationTime = new \DateTime($this->options['cache_expiration_time']);

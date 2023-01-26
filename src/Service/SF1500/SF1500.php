@@ -440,17 +440,21 @@ class SF1500
      */
     private function brugerLaes($brugerId, $token)
     {
-        $body = $this->xmlBuilder->buildBodyBrugerLaesXML($brugerId);
-
         $endpoint = 'https://organisation.eksterntest-stoettesystemerne.dk/organisation/bruger/6/';
         $action = 'http://kombit.dk/sts/organisation/bruger/laes';
 
         $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
-
+        $body = $this->xmlBuilder->buildBodyBrugerLaesXML($brugerId);
         $request = $this->createXMLRequest($header, $body);
-        $request = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
 
-        $response = $this->client->doSoap($endpoint, $request, $action);
+        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
+
+        $cacheKeyOptions = [
+            __METHOD__,
+            $brugerId,
+        ];
+
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
 
         return $this->responseXMLToArray($response);
     }
@@ -468,7 +472,13 @@ class SF1500
         $request = $this->createXMLRequest($header, $body);
 
         $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action);
+
+        $cacheKeyOptions = [
+            __METHOD__,
+            $adresseID,
+        ];
+
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
 
         return $this->responseXMLToArray($response);
     }
@@ -483,11 +493,16 @@ class SF1500
 
         $body = $this->xmlBuilder->buildBodyOrganisationEnhedLaesXML($orgEnhedId);
         $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
-
         $request = $this->createXMLRequest($header, $body);
 
         $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action);
+
+        $cacheKeyOptions = [
+            __METHOD__,
+            $orgEnhedId,
+        ];
+
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
 
         return $this->responseXMLToArray($response);
     }
@@ -502,11 +517,16 @@ class SF1500
 
         $body = $this->xmlBuilder->buildBodyOrganisationFunktionLaesXML($orgFunktionId);
         $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
-
         $request = $this->createXMLRequest($header, $body);
 
         $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action);
+
+        $cacheKeyOptions = [
+            __METHOD__,
+            $orgFunktionId,
+        ];
+
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
 
         return $this->responseXMLToArray($response);
     }
@@ -521,11 +541,17 @@ class SF1500
 
         $body = $this->xmlBuilder->buildBodyOrganisationFunktionSoegXML($orgBrugerId, $funktionsNavn, null);
         $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
-
         $request = $this->createXMLRequest($header, $body);
 
         $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action);
+
+        $cacheKeyOptions = [
+            __METHOD__,
+            $orgBrugerId,
+            $funktionsNavn,
+        ];
+
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
 
         return $this->responseXMLToArray($response);
     }
@@ -540,11 +566,16 @@ class SF1500
 
         $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
         $body = $this->xmlBuilder->buildBodyPersonLaesXML($personId);
-
         $request = $this->createXMLRequest($header, $body);
 
         $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action);
+
+        $cacheKeyOptions = [
+            __METHOD__,
+            $personId,
+        ];
+
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
 
         return $this->responseXMLToArray($response);
     }
