@@ -112,7 +112,7 @@ HELP;
             return static::SUCCESS;
         }
 
-        $organisationFunktionsId = $sf1500->getOrganisationFunktioner($userId);
+        $organisationFunktionsId = $sf1500->soegOrganisationFunktioner($userId, null, null, null);
 
         // Select just one of the organisation funktioner(ansættelser).
         if (is_array($organisationFunktionsId)) {

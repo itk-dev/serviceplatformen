@@ -134,11 +134,13 @@ XML;
     /**
      * Builds XML body for organisation funktion soeg.
      */
-    public function buildBodyOrganisationFunktionSoegXML(?string $brugerUuid, ?string $funktionNavn, ?string $organisationUuid)
+    public function buildBodyOrganisationFunktionSoegXML(?string $brugerUuid, ?string $funktionNavn, ?string $organisationUuid, ?string $funktionsTypeId)
     {
         $funktionNavnXML = '';
         $brugerXML = '';
         $orgXML = '';
+        $funktionsTypeXML = '';
+
 
         if ($funktionNavn !== null) {
             $funktionNavnXML = <<<XML
@@ -155,6 +157,7 @@ XML;
       </TilknyttedeBrugere>
 XML;
         }
+
         if ($organisationUuid !== null) {
             $orgXML = <<<XML
       <TilknyttedeEnheder xmlns="urn:oio:sagdok:3.0.0">
@@ -162,6 +165,16 @@ XML;
             <UUIDIdentifikator xmlns="urn:oio:sagdok:3.0.0">$organisationUuid</UUIDIdentifikator>
           </ReferenceID>
       </TilknyttedeEnheder>
+XML;
+        }
+
+        if ($funktionsTypeId !== null) {
+            $funktionsTypeXML = <<<XML
+        <Funktionstype xmlns="urn:oio:sagdok:3.0.0">
+          <ReferenceID>
+            <UUIDIdentifikator xmlns="urn:oio:sagdok:3.0.0">$funktionsTypeId</UUIDIdentifikator>
+          </ReferenceID>
+      </Funktionstype>
 XML;
         }
 
@@ -175,6 +188,7 @@ XML;
       </AttributListe>
       <TilstandListe/>
       <RelationListe>
+        $funktionsTypeXML
         $brugerXML
         $orgXML
       </RelationListe>

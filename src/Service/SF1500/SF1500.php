@@ -108,7 +108,15 @@ class SF1500
     /**
      * Fetches organisations funktioner from SF1500.
      */
-    public function getOrganisationFunktioner(string $brugerId)
+    public function getOrganisationFunktionerFromUserId(string $brugerId)
+    {
+        return $this->soegOrganisationFunktioner($brugerId, null, null, null);
+    }
+
+    /**
+     * Searches for organisations funktioner from SF1500.
+     */
+    public function soegOrganisationFunktioner(?string $brugerId, ?string $funktionsNavn, ?string $organisationId, ?string $funktionsTypeId)
     {
         $token = $this->fetchSAMLToken();
 
@@ -116,7 +124,7 @@ class SF1500
             return '';
         }
 
-        $data = $this->organisationFunktionSoeg($brugerId, null, $token);
+        $data = $this->organisationFunktionSoeg($brugerId, $funktionsNavn, $organisationId, $funktionsTypeId, $token);
 
         $idListeKeys = [
             'ns3SoegOutput',
@@ -387,6 +395,13 @@ class SF1500
         return $enhedsNavn;
     }
 
+    public function laesOrganisationFunktion($id)
+    {
+        $token = $this->fetchSAMLToken();
+
+        return $this->organisationFunktionLaes($id, $token);
+    }
+
     /**
      * Fetches SAML token from SF1514.
      */
@@ -534,12 +549,12 @@ class SF1500
     /**
      * Performs organisation funktion soeg action.
      */
-    private function organisationFunktionSoeg($orgBrugerId, $funktionsNavn, string $token)
+    private function organisationFunktionSoeg(?string $brugerId, ?string $funktionsNavn, ?string $organisationsId, ?string $funktionsTypeId, $token)
     {
         $endpoint = 'https://organisation.eksterntest-stoettesystemerne.dk/organisation/organisationfunktion/6/';
         $action = 'http://kombit.dk/sts/organisation/organisationfunktion/soeg';
 
-        $body = $this->xmlBuilder->buildBodyOrganisationFunktionSoegXML($orgBrugerId, $funktionsNavn, null);
+        $body = $this->xmlBuilder->buildBodyOrganisationFunktionSoegXML($brugerId, $funktionsNavn, $organisationsId, $funktionsTypeId);
         $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
         $request = $this->createXMLRequest($header, $body);
 
@@ -547,8 +562,10 @@ class SF1500
 
         $cacheKeyOptions = [
             __METHOD__,
-            $orgBrugerId,
+            $brugerId,
             $funktionsNavn,
+            $organisationsId,
+            $funktionsTypeId,
         ];
 
         $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
