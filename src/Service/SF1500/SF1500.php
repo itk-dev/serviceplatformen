@@ -365,6 +365,7 @@ class SF1500
 
         $data = $this->organisationEnhedLaes($orgEnhedId, $token);
 
+
         $enhedsNavnKeys = [
             'ns3LaesOutput',
             'ns3FiltreretOejebliksbillede',
@@ -374,9 +375,25 @@ class SF1500
             'ns2EnhedNavn',
         ];
 
-        $enhedsNavn = $this->getValue($data, $enhedsNavnKeys);
+        $enhedNavn = $this->getValue($data, $enhedsNavnKeys);
 
-        // Follow organisation until parent does not exist, updating $enhedsNavn.
+        $data = $this->getEnhedNavnOgOverordnetOrganisationsId($orgEnhedId, $token);
+
+        while ($orgEnhedId = $data['overordnet_id']) {
+            $enhedNavn = $data['enhedNavn'];
+            $data = $this->getEnhedNavnOgOverordnetOrganisationsId($orgEnhedId, $token);
+        }
+
+        return $enhedNavn;
+    }
+
+    /**
+     * Fetches enhedsnavn and overordnet organisations id.
+     */
+    public function getEnhedNavnOgOverordnetOrganisationsId($organisationEnhedsId, $token): array
+    {
+        $data = $this->organisationEnhedLaes($organisationEnhedsId, $token);
+
         $overordnetKeys = [
             'ns3LaesOutput',
             'ns3FiltreretOejebliksbillede',
@@ -387,12 +404,90 @@ class SF1500
             'ns2UUIDIdentifikator',
         ];
 
-        while ($orgEnhedId = $this->getValue($data, $overordnetKeys)) {
-            $enhedsNavn = $this->getValue($data, $enhedsNavnKeys);
-            $data = $this->organisationEnhedLaes($orgEnhedId, $token);
+        $enhedsNavnKeys = [
+            'ns3LaesOutput',
+            'ns3FiltreretOejebliksbillede',
+            'ns3Registrering',
+            'ns3AttributListe',
+            'ns3Egenskab',
+            'ns2EnhedNavn',
+        ];
+
+        return [
+            'overordnet_id' => $this->getValue($data, $overordnetKeys),
+            'enhedNavn' => $this->getValue($data, $enhedsNavnKeys),
+        ];
+    }
+
+    /**
+     * Fetches bruger and organisation funktions id for nearest manager or null if no manager exists.
+     */
+    public function getNearestManagerBrugerAndFunktionsId($userId, $managerFunktionsTypeId)
+    {
+        $token = $this->fetchSAMLToken();
+
+        if (null === $token) {
+            return '';
         }
 
-        return $enhedsNavn;
+        $organisationFunktionsId = $this->getOrganisationFunktionerFromUserId($userId);
+
+        // Select just one of the organisation funktioner(ansættelser).
+        if (is_array($organisationFunktionsId)) {
+            $organisationFunktionsId = reset($organisationFunktionsId);
+        }
+
+        $orgId = $this->getOrganisationEnhed($organisationFunktionsId, true);
+
+        $managerFunktionIds = $this->soegOrganisationFunktioner(null, null, $orgId, $managerFunktionsTypeId);
+
+        // Select just one of the organisation funktioner(ansættelser).
+        if (is_array($managerFunktionIds)) {
+            $managerFunktionIds = reset($managerFunktionIds);
+        }
+
+        $managerBrugerId = $this->getBrugerIdFromOrganisationFunktion($managerFunktionIds);
+
+        // If user is a manager, find manager of overordnet organisation.
+        if ($managerBrugerId === $userId) {
+            $overordnetOrganisationId = $this->getEnhedNavnOgOverordnetOrganisationsId($orgId, $token)['overordnet_id'];
+            $managerFunktionIds = $this->soegOrganisationFunktioner(null, null, $overordnetOrganisationId, $managerFunktionsTypeId);
+
+            if (null === $managerFunktionIds) {
+                // We have reached the top.
+                return null;
+            }
+
+            // Select just one of the organisation funktioner(ansættelser).
+            if (is_array($managerFunktionIds)) {
+                $managerFunktionIds = reset($managerFunktionIds);
+            }
+
+            $managerBrugerId = $this->getBrugerIdFromOrganisationFunktion($managerFunktionIds);
+        }
+
+        return [
+            'brugerId' => $managerBrugerId,
+            'funktionsId' => $managerFunktionIds,
+        ];
+    }
+
+    public function getPersonLaes($personId)
+    {
+        $token = $this->fetchSAMLToken();
+
+        $data = $this->personLaes($personId, $token);
+
+        return $data;
+    }
+
+    public function getPersonSoeg($name)
+    {
+        $token = $this->fetchSAMLToken();
+
+        $data = $this->personSoeg($name, $token);
+
+        return $data;
     }
 
     public function laesOrganisationFunktion($id)
@@ -400,6 +495,27 @@ class SF1500
         $token = $this->fetchSAMLToken();
 
         return $this->organisationFunktionLaes($id, $token);
+    }
+
+    public function getBrugerIdFromOrganisationFunktion($organisationFunktionsId)
+    {
+        $token = $this->fetchSAMLToken();
+
+        $data = $this->organisationFunktionLaes($organisationFunktionsId, $token);
+
+        $enhedsNavnKeys = [
+            'ns3LaesOutput',
+            'ns3FiltreretOejebliksbillede',
+            'ns3Registrering',
+            'ns3RelationListe',
+            'ns2TilknyttedeBrugere',
+            'ns2ReferenceID',
+            'ns2UUIDIdentifikator',
+        ];
+
+        $brugerId = $this->getValue($data, $enhedsNavnKeys);
+
+        return $brugerId;
     }
 
     /**
@@ -455,7 +571,7 @@ class SF1500
      */
     private function brugerLaes($brugerId, $token)
     {
-        $endpoint = 'https://organisation.eksterntest-stoettesystemerne.dk/organisation/bruger/6/';
+        $endpoint = $this->generateServiceEndpoint('/organisation/bruger/6/');
         $action = 'http://kombit.dk/sts/organisation/bruger/laes';
 
         $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
@@ -479,7 +595,7 @@ class SF1500
      */
     private function adresseLaes($adresseID, string $token)
     {
-        $endpoint = 'https://organisation.eksterntest-stoettesystemerne.dk/organisation/adresse/6/';
+        $endpoint = $this->generateServiceEndpoint('/organisation/adresse/6/');
         $action = 'http://kombit.dk/sts/organisation/adresse/laes';
 
         $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
@@ -503,7 +619,7 @@ class SF1500
      */
     private function organisationEnhedLaes($orgEnhedId, string $token)
     {
-        $endpoint = 'https://organisation.eksterntest-stoettesystemerne.dk/organisation/organisationenhed/6/';
+        $endpoint = $this->generateServiceEndpoint('/organisation/organisationenhed/6/');
         $action = 'http://kombit.dk/sts/organisation/organisationenhed/laes';
 
         $body = $this->xmlBuilder->buildBodyOrganisationEnhedLaesXML($orgEnhedId);
@@ -527,7 +643,7 @@ class SF1500
      */
     private function organisationFunktionLaes($orgFunktionId, string $token)
     {
-        $endpoint = 'https://organisation.eksterntest-stoettesystemerne.dk/organisation/organisationfunktion/6/';
+        $endpoint = $this->generateServiceEndpoint('/organisation/organisationfunktion/6/');
         $action = 'http://kombit.dk/sts/organisation/organisationfunktion/laes';
 
         $body = $this->xmlBuilder->buildBodyOrganisationFunktionLaesXML($orgFunktionId);
@@ -551,7 +667,7 @@ class SF1500
      */
     private function organisationFunktionSoeg(?string $brugerId, ?string $funktionsNavn, ?string $organisationsId, ?string $funktionsTypeId, $token)
     {
-        $endpoint = 'https://organisation.eksterntest-stoettesystemerne.dk/organisation/organisationfunktion/6/';
+        $endpoint = $this->generateServiceEndpoint('/organisation/organisationfunktion/6/');
         $action = 'http://kombit.dk/sts/organisation/organisationfunktion/soeg';
 
         $body = $this->xmlBuilder->buildBodyOrganisationFunktionSoegXML($brugerId, $funktionsNavn, $organisationsId, $funktionsTypeId);
@@ -578,7 +694,7 @@ class SF1500
      */
     private function personLaes($personId, string $token)
     {
-        $endpoint = 'https://organisation.eksterntest-stoettesystemerne.dk/organisation/person/6/';
+        $endpoint = $this->generateServiceEndpoint('/organisation/person/6/');
         $action = 'http://kombit.dk/sts/organisation/person/laes';
 
         $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
@@ -590,6 +706,30 @@ class SF1500
         $cacheKeyOptions = [
             __METHOD__,
             $personId,
+        ];
+
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
+
+        return $this->responseXMLToArray($response);
+    }
+
+    /**
+     * Performs person soeg action.
+     */
+    private function personSoeg($name, string $token)
+    {
+        $endpoint = $this->generateServiceEndpoint('/organisation/person/6/');
+        $action = 'http://kombit.dk/sts/organisation/person/soeg';
+
+        $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
+        $body = $this->xmlBuilder->buildBodyPersonSoegXML($name);
+        $request = $this->createXMLRequest($header, $body);
+
+        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
+
+        $cacheKeyOptions = [
+            __METHOD__,
+            $name,
         ];
 
         $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
@@ -662,6 +802,14 @@ class SF1500
     }
 
     /**
+     * Computes full service endpoint.
+     */
+    private function generateServiceEndpoint(string $serviceEndpointPath)
+    {
+        return $this->options['service_endpoint_domain'].$serviceEndpointPath;
+    }
+
+    /**
      * Gets value from data according to keys.
      */
     private function getValue($data, array $keys, $defaultValue = null)
@@ -697,6 +845,11 @@ class SF1500
                         : 'https://adgangsstyring.stoettesystemerne.dk/runtime/services/kombittrust/14/certificatemixed';
                 },
                 'saml_token_expiration_time_offset' => '-15 minutes',
+                'service_endpoint_domain' => static function (Options $options) {
+                    return $options['test_mode']
+                        ? 'https://organisation.eksterntest-stoettesystemerne.dk'
+                        : 'https://organisation.stoettesystemerne.dk';
+                },
             ])
             ->setInfo('saml_token_expiration_time_offset', 'Offset used when checking if SAML token is expired. By default the SAML token expires 8 hours after being issued.')
             ->setAllowedTypes('certificate_locator', CertificateLocatorInterface::class)
