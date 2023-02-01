@@ -15,7 +15,6 @@
     ],
     "bin": [
         "bin/serviceplatformen-sf1500-data-lookup",
-        "bin/serviceplatformen-sf1514-saml-token",
         "bin/serviceplatformen-sf1601-kombipostafsend"
     ],
     "require": {
