@@ -39,11 +39,9 @@ class SoapClient
 
         $cache = $this->getCache();
 
-        $cacheKey = $this->getCacheKey(__METHOD__, [
-            $cacheKeyOptions
-        ]);
+        $cacheKey = $this->getCacheKey(__METHOD__, $cacheKeyOptions);
 
-        $expirationTime = new \DateTime($this->options['cache_expiration_time']);
+        $expirationTime = $this->determineExpirationDateTime();
 
         return $cache->get($cacheKey, function (ItemInterface $item) use ($url, $request, $action, $expirationTime) {
             $response = $this->call($url, $request, $action);
@@ -61,17 +59,13 @@ class SoapClient
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_SSLVERSION, 6);
 
-        if ($action !== null) {
-            $headers = [
-                'Content-Type: application/soap+xml; charset=utf-8; action="' . $action . '"',
-                "Content-Length: " . strlen($request),
-            ];
-        } else {
-            $headers = [
-                'Content-Type: application/soap+xml; charset=utf-8',
-                "Content-Length: " . strlen($request),
-            ];
-        }
+
+        $headers = [
+            null !== $action
+                ? 'Content-Type: application/soap+xml; charset=utf-8; action="' . $action . '"'
+                : 'Content-Type: application/soap+xml; charset=utf-8',
+            'Content-Length: ' . strlen($request),
+        ];
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
@@ -87,7 +81,7 @@ class SoapClient
         return $result;
     }
 
-    private function getCache()
+    private function getCache(): CacheInterface
     {
         return $this->options['cache'];
     }
@@ -101,6 +95,24 @@ class SoapClient
         );
     }
 
+    public function determineExpirationDateTime(): ?\DateTimeImmutable
+    {
+        $now = new \DateTimeImmutable('now');
+        $times = [];
+        foreach ($this->options['cache_expiration_time'] as $spec) {
+            try {
+                $time = $now->modify($spec);
+                if ($time > $now) {
+                    $times[] = $time;
+                }
+            } catch (\Exception $exception) {
+                // Ignore any exceptions.
+            }
+        }
+
+        return empty($times) ? null : min([...$times]);
+    }
+
     protected function configureOptions(OptionsResolver $resolver)
     {
         $resolver
@@ -112,6 +124,8 @@ class SoapClient
                     return new FilesystemAdapter();
                 },
             ])
-            ->setAllowedTypes('cache', CacheInterface::class);
+            ->setAllowedTypes('cache', CacheInterface::class)
+            ->setAllowedTypes('cache_expiration_time', 'string[]')
+        ;
     }
 }

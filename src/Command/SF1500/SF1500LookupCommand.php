@@ -18,6 +18,7 @@ use ItkDev\AzureKeyVault\KeyVault\VaultSecret;
 use ItkDev\Serviceplatformen\Certificate\AzureKeyVaultCertificateLocator;
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Certificate\FilesystemCertificateLocator;
+use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
 use ItkDev\Serviceplatformen\Service\SF1500\SF1500;
 use ItkDev\Serviceplatformen\Service\SF1500\SF1500XMLBuilder;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
@@ -33,11 +34,9 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class SF1500LookupCommand extends Command
 {
-    const SF1500_TEST_MANAGER_FUNKTIONSTYPE_ID = '46c73630-f7ad-4000-9624-c06131cde671';
-    const SF1500_PROD_MANAGER_FUNKTIONSTYPE_ID = 'to_be_found';
+    const SF1500_SERVICE_ENDPOINT = 'http://stoettesystemerne.dk/service/organisation/3';
 
     protected static $defaultName = 'serviceplatformen:sf1500:lookup';
-
     private array $inputOptions = [];
 
     protected function configure()
@@ -48,8 +47,8 @@ class SF1500LookupCommand extends Command
             new InputOption('user-id', null, InputOption::VALUE_REQUIRED, 'user id'),
             new InputOption('certificate', null, InputOption::VALUE_REQUIRED, 'path to certificate'),
             new InputOption('passphrase', null, InputOption::VALUE_OPTIONAL, 'passphrase for certificate', ''),
-            new InputOption('authority-cvr', null, InputOption::VALUE_REQUIRED, 'authority cvr', '55133018'),
-            new InputOption('sts-applies-to', null, InputOption::VALUE_REQUIRED, 'service SAML token should apply to'),
+            new InputOption('authority-cvr', null, InputOption::VALUE_REQUIRED, 'authority cvr'),
+            new InputOption('manager-type-id', null, InputOption::VALUE_REQUIRED, 'manager type id'),
         ];
         $this->setDefinition(new InputDefinition($inputOptions));
 
@@ -60,6 +59,10 @@ class SF1500LookupCommand extends Command
 user-id:
     a user id, e.g.
     'ffdb7559-2ad3-4662-9fd4-d69859939b66'
+
+manager-type-id:
+    the id associated with manager type, e.g.
+    '46c73630-f7ad-4000-9624-c06131cde671'
 
 certificate:
     The certificate option can be a file path to a PKCS #12 certificate or a url query string with options for getting the certificate from an Azure Key Vault, e.g. (newlines added for readability and proper url encoding skipped)
@@ -79,10 +82,6 @@ passphrase:
     'XYZ'
     defaults to the empty string if not provided
 
-sts-applies-to:
-    the service SAML token should grant access to, i.e. SF1500 Organisation
-    'http://stoettesystemerne.dk/service/organisation/3'
-
 authority-cvr:
     the authority cvr for which certificate is granted, e.g. Aarhus Kommune
     '55133018'
@@ -91,7 +90,7 @@ production:
     use --production to use production mode rather than test mode
 
 manager:
-    user --manager to get information on the manger of provided user-id
+    use --manager to get information on the manager of provided user-id
 
 HELP;
 
@@ -101,6 +100,9 @@ HELP;
         $this->inputOptions = array_combine(array_map(fn (InputOption $option) => $option->getName(), $inputOptions), $inputOptions);
     }
 
+    /**
+     * @throws SF1500Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $resolver = new OptionsResolver();
@@ -116,13 +118,13 @@ HELP;
         $certificateLocator = $this->getCertificateLocator($options['certificate'], $options['passphrase']);
 
         $soapClient = new SoapClient([
-            'cache_expiration_time' => 'tomorrow 7am',
+            'cache_expiration_time' => ['7am', 'tomorrow 7am'],
         ]);
 
         $serviceOptions = [
             'certificate_locator' => $certificateLocator,
             'authority_cvr' => $options['authority-cvr'],
-            'sts_applies_to' => $options['sts-applies-to'],
+            'sts_applies_to' => self::SF1500_SERVICE_ENDPOINT,
             'test_mode' => !$options['production'],
         ];
 
@@ -130,58 +132,84 @@ HELP;
 
         $sf1500XMLBuilder = new SF1500XMLBuilder();
 
+        unset($serviceOptions['sts_applies_to']);
+
         $sf1500 = new SF1500($soapClient, $sf1514, $sf1500XMLBuilder, $propertyAccessor, $serviceOptions);
 
         // Use a lookup on name as an indicator for whether user-id exists or not.
         $name = $sf1500->getPersonName($userId);
 
         if (!$name) {
-            $output->writeln(sprintf('Could not find any user with the id: %s', $userId));
-            return static::SUCCESS;
+            $output->writeln(sprintf('Invalid user id: %s', $userId));
+            return static::FAILURE;
         }
 
         if ($options['manager']) {
             // Convert user-id into manager.
+            $managerInfos = $sf1500->getManagerBrugerAndFunktionsIdFromUserId($userId, $options['manager-type-id']);
 
-            $lederFunktionsTypeId = !$options['production'] ? self::SF1500_TEST_MANAGER_FUNKTIONSTYPE_ID : self::SF1500_PROD_MANAGER_FUNKTIONSTYPE_ID;
+            if (null !== $managerInfos) {
+                $output->writeln('Finding information on managers of: '. $sf1500->getPersonName($userId));
 
-            $managerInfo = $sf1500->getNearestManagerBrugerAndFunktionsId($userId, $lederFunktionsTypeId);
+                $count = 1;
+                foreach ($managerInfos as $managerInfo) {
+                    if (null === $managerInfo) {
+                        // User funktion does not have an immediate manager.
+                        continue;
+                    }
+                    $output->writeln(sprintf('Printing data for manager %s', $count));
+                    $userId = $managerInfo['brugerId'];
+                    $organisationFunktionsId = $managerInfo['funktionsId'];
 
-            if (null !== $managerInfo) {
-                $output->writeln('Finding information on manger of: '. $sf1500->getPersonName($userId));
+                    $this->outputData($output, $sf1500, $userId, [$organisationFunktionsId]);
+                    $count++;
+                }
 
-                $userId = $managerInfo['brugerId'];
-                $organisationFunktionsId = $managerInfo['funktionsId'];
+                return static::SUCCESS;
             } else {
                 $output->writeln('Could not find a manager for: '. $sf1500->getPersonName($userId));
-                return static::SUCCESS;
+                return static::FAILURE;
             }
         } else {
-            $organisationFunktionsId = $sf1500->getOrganisationFunktionerFromUserId($userId);
-
-            // Select just one of the organisation funktioner(ansættelser).
-            if (is_array($organisationFunktionsId)) {
-                $organisationFunktionsId = reset($organisationFunktionsId);
-            }
+            $organisationFunktionsIds = $sf1500->getOrganisationFunktionerFromUserId($userId);
         }
 
+        if (!$organisationFunktionsIds) {
+            $output->writeln('Could not find any organisation funktion(ansættelse) for provided user id.');
+        }
+
+        if (is_array($organisationFunktionsIds)) {
+            $this->outputData($output, $sf1500, $userId, $organisationFunktionsIds);
+        } else {
+            $this->outputData($output, $sf1500, $userId, [$organisationFunktionsIds]);
+        }
+
+
+        return static::SUCCESS;
+    }
+
+    private function outputData(OutputInterface $output, SF1500 $sf1500, string $userId, array $funktiondIds)
+    {
         $output->writeln('Name: '. $sf1500->getPersonName($userId));
         $output->writeln('Phone: '. $sf1500->getPersonPhone($userId));
         $output->writeln('Email: '. $sf1500->getPersonEmail($userId));
         $output->writeln('Az: '. $sf1500->getPersonAZIdent($userId));
         $output->writeln('Location: '. $sf1500->getPersonLocation($userId));
 
-        if (!$organisationFunktionsId) {
-            $output->writeln('Could not find any organisation funktion(ansættelse) for provided user id.');
-        } else {
-            $output->writeln('Organisation funktion: '. $organisationFunktionsId);
-            $output->writeln('Organisations enhed: '. $sf1500->getOrganisationEnhed($organisationFunktionsId));
-            $output->writeln('Organisations adresse: '. $sf1500->getOrganisationAddress($organisationFunktionsId));
-            $output->writeln('Organisations enhed niveau 2: '. $sf1500->getOrganisationEnhedNiveauTo($organisationFunktionsId));
-            $output->writeln('Magistrat: '. $sf1500->getPersonMagistrat($organisationFunktionsId));
+        foreach ($funktiondIds as $funktionsId) {
+            $this->outputFunktionsData($output, $sf1500, $funktionsId);
         }
+    }
 
-        return static::SUCCESS;
+
+    private function outputFunktionsData(OutputInterface $output, SF1500 $sf1500, string $funktionsId)
+    {
+        $output->writeln('Organisation funktion: '. $funktionsId);
+        $output->writeln('Organisation funktions navn: '. $sf1500->getFunktionsNavn($funktionsId));
+        $output->writeln('Organisations enhed: '. $sf1500->getOrganisationEnhed($funktionsId));
+        $output->writeln('Organisations adresse: '. $sf1500->getOrganisationAddress($funktionsId));
+        $output->writeln('Organisations enhed niveau 2: '. $sf1500->getOrganisationEnhedNiveauTo($funktionsId));
+        $output->writeln('Magistrat: '. $sf1500->getPersonMagistrat($funktionsId));
     }
 
     private function getCertificateLocator(string $spec, string $passphrase): CertificateLocatorInterface
@@ -255,7 +283,7 @@ HELP;
                 'certificate',
                 'passphrase',
                 'authority-cvr',
-                'sts-applies-to',
+                'manager-type-id',
             ])
             ->setDefaults([
                 'passphrase' => '',

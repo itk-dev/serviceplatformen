@@ -156,7 +156,6 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
     public function jsonSerialize()
     {
         return parent::jsonSerialize() + [
-                'vaultSecret' => $this->hideSecret($this->vaultSecret->getSecret($this->certificateName, $this->version)),
                 'certificateName' => $this->certificateName,
                 'version' => $this->version,
             ];

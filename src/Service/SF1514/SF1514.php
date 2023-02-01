@@ -10,8 +10,8 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1514;
 
-use DOMXPath;
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
+use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
 use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
 use ItkDev\Serviceplatformen\Service\SoapClient;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -55,7 +55,10 @@ class SF1514
     }
 
 
-    public function getSAMLToken(): ?string
+    /**
+     * @throws SAMLTokenException
+     */
+    public function getSAMLToken(): string
     {
         $cache = $this->getCache();
 
@@ -70,7 +73,7 @@ class SF1514
             $token = $this->fetchSAMLToken();
 
             if ($token === null) {
-                throw new ServiceException('Could not fetch SAML Token.');
+                throw new SAMLTokenException('Could not fetch SAML-token.');
             }
 
             // Set cache expiration time a little before actual token expiration time.
@@ -80,6 +83,10 @@ class SF1514
 
             return $token;
         });
+
+        if (null === $token) {
+            throw new SAMLTokenException('Could not fetch SAML-token.');
+        }
 
         // Check SAML token expiration time (with offset) to make sure that it is still valid.
         if (null !== $token && $this->getSAMLTokenExpirationTime($token)->modify($expirationTimeOffset) <= new \DateTimeImmutable()) {
@@ -174,7 +181,7 @@ class SF1514
     {
         $dom = new \DOMDocument();
         $dom->load(__DIR__ . '/SAMLTokenSoapTemplate.xml');
-        $xpath = new DOMXPath($dom);
+        $xpath = new \DOMXPath($dom);
 
         $xpath->registerNamespace('wsu', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd');
         $xpath->registerNamespace('ds', 'http://www.w3.org/2000/09/xmldsig#');
@@ -275,7 +282,7 @@ class SF1514
     /**
      * Handles reference by signing element.
      */
-    private function handleReference(DOMXPath $xpath, \DOMElement $element, string $elementId, $baseId)
+    private function handleReference(\DOMXPath $xpath, \DOMElement $element, string $elementId, $baseId)
     {
         $referenceElement = $this->getElement($xpath, "//ds:Reference[contains(@URI, '$baseId')]");
         $referenceElement->setAttribute('URI', '#' . $elementId);
@@ -287,7 +294,7 @@ class SF1514
     /**
      * Queries for element.
      */
-    private function getElement(DOMXPath $xpath, string $expression, \DOMElement $context = null): \DOMElement
+    private function getElement(\DOMXPath $xpath, string $expression, \DOMElement $context = null): \DOMElement
     {
         return $xpath->query($expression, $context)[0];
     }
@@ -334,7 +341,7 @@ class SF1514
         $dom = new \DOMDocument();
         $dom->loadXML($result);
         $doc = $dom->documentElement;
-        $xpath = new DOMXpath($dom);
+        $xpath = new \DOMXpath($dom);
         $xpath->registerNamespace('s', 'http://www.w3.org/2003/05/soap-envelope');
         $xpath->registerNamespace('wst', 'http://docs.oasis-open.org/ws-sx/ws-trust/200512');
         $xpath->registerNamespace('wsse', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd');

@@ -11,6 +11,8 @@
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
+use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
+use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
 use ItkDev\Serviceplatformen\Service\SoapClient;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -45,10 +47,6 @@ class SF1500
     {
         $token = $this->fetchSAMLToken();
 
-        if (null === $token) {
-            return '';
-        }
-
         $data = $this->brugerLaes($brugerId, $token);
 
         $personIdKeys = [
@@ -61,10 +59,10 @@ class SF1500
             'ns2UUIDIdentifikator',
         ];
 
-        $personId = $this->getValue($data, $personIdKeys, '');
+        $personId = $this->getValue($data, $personIdKeys);
 
         if (null === $personId) {
-            return '';
+            throw new SF1500Exception('Could not find person id.');
         }
 
         $data = $this->personLaes($personId, $token);
@@ -120,10 +118,6 @@ class SF1500
     {
         $token = $this->fetchSAMLToken();
 
-        if (null === $token) {
-            return '';
-        }
-
         $data = $this->organisationFunktionSoeg($brugerId, $funktionsNavn, $organisationId, $funktionsTypeId, $token);
 
         $idListeKeys = [
@@ -132,9 +126,7 @@ class SF1500
             'ns2UUIDIdentifikator',
         ];
 
-        $id = $this->getValue($data, $idListeKeys);
-
-        return $id;
+        return $this->getValue($data, $idListeKeys);
     }
 
     /**
@@ -158,12 +150,12 @@ class SF1500
 
         $orgEnhedId = $this->getValue($data, $tilknyttedeEnhederKeys);
 
-        if ($returnOrganisationID) {
-            return $orgEnhedId ?: '';
+        if (null === $orgEnhedId) {
+            throw new SF1500Exception('Could not find organisation enheds id.');
         }
 
-        if (empty($orgEnhedId)) {
-            return '';
+        if ($returnOrganisationID) {
+            return $orgEnhedId;
         }
 
         $data = $this->organisationEnhedLaes($orgEnhedId, $token);
@@ -214,10 +206,6 @@ class SF1500
 
         $token = $this->fetchSAMLToken();
 
-        if (null === $token) {
-            return '';
-        }
-
         // Level 1.
         $data = $this->organisationEnhedLaes($orgEnhedId, $token);
 
@@ -235,7 +223,7 @@ class SF1500
         $orgEnhedId = $this->getValue($data, $overordnetKeys);
 
         if (null === $orgEnhedId) {
-            return '';
+            throw new SF1500Exception('Could not find organisation enheds id.');
         }
 
         $data = $this->organisationEnhedLaes($orgEnhedId, $token);
@@ -258,10 +246,6 @@ class SF1500
     public function getPersonAZIdent(string $brugerId)
     {
         $token = $this->fetchSAMLToken();
-
-        if (null === $token) {
-            return '';
-        }
 
         $data = $this->brugerLaes($brugerId, $token);
 
@@ -290,10 +274,6 @@ class SF1500
 
         $token = $this->fetchSAMLToken();
 
-        if (null === $token) {
-            return '';
-        }
-
         $data = $this->organisationEnhedLaes($orgEnhedId, $token);
 
         $adresseKeys = [
@@ -307,7 +287,7 @@ class SF1500
         $adresser = $this->getValue($data, $adresseKeys);
 
         if (!is_array($adresser)) {
-            return '';
+            throw new SF1500Exception('Could not organisation address.');
         }
 
         $adresseTekstKeys = [
@@ -358,10 +338,6 @@ class SF1500
         }
 
         $token = $this->fetchSAMLToken();
-
-        if (null === $token) {
-            return '';
-        }
 
         $data = $this->organisationEnhedLaes($orgEnhedId, $token);
 
@@ -420,57 +396,134 @@ class SF1500
     }
 
     /**
-     * Fetches bruger and organisation funktions id for nearest manager or null if no manager exists.
+     * Fetches bruger and organisation funktions id for managers from user id.
+     * Returns null if no manager exists.
      */
-    public function getNearestManagerBrugerAndFunktionsId($userId, $managerFunktionsTypeId)
+    public function getManagerBrugerAndFunktionsIdFromUserId($userId, $managerFunktionsTypeId)
     {
         $token = $this->fetchSAMLToken();
 
-        if (null === $token) {
-            return '';
-        }
-
         $organisationFunktionsId = $this->getOrganisationFunktionerFromUserId($userId);
 
-        // Select just one of the organisation funktioner(ansættelser).
-        if (is_array($organisationFunktionsId)) {
-            $organisationFunktionsId = reset($organisationFunktionsId);
+        if (null === $organisationFunktionsId) {
+            throw new SF1500Exception(sprintf('Could not find any organisation funktioner for user %s', $userId));
         }
 
-        $orgId = $this->getOrganisationEnhed($organisationFunktionsId, true);
+        $managers = [];
+        if (is_array($organisationFunktionsId)) {
+            foreach ($organisationFunktionsId as $id) {
+                $managerInfo = $this->getManagerBrugerAndFunktionsIdFromFunktionsId($id, $managerFunktionsTypeId, $token);
+
+                if (null !== $managerInfo) {
+                    $managers = array_merge($managers, $managerInfo);
+                }
+            }
+        } else {
+            $managerInfo = $this->getManagerBrugerAndFunktionsIdFromFunktionsId($organisationFunktionsId, $managerFunktionsTypeId, $token);
+
+            if (null !== $managerInfo) {
+                $managers = $managerInfo;
+            }
+        }
+
+        if (empty($managers)) {
+            return null;
+        }
+
+        return $managers;
+    }
+
+    /**
+     * Fetches bruger and organisation funktions id for managers from funktions id.
+     * Returns null if no manager exists
+     * @throws SF1500Exception
+     */
+    private function getManagerBrugerAndFunktionsIdFromFunktionsId($funktionsId, $managerFunktionsTypeId, $token)
+    {
+        $orgId = $this->getOrganisationEnhed($funktionsId, true);
+
+        // If current user is manager, start searching one level up in organisation tree.
+        if ($managerFunktionsTypeId === $this->getOrganisationFunktionsTypeFromOrganisationFunktion($funktionsId)) {
+            $orgId = $this->getOverordnetOrganisatonEnhedId($orgId, $token);
+
+            if (null === $orgId) {
+                // We have reached the top
+                return null;
+            }
+        }
 
         $managerFunktionIds = $this->soegOrganisationFunktioner(null, null, $orgId, $managerFunktionsTypeId);
 
-        // Select just one of the organisation funktioner(ansættelser).
-        if (is_array($managerFunktionIds)) {
-            $managerFunktionIds = reset($managerFunktionIds);
-        }
+        while (null === $managerFunktionIds) {
+            // Search one level further up the organisation tree.
+            $orgId = $this->getOverordnetOrganisatonEnhedId($orgId, $token);
 
-        $managerBrugerId = $this->getBrugerIdFromOrganisationFunktion($managerFunktionIds);
-
-        // If user is a manager, find manager of overordnet organisation.
-        if ($managerBrugerId === $userId) {
-            $overordnetOrganisationId = $this->getEnhedNavnOgOverordnetOrganisationsId($orgId, $token)['overordnet_id'];
-            $managerFunktionIds = $this->soegOrganisationFunktioner(null, null, $overordnetOrganisationId, $managerFunktionsTypeId);
-
-            if (null === $managerFunktionIds) {
-                // We have reached the top.
+            if (null === $orgId) {
+                // We have reached the top
                 return null;
             }
 
-            // Select just one of the organisation funktioner(ansættelser).
-            if (is_array($managerFunktionIds)) {
-                $managerFunktionIds = reset($managerFunktionIds);
-            }
-
-            $managerBrugerId = $this->getBrugerIdFromOrganisationFunktion($managerFunktionIds);
+            $managerFunktionIds = $this->soegOrganisationFunktioner(null, null, $orgId, $managerFunktionsTypeId);
         }
 
-        return [
-            'brugerId' => $managerBrugerId,
-            'funktionsId' => $managerFunktionIds,
-        ];
+        $result = [];
+
+        if (is_array($managerFunktionIds)) {
+            foreach ($managerFunktionIds as $managerFunktionId) {
+                $managerBrugerId = $this->getBrugerIdFromOrganisationFunktion($managerFunktionId);
+
+                $result[] = [
+                    'brugerId' => $managerBrugerId,
+                    'funktionsId' => $managerFunktionIds,
+                ];
+            }
+        } else {
+            $managerBrugerId = $this->getBrugerIdFromOrganisationFunktion($managerFunktionIds);
+
+            $result[] = [
+                'brugerId' => $managerBrugerId,
+                'funktionsId' => $managerFunktionIds,
+            ];
+        }
+
+        return $result;
     }
+
+    /**
+     * Fetches overordnet organisation enheds id or null if it does not exist.
+     */
+    public function getOverordnetOrganisatonEnhedId(string $organisationEnhedId, ?string $token): ?string
+    {
+        if (null === $token) {
+            $token = $this->fetchSAMLToken();
+        }
+
+        return $this->getEnhedNavnOgOverordnetOrganisationsId($organisationEnhedId, $token)['overordnet_id'];
+    }
+
+    public function getOrganisationFunktionsTypeFromOrganisationFunktion($id)
+    {
+        $data = $this->laesOrganisationFunktion($id);
+
+        $enhedsNavnKeys = [
+            'ns3LaesOutput',
+            'ns3FiltreretOejebliksbillede',
+            'ns3Registrering',
+            'ns3RelationListe',
+            'ns2Funktionstype',
+            'ns2ReferenceID',
+            'ns2UUIDIdentifikator',
+        ];
+
+        $organisationFunktionsTypeId = $this->getValue($data, $enhedsNavnKeys);
+
+        if (null === $organisationFunktionsTypeId) {
+            throw new SF1500Exception(sprintf('Could not find organisation funktions type for organisation funktion id %s', $id));
+        }
+
+        return $organisationFunktionsTypeId;
+    }
+
 
     public function getPersonLaes($personId)
     {
@@ -513,15 +566,14 @@ class SF1500
             'ns2UUIDIdentifikator',
         ];
 
-        $brugerId = $this->getValue($data, $enhedsNavnKeys);
-
-        return $brugerId;
+        return $this->getValue($data, $enhedsNavnKeys);
     }
 
     /**
      * Fetches SAML token from SF1514.
+     * @throws SAMLTokenException
      */
-    private function fetchSAMLToken(): ?string
+    private function fetchSAMLToken(): string
     {
         return $this->sf1514->getSAMLToken();
     }
@@ -744,11 +796,6 @@ class SF1500
     {
         $token = $this->fetchSAMLToken();
 
-        if (null === $token) {
-            return '';
-        }
-
-
         $data = $this->brugerLaes($brugerId, $token);
 
         $adresseKeys = [
@@ -762,7 +809,7 @@ class SF1500
         $adresser = $this->getValue($data, $adresseKeys);
 
         if (!is_array($adresser)) {
-            return '';
+            throw new SF1500Exception('Could not organisation address.');
         }
 
         $adresseTekstKeys = [
@@ -830,7 +877,6 @@ class SF1500
             ->setRequired([
                 'certificate_locator',
                 'authority_cvr',
-                'sts_applies_to',
             ])
             ->setDefaults([
                 'debug' => false,

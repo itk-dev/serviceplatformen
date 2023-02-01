@@ -20,6 +20,8 @@ class SF1500XMLBuilder
      */
     public function buildBodyBrugerLaesXML($uuid): string
     {
+        $uuid = $this->xmlEncode($uuid);
+
         return <<<XML
 <s:Body u:Id="_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <LaesInput xmlns="http://stoettesystemerne.dk/organisation/bruger/6/">
@@ -34,6 +36,8 @@ XML;
      */
     public function buildBodyBrugerSoegXML(string $name)
     {
+        $name = $this->xmlEncode($name);
+
         return <<<XML
 <s:Body u:Id="_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <SoegInput xmlns="http://stoettesystemerne.dk/organisation/bruger/6/">
@@ -54,6 +58,8 @@ XML;
      */
     public function buildBodyBrugerListXML(array $uuids)
     {
+        $uuids = array_map([$this, 'xmlEncode'], $uuids);
+
         $uuidsXML = '';
 
         foreach ($uuids as $uuid) {
@@ -74,6 +80,8 @@ XML;
      */
     public function buildBodyPersonLaesXML($uuid)
     {
+        $uuid = $this->xmlEncode($uuid);
+
         return <<<XML
 <s:Body u:Id="_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <LaesInput xmlns="http://stoettesystemerne.dk/organisation/person/6/">
@@ -88,6 +96,8 @@ XML;
      */
     public function buildBodyPersonSoegXML(string $name)
     {
+        $name = $this->xmlEncode($name);
+
         return <<<XML
 <s:Body u:Id="_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <SoegInput xmlns="http://stoettesystemerne.dk/organisation/person/6/">
@@ -108,6 +118,8 @@ XML;
      */
     public function buildBodyAdresseLaesXML($uuid)
     {
+        $uuid = $this->xmlEncode($uuid);
+
         return <<<XML
 <s:Body u:Id="_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <LaesInput xmlns="http://stoettesystemerne.dk/organisation/adresse/6/">
@@ -122,6 +134,8 @@ XML;
      */
     public function buildBodyOrganisationFunktionLaesXML(string $uuid)
     {
+        $uuid = $this->xmlEncode($uuid);
+
         return <<<XML
 <s:Body u:Id="_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <LaesInput xmlns="http://stoettesystemerne.dk/organisation/organisationfunktion/6/">
@@ -143,12 +157,16 @@ XML;
 
 
         if ($funktionNavn !== null) {
+            $funktionNavn = $this->xmlEncode($funktionNavn);
+
             $funktionNavnXML = <<<XML
         <FunktionNavn xmlns="urn:oio:sagdok:3.0.0">$funktionNavn</FunktionNavn>
 XML;
         }
 
         if ($brugerUuid !== null) {
+            $brugerUuid = $this->xmlEncode($brugerUuid);
+
             $brugerXML = <<<XML
       <TilknyttedeBrugere xmlns="urn:oio:sagdok:3.0.0">
         <ReferenceID>
@@ -159,6 +177,8 @@ XML;
         }
 
         if ($organisationUuid !== null) {
+            $organisationUuid = $this->xmlEncode($organisationUuid);
+
             $orgXML = <<<XML
       <TilknyttedeEnheder xmlns="urn:oio:sagdok:3.0.0">
           <ReferenceID>
@@ -169,6 +189,8 @@ XML;
         }
 
         if ($funktionsTypeId !== null) {
+            $funktionsTypeId = $this->xmlEncode($funktionsTypeId);
+
             $funktionsTypeXML = <<<XML
         <Funktionstype xmlns="urn:oio:sagdok:3.0.0">
           <ReferenceID>
@@ -202,6 +224,8 @@ XML;
      */
     public function buildBodyFremsoegHierakiXML(string $name)
     {
+        $name = $this->xmlEncode($name);
+
         return <<<XML
 <s:Body u:Id="_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <FremsoegObjekthierarkiInput xmlns="http://stoettesystemerne.dk/organisation/organisationsystem/6/">
@@ -216,12 +240,14 @@ XML;
     /**
      * Builds XML body for organisation enhed laes.
      */
-    public function buildBodyOrganisationEnhedLaesXML(string $string)
+    public function buildBodyOrganisationEnhedLaesXML(string $orgEnhedId)
     {
+        $orgEnhedId = $this->xmlEncode($orgEnhedId);
+
         return <<<XML
 <s:Body u:Id="_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <LaesInput xmlns="http://stoettesystemerne.dk/organisation/organisationenhed/6/">
-        <UUIDIdentifikator xmlns="urn:oio:sagdok:3.0.0">$string</UUIDIdentifikator>
+        <UUIDIdentifikator xmlns="urn:oio:sagdok:3.0.0">$orgEnhedId</UUIDIdentifikator>
     </LaesInput>
 </s:Body>
 XML;
@@ -232,6 +258,9 @@ XML;
      */
     public function buildHeaderXML($to, $action, $tokenRaw)
     {
+        $to = $this->xmlEncode($to);
+        $action = $this->xmlEncode($action);
+
         $timestampXML = $this->buildTimestampHeaderXML($this->generateUuid());
         $actionXML = '<a:Action s:mustUnderstand="1" u:Id="_2">' . $action . '</a:Action>';
         $messageXML = '<a:MessageID u:Id="_3">urn:uuid:' . $this->generateUuid() . '</a:MessageID>';
@@ -385,6 +414,14 @@ XML;
     <u:Expires>$expires</u:Expires>
 </u:Timestamp>
 XML;
+    }
+
+    /**
+     * XML encodes value.
+     */
+    private function xmlEncode(string $value): string
+    {
+        return htmlspecialchars($value, ENT_QUOTES| ENT_XML1);
     }
 
     /**
