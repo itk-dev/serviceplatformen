@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2023-02-01
+
 ## Changed
 
 - Removed vault secret from JSON serialization.
+- Fixed issue on case-insensitive file systems
 
 ## [1.2.0] - 2023-01-18
 
@@ -65,7 +68,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Functionality for making calls to the PersonBaseDataExtended service.
 - Possibility to use certificates stored in Azure Key Vault.
 
-[Unreleased]: https://github.com/itk-dev/serviceplatformen/compare/1.2.0...HEAD
+[Unreleased]: https://github.com/itk-dev/serviceplatformen/compare/1.2.1...HEAD
+[1.2.1]: https://github.com/itk-dev/serviceplatformen/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/itk-dev/serviceplatformen/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/itk-dev/serviceplatformen/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/itk-dev/serviceplatformen/compare/0.0.4...1.0.0
