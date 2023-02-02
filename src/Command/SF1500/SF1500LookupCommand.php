@@ -161,7 +161,7 @@ HELP;
                     $userId = $managerInfo['brugerId'];
                     $organisationFunktionsId = $managerInfo['funktionsId'];
 
-                    $this->outputData($output, $sf1500, $userId, $organisationFunktionsId);
+                    $this->outputData($output, $sf1500, $userId, [$organisationFunktionsId]);
                     $count++;
                 }
 

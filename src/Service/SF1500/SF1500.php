@@ -104,7 +104,7 @@ class SF1500
     /**
      * Fetches organisations funktioner from SF1500.
      */
-    public function getOrganisationFunktionerFromUserId(string $brugerId)
+    public function getOrganisationFunktionerFromUserId(string $brugerId): array
     {
         return $this->soegOrganisationFunktioner($brugerId, null, null, null);
     }
@@ -112,7 +112,7 @@ class SF1500
     /**
      * Searches for organisations funktioner from SF1500.
      */
-    public function soegOrganisationFunktioner(?string $brugerId, ?string $funktionsNavn, ?string $organisationId, ?string $funktionsTypeId)
+    public function soegOrganisationFunktioner(?string $brugerId, ?string $funktionsNavn, ?string $organisationId, ?string $funktionsTypeId): array
     {
         $data = $this->organisationFunktionSoeg($brugerId, $funktionsNavn, $organisationId, $funktionsTypeId);
 
@@ -122,20 +122,14 @@ class SF1500
             'ns2UUIDIdentifikator',
         ];
 
-        $ids = $this->getValue($data, $idListeKeys, []);
-
         // If only one result is found convert it into array with one entry.
-        if (is_string($ids)) {
-            $ids = [$ids];
-        }
-
-        return $ids;
+        return (array)$this->getValue($data, $idListeKeys, []);
     }
 
     /**
      * Fetches organisation enhed level 1 name from SF1500.
      */
-    public function getOrganisationEnhed(string $funktionsId, bool $returnOrganisationID = false): ?string
+    public function getOrganisationEnhed(string $funktionsId, bool $returnOrganisationID = false): string
     {
         $data = $this->organisationFunktionLaes($funktionsId);
 
@@ -176,7 +170,7 @@ class SF1500
     /**
      * Fetches funktions navn from SF1500.
      */
-    public function getFunktionsNavn(string $funktionsId)
+    public function getFunktionsNavn(string $funktionsId): string
     {
         $data = $this->organisationFunktionLaes($funktionsId);
 
@@ -195,7 +189,7 @@ class SF1500
     /**
      * Fetches organisation enhed level 2 from SF1500.
      */
-    public function getOrganisationEnhedNiveauTo(string $funktionsId)
+    public function getOrganisationEnhedNiveauTo(string $funktionsId): string
     {
         $orgEnhedId = $this->getOrganisationEnhed($funktionsId, true);
 
@@ -240,7 +234,7 @@ class SF1500
     /**
      * Fetches person az ident from SF1500.
      */
-    public function getPersonAZIdent(string $brugerId)
+    public function getPersonAZIdent(string $brugerId): string
     {
         $data = $this->brugerLaes($brugerId);
 
@@ -259,7 +253,7 @@ class SF1500
     /**
      * Fetches organisation address from SF1500.
      */
-    public function getOrganisationAddress(string $funktionsId)
+    public function getOrganisationAddress(string $funktionsId): string
     {
         $orgEnhedId = $this->getOrganisationEnhed($funktionsId, true);
 
@@ -322,7 +316,7 @@ class SF1500
     /**
      * Fetches person magistrat from SF1500.
      */
-    public function getPersonMagistrat(string $funktionsId)
+    public function getPersonMagistrat(string $funktionsId): string
     {
         $orgEnhedId = $this->getOrganisationEnhed($funktionsId, true);
 
@@ -405,11 +399,11 @@ class SF1500
             $managerInfo = $this->getManagerBrugerAndFunktionsIdFromFunktionsId($id, $managerFunktionsTypeId);
 
             if (!empty($managerInfo)) {
-                $managers = array_merge($managers, $managerInfo);
+                $managers[] = $managerInfo;
             }
         }
 
-        return $managers;
+        return array_merge(...$managers);
     }
 
     /**
@@ -424,11 +418,11 @@ class SF1500
         // If current user is manager, start searching one level up in organisation tree.
         if ($managerFunktionsTypeId === $this->getOrganisationFunktionsTypeFromOrganisationFunktion($funktionsId)) {
             $orgId = $this->getOverordnetOrganisatonEnhedId($orgId);
+        }
 
-            if (null === $orgId) {
-                // We have reached the top
-                return [];
-            }
+        if (null === $orgId) {
+            // We have reached the top
+            return [];
         }
 
         $managerFunktionIds = $this->soegOrganisationFunktioner(null, null, $orgId, $managerFunktionsTypeId);
@@ -452,7 +446,7 @@ class SF1500
 
             $result[] = [
                 'brugerId' => $managerBrugerId,
-                'funktionsId' => $managerFunktionIds,
+                'funktionsId' => $managerFunktionId,
             ];
         }
 
@@ -467,7 +461,7 @@ class SF1500
         return $this->getEnhedNavnOgOverordnetOrganisationsId($organisationEnhedId)['overordnet_id'];
     }
 
-    public function getOrganisationFunktionsTypeFromOrganisationFunktion($id)
+    public function getOrganisationFunktionsTypeFromOrganisationFunktion($id): string
     {
         $data = $this->laesOrganisationFunktion($id);
 
@@ -491,26 +485,22 @@ class SF1500
     }
 
 
-    public function getPersonLaes($personId)
+    public function getPersonLaes($personId): array
     {
-        $data = $this->personLaes($personId);
-
-        return $data;
+        return $this->personLaes($personId);
     }
 
-    public function getPersonSoeg($name)
+    public function getPersonSoeg($name): array
     {
-        $data = $this->personSoeg($name);
-
-        return $data;
+        return $this->personSoeg($name);
     }
 
-    public function laesOrganisationFunktion($id)
+    public function laesOrganisationFunktion($id): array
     {
         return $this->organisationFunktionLaes($id);
     }
 
-    public function getBrugerIdFromOrganisationFunktion($organisationFunktionsId)
+    public function getBrugerIdFromOrganisationFunktion($organisationFunktionsId): string
     {
         $data = $this->organisationFunktionLaes($organisationFunktionsId);
 
@@ -523,6 +513,12 @@ class SF1500
             'ns2ReferenceID',
             'ns2UUIDIdentifikator',
         ];
+
+        $enhedsNavn = $this->getValue($data, $enhedsNavnKeys);
+
+        if (null === $enhedsNavn) {
+            throw new SF1500Exception(sprintf('Cannot read bruger id from organisation funktion %s', $organisationFunktionsId));
+        }
 
         return $this->getValue($data, $enhedsNavnKeys);
     }
@@ -567,7 +563,7 @@ class SF1500
     /**
      * Converts XML response to array.
      */
-    private function responseXMLToArray(string $response)
+    private function responseXMLToArray(string $response): array
     {
         // Handle xml namespaces.
         $response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $response);
@@ -579,7 +575,7 @@ class SF1500
     /**
      * Performs bruger laes action.
      */
-    private function brugerLaes($brugerId)
+    private function brugerLaes($brugerId): array
     {
         $endpoint = $this->generateServiceEndpoint('/organisation/bruger/6/');
         $action = 'http://kombit.dk/sts/organisation/bruger/laes';
@@ -604,7 +600,7 @@ class SF1500
     /**
      * Performs adresse laes action.
      */
-    private function adresseLaes($adresseID)
+    private function adresseLaes($adresseID): array
     {
         $endpoint = $this->generateServiceEndpoint('/organisation/adresse/6/');
         $action = 'http://kombit.dk/sts/organisation/adresse/laes';
@@ -628,7 +624,7 @@ class SF1500
     /**
      * Performs organisation enhed laes action.
      */
-    private function organisationEnhedLaes($orgEnhedId)
+    private function organisationEnhedLaes($orgEnhedId): array
     {
         $endpoint = $this->generateServiceEndpoint('/organisation/organisationenhed/6/');
         $action = 'http://kombit.dk/sts/organisation/organisationenhed/laes';
@@ -652,7 +648,7 @@ class SF1500
     /**
      * Performs organisation funktion laes action.
      */
-    private function organisationFunktionLaes($orgFunktionId)
+    private function organisationFunktionLaes($orgFunktionId): array
     {
         $endpoint = $this->generateServiceEndpoint('/organisation/organisationfunktion/6/');
         $action = 'http://kombit.dk/sts/organisation/organisationfunktion/laes';
@@ -676,7 +672,7 @@ class SF1500
     /**
      * Performs organisation funktion soeg action.
      */
-    private function organisationFunktionSoeg(?string $brugerId, ?string $funktionsNavn, ?string $organisationsId, ?string $funktionsTypeId)
+    private function organisationFunktionSoeg(?string $brugerId, ?string $funktionsNavn, ?string $organisationsId, ?string $funktionsTypeId): array
     {
         $endpoint = $this->generateServiceEndpoint('/organisation/organisationfunktion/6/');
         $action = 'http://kombit.dk/sts/organisation/organisationfunktion/soeg';
@@ -703,7 +699,7 @@ class SF1500
     /**
      * Performs person laes action.
      */
-    private function personLaes($personId)
+    private function personLaes($personId): array
     {
         $endpoint = $this->generateServiceEndpoint('/organisation/person/6/');
         $action = 'http://kombit.dk/sts/organisation/person/laes';
@@ -727,7 +723,7 @@ class SF1500
     /**
      * Performs person soeg action.
      */
-    private function personSoeg($name)
+    private function personSoeg($name): array
     {
         $endpoint = $this->generateServiceEndpoint('/organisation/person/6/');
         $action = 'http://kombit.dk/sts/organisation/person/soeg';
@@ -751,7 +747,7 @@ class SF1500
     /**
      * Fetches bruger adresse attribut.
      */
-    private function getBrugerAdresseAttribut(string $attribute, string $brugerId)
+    private function getBrugerAdresseAttribut(string $attribute, string $brugerId): string
     {
         $data = $this->brugerLaes($brugerId);
 
@@ -808,7 +804,7 @@ class SF1500
     /**
      * Method for building header XML.
      */
-    private function buildHeaderXML(string $endpoint, string $action)
+    private function buildHeaderXML(string $endpoint, string $action): string
     {
         $token = $this->getSAMLToken();
         
@@ -818,7 +814,7 @@ class SF1500
     /**
      * Computes full service endpoint.
      */
-    private function generateServiceEndpoint(string $serviceEndpointPath)
+    private function generateServiceEndpoint(string $serviceEndpointPath): string
     {
         return $this->options['service_endpoint_domain'].$serviceEndpointPath;
     }
