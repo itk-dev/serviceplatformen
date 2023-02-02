@@ -148,7 +148,7 @@ HELP;
             // Convert user-id into manager.
             $managerInfos = $sf1500->getManagerBrugerAndFunktionsIdFromUserId($userId, $options['manager-type-id']);
 
-            if (null !== $managerInfos) {
+            if (!empty($managerInfos)) {
                 $output->writeln(sprintf('Finding information on managers of: %s', $name));
 
                 $count = 1;
