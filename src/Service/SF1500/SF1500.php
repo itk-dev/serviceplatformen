@@ -418,11 +418,11 @@ class SF1500
         // If current user is manager, start searching one level up in organisation tree.
         if ($managerFunktionsTypeId === $this->getOrganisationFunktionsTypeFromOrganisationFunktion($funktionsId)) {
             $orgId = $this->getOverordnetOrganisatonEnhedId($orgId);
-        }
 
-        if (null === $orgId) {
-            // We have reached the top
-            return [];
+            if (null === $orgId) {
+                // We have reached the top
+                return [];
+            }
         }
 
         $managerFunktionIds = $this->soegOrganisationFunktioner(null, null, $orgId, $managerFunktionsTypeId);
