@@ -73,7 +73,7 @@ class SF1514
             $token = $this->fetchSAMLToken();
 
             if ($token === null) {
-                throw new SAMLTokenException('Could not fetch SAML-token.');
+                throw new SAMLTokenException('Could not fetch SAML token.');
             }
 
             // Set cache expiration time a little before actual token expiration time.
@@ -85,7 +85,7 @@ class SF1514
         });
 
         if (null === $token) {
-            throw new SAMLTokenException('Could not fetch SAML-token.');
+            throw new SAMLTokenException('Could not fetch SAML token.');
         }
 
         // Check SAML token expiration time (with offset) to make sure that it is still valid.

@@ -45,9 +45,7 @@ class SF1500
      */
     public function getPersonName(string $brugerId): string
     {
-        $token = $this->fetchSAMLToken();
-
-        $data = $this->brugerLaes($brugerId, $token);
+        $data = $this->brugerLaes($brugerId);
 
         $personIdKeys = [
             'ns3LaesOutput',
@@ -62,10 +60,10 @@ class SF1500
         $personId = $this->getValue($data, $personIdKeys);
 
         if (null === $personId) {
-            throw new SF1500Exception('Could not find person id.');
+            throw new SF1500Exception('Cannot find person id.');
         }
 
-        $data = $this->personLaes($personId, $token);
+        $data = $this->personLaes($personId);
 
         $navnTekstKeys = [
             'ns3LaesOutput',
@@ -116,9 +114,7 @@ class SF1500
      */
     public function soegOrganisationFunktioner(?string $brugerId, ?string $funktionsNavn, ?string $organisationId, ?string $funktionsTypeId)
     {
-        $token = $this->fetchSAMLToken();
-
-        $data = $this->organisationFunktionSoeg($brugerId, $funktionsNavn, $organisationId, $funktionsTypeId, $token);
+        $data = $this->organisationFunktionSoeg($brugerId, $funktionsNavn, $organisationId, $funktionsTypeId);
 
         $idListeKeys = [
             'ns3SoegOutput',
@@ -126,7 +122,14 @@ class SF1500
             'ns2UUIDIdentifikator',
         ];
 
-        return $this->getValue($data, $idListeKeys);
+        $ids = $this->getValue($data, $idListeKeys, []);
+
+        // If only one result is found convert it into array with one entry.
+        if (is_string($ids)) {
+            $ids = [$ids];
+        }
+
+        return $ids;
     }
 
     /**
@@ -134,9 +137,7 @@ class SF1500
      */
     public function getOrganisationEnhed(string $funktionsId, bool $returnOrganisationID = false): ?string
     {
-        $token = $this->fetchSAMLToken();
-
-        $data = $this->organisationFunktionLaes($funktionsId, $token);
+        $data = $this->organisationFunktionLaes($funktionsId);
 
         $tilknyttedeEnhederKeys = [
             'ns3LaesOutput',
@@ -151,14 +152,14 @@ class SF1500
         $orgEnhedId = $this->getValue($data, $tilknyttedeEnhederKeys);
 
         if (null === $orgEnhedId) {
-            throw new SF1500Exception('Could not find organisation enheds id.');
+            throw new SF1500Exception('Cannot find organisation enheds id.');
         }
 
         if ($returnOrganisationID) {
             return $orgEnhedId;
         }
 
-        $data = $this->organisationEnhedLaes($orgEnhedId, $token);
+        $data = $this->organisationEnhedLaes($orgEnhedId);
 
         $enhedsNavnKeys = [
             'ns3LaesOutput',
@@ -177,9 +178,7 @@ class SF1500
      */
     public function getFunktionsNavn(string $funktionsId)
     {
-        $token = $this->fetchSAMLToken();
-
-        $data = $this->organisationFunktionLaes($funktionsId, $token);
+        $data = $this->organisationFunktionLaes($funktionsId);
 
         $funktionsNavnKeys = [
             'ns3LaesOutput',
@@ -204,10 +203,8 @@ class SF1500
             return '';
         }
 
-        $token = $this->fetchSAMLToken();
-
         // Level 1.
-        $data = $this->organisationEnhedLaes($orgEnhedId, $token);
+        $data = $this->organisationEnhedLaes($orgEnhedId);
 
         $overordnetKeys = [
             'ns3LaesOutput',
@@ -223,10 +220,10 @@ class SF1500
         $orgEnhedId = $this->getValue($data, $overordnetKeys);
 
         if (null === $orgEnhedId) {
-            throw new SF1500Exception('Could not find organisation enheds id.');
+            throw new SF1500Exception('Cannot find organisation enheds id.');
         }
 
-        $data = $this->organisationEnhedLaes($orgEnhedId, $token);
+        $data = $this->organisationEnhedLaes($orgEnhedId);
 
         $enhedsNavnKeys = [
             'ns3LaesOutput',
@@ -245,9 +242,7 @@ class SF1500
      */
     public function getPersonAZIdent(string $brugerId)
     {
-        $token = $this->fetchSAMLToken();
-
-        $data = $this->brugerLaes($brugerId, $token);
+        $data = $this->brugerLaes($brugerId);
 
         $brugerNavnKeys = [
             'ns3LaesOutput',
@@ -272,9 +267,7 @@ class SF1500
             return '';
         }
 
-        $token = $this->fetchSAMLToken();
-
-        $data = $this->organisationEnhedLaes($orgEnhedId, $token);
+        $data = $this->organisationEnhedLaes($orgEnhedId);
 
         $adresseKeys = [
             'ns3LaesOutput',
@@ -287,7 +280,7 @@ class SF1500
         $adresser = $this->getValue($data, $adresseKeys);
 
         if (!is_array($adresser)) {
-            throw new SF1500Exception('Could not organisation address.');
+            throw new SF1500Exception('Cannot find organisation address.');
         }
 
         $adresseTekstKeys = [
@@ -317,7 +310,7 @@ class SF1500
                     continue;
                 }
 
-                $data = $this->adresseLaes($adresseId, $token);
+                $data = $this->adresseLaes($adresseId);
 
                 return $this->getValue($data, $adresseTekstKeys, '');
             }
@@ -337,9 +330,7 @@ class SF1500
             return '';
         }
 
-        $token = $this->fetchSAMLToken();
-
-        $data = $this->organisationEnhedLaes($orgEnhedId, $token);
+        $data = $this->organisationEnhedLaes($orgEnhedId);
 
 
         $enhedsNavnKeys = [
@@ -353,11 +344,11 @@ class SF1500
 
         $enhedNavn = $this->getValue($data, $enhedsNavnKeys);
 
-        $data = $this->getEnhedNavnOgOverordnetOrganisationsId($orgEnhedId, $token);
+        $data = $this->getEnhedNavnOgOverordnetOrganisationsId($orgEnhedId);
 
         while ($orgEnhedId = $data['overordnet_id']) {
             $enhedNavn = $data['enhedNavn'];
-            $data = $this->getEnhedNavnOgOverordnetOrganisationsId($orgEnhedId, $token);
+            $data = $this->getEnhedNavnOgOverordnetOrganisationsId($orgEnhedId);
         }
 
         return $enhedNavn;
@@ -366,9 +357,9 @@ class SF1500
     /**
      * Fetches enhedsnavn and overordnet organisations id.
      */
-    public function getEnhedNavnOgOverordnetOrganisationsId($organisationEnhedsId, $token): array
+    public function getEnhedNavnOgOverordnetOrganisationsId($organisationEnhedsId): array
     {
-        $data = $this->organisationEnhedLaes($organisationEnhedsId, $token);
+        $data = $this->organisationEnhedLaes($organisationEnhedsId);
 
         $overordnetKeys = [
             'ns3LaesOutput',
@@ -397,37 +388,25 @@ class SF1500
 
     /**
      * Fetches bruger and organisation funktions id for managers from user id.
-     * Returns null if no manager exists.
+     * Returns empty array if no manager exists.
+     * @throws SF1500Exception|SAMLTokenException
      */
-    public function getManagerBrugerAndFunktionsIdFromUserId($userId, $managerFunktionsTypeId)
+    public function getManagerBrugerAndFunktionsIdFromUserId($userId, $managerFunktionsTypeId): array
     {
-        $token = $this->fetchSAMLToken();
-
         $organisationFunktionsId = $this->getOrganisationFunktionerFromUserId($userId);
 
-        if (null === $organisationFunktionsId) {
-            throw new SF1500Exception(sprintf('Could not find any organisation funktioner for user %s', $userId));
+        if (empty($organisationFunktionsId)) {
+            throw new SF1500Exception(sprintf('Cannot find any organisation funktioner for user %s', $userId));
         }
 
         $managers = [];
-        if (is_array($organisationFunktionsId)) {
-            foreach ($organisationFunktionsId as $id) {
-                $managerInfo = $this->getManagerBrugerAndFunktionsIdFromFunktionsId($id, $managerFunktionsTypeId, $token);
 
-                if (null !== $managerInfo) {
-                    $managers = array_merge($managers, $managerInfo);
-                }
+        foreach ($organisationFunktionsId as $id) {
+            $managerInfo = $this->getManagerBrugerAndFunktionsIdFromFunktionsId($id, $managerFunktionsTypeId);
+
+            if (!empty($managerInfo)) {
+                $managers = array_merge($managers, $managerInfo);
             }
-        } else {
-            $managerInfo = $this->getManagerBrugerAndFunktionsIdFromFunktionsId($organisationFunktionsId, $managerFunktionsTypeId, $token);
-
-            if (null !== $managerInfo) {
-                $managers = $managerInfo;
-            }
-        }
-
-        if (empty($managers)) {
-            return null;
         }
 
         return $managers;
@@ -435,32 +414,32 @@ class SF1500
 
     /**
      * Fetches bruger and organisation funktions id for managers from funktions id.
-     * Returns null if no manager exists
+     * Returns empty array if no manager exists
      * @throws SF1500Exception
      */
-    private function getManagerBrugerAndFunktionsIdFromFunktionsId($funktionsId, $managerFunktionsTypeId, $token)
+    private function getManagerBrugerAndFunktionsIdFromFunktionsId($funktionsId, $managerFunktionsTypeId): array
     {
         $orgId = $this->getOrganisationEnhed($funktionsId, true);
 
         // If current user is manager, start searching one level up in organisation tree.
         if ($managerFunktionsTypeId === $this->getOrganisationFunktionsTypeFromOrganisationFunktion($funktionsId)) {
-            $orgId = $this->getOverordnetOrganisatonEnhedId($orgId, $token);
+            $orgId = $this->getOverordnetOrganisatonEnhedId($orgId);
 
             if (null === $orgId) {
                 // We have reached the top
-                return null;
+                return [];
             }
         }
 
         $managerFunktionIds = $this->soegOrganisationFunktioner(null, null, $orgId, $managerFunktionsTypeId);
 
-        while (null === $managerFunktionIds) {
+        while (empty($managerFunktionIds)) {
             // Search one level further up the organisation tree.
-            $orgId = $this->getOverordnetOrganisatonEnhedId($orgId, $token);
+            $orgId = $this->getOverordnetOrganisatonEnhedId($orgId);
 
             if (null === $orgId) {
                 // We have reached the top
-                return null;
+                return [];
             }
 
             $managerFunktionIds = $this->soegOrganisationFunktioner(null, null, $orgId, $managerFunktionsTypeId);
@@ -468,17 +447,8 @@ class SF1500
 
         $result = [];
 
-        if (is_array($managerFunktionIds)) {
-            foreach ($managerFunktionIds as $managerFunktionId) {
-                $managerBrugerId = $this->getBrugerIdFromOrganisationFunktion($managerFunktionId);
-
-                $result[] = [
-                    'brugerId' => $managerBrugerId,
-                    'funktionsId' => $managerFunktionIds,
-                ];
-            }
-        } else {
-            $managerBrugerId = $this->getBrugerIdFromOrganisationFunktion($managerFunktionIds);
+        foreach ($managerFunktionIds as $managerFunktionId) {
+            $managerBrugerId = $this->getBrugerIdFromOrganisationFunktion($managerFunktionId);
 
             $result[] = [
                 'brugerId' => $managerBrugerId,
@@ -492,13 +462,9 @@ class SF1500
     /**
      * Fetches overordnet organisation enheds id or null if it does not exist.
      */
-    public function getOverordnetOrganisatonEnhedId(string $organisationEnhedId, ?string $token): ?string
+    public function getOverordnetOrganisatonEnhedId(string $organisationEnhedId): ?string
     {
-        if (null === $token) {
-            $token = $this->fetchSAMLToken();
-        }
-
-        return $this->getEnhedNavnOgOverordnetOrganisationsId($organisationEnhedId, $token)['overordnet_id'];
+        return $this->getEnhedNavnOgOverordnetOrganisationsId($organisationEnhedId)['overordnet_id'];
     }
 
     public function getOrganisationFunktionsTypeFromOrganisationFunktion($id)
@@ -518,7 +484,7 @@ class SF1500
         $organisationFunktionsTypeId = $this->getValue($data, $enhedsNavnKeys);
 
         if (null === $organisationFunktionsTypeId) {
-            throw new SF1500Exception(sprintf('Could not find organisation funktions type for organisation funktion id %s', $id));
+            throw new SF1500Exception(sprintf('Cannot find organisation funktions type for organisation funktion id %s', $id));
         }
 
         return $organisationFunktionsTypeId;
@@ -527,34 +493,26 @@ class SF1500
 
     public function getPersonLaes($personId)
     {
-        $token = $this->fetchSAMLToken();
-
-        $data = $this->personLaes($personId, $token);
+        $data = $this->personLaes($personId);
 
         return $data;
     }
 
     public function getPersonSoeg($name)
     {
-        $token = $this->fetchSAMLToken();
-
-        $data = $this->personSoeg($name, $token);
+        $data = $this->personSoeg($name);
 
         return $data;
     }
 
     public function laesOrganisationFunktion($id)
     {
-        $token = $this->fetchSAMLToken();
-
-        return $this->organisationFunktionLaes($id, $token);
+        return $this->organisationFunktionLaes($id);
     }
 
     public function getBrugerIdFromOrganisationFunktion($organisationFunktionsId)
     {
-        $token = $this->fetchSAMLToken();
-
-        $data = $this->organisationFunktionLaes($organisationFunktionsId, $token);
+        $data = $this->organisationFunktionLaes($organisationFunktionsId);
 
         $enhedsNavnKeys = [
             'ns3LaesOutput',
@@ -570,10 +528,10 @@ class SF1500
     }
 
     /**
-     * Fetches SAML token from SF1514.
+     * Gets SAML token from SF1514.
      * @throws SAMLTokenException
      */
-    private function fetchSAMLToken(): string
+    private function getSAMLToken(): string
     {
         return $this->sf1514->getSAMLToken();
     }
@@ -621,12 +579,13 @@ class SF1500
     /**
      * Performs bruger laes action.
      */
-    private function brugerLaes($brugerId, $token)
+    private function brugerLaes($brugerId)
     {
         $endpoint = $this->generateServiceEndpoint('/organisation/bruger/6/');
         $action = 'http://kombit.dk/sts/organisation/bruger/laes';
 
-        $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
+
+        $header = $this->buildHeaderXML($endpoint, $action);
         $body = $this->xmlBuilder->buildBodyBrugerLaesXML($brugerId);
         $request = $this->createXMLRequest($header, $body);
 
@@ -645,12 +604,12 @@ class SF1500
     /**
      * Performs adresse laes action.
      */
-    private function adresseLaes($adresseID, string $token)
+    private function adresseLaes($adresseID)
     {
         $endpoint = $this->generateServiceEndpoint('/organisation/adresse/6/');
         $action = 'http://kombit.dk/sts/organisation/adresse/laes';
 
-        $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
+        $header = $this->buildHeaderXML($endpoint, $action);
         $body = $this->xmlBuilder->buildBodyAdresseLaesXML($adresseID);
         $request = $this->createXMLRequest($header, $body);
 
@@ -669,13 +628,13 @@ class SF1500
     /**
      * Performs organisation enhed laes action.
      */
-    private function organisationEnhedLaes($orgEnhedId, string $token)
+    private function organisationEnhedLaes($orgEnhedId)
     {
         $endpoint = $this->generateServiceEndpoint('/organisation/organisationenhed/6/');
         $action = 'http://kombit.dk/sts/organisation/organisationenhed/laes';
 
         $body = $this->xmlBuilder->buildBodyOrganisationEnhedLaesXML($orgEnhedId);
-        $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
+        $header = $this->buildHeaderXML($endpoint, $action);
         $request = $this->createXMLRequest($header, $body);
 
         $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
@@ -693,13 +652,13 @@ class SF1500
     /**
      * Performs organisation funktion laes action.
      */
-    private function organisationFunktionLaes($orgFunktionId, string $token)
+    private function organisationFunktionLaes($orgFunktionId)
     {
         $endpoint = $this->generateServiceEndpoint('/organisation/organisationfunktion/6/');
         $action = 'http://kombit.dk/sts/organisation/organisationfunktion/laes';
 
         $body = $this->xmlBuilder->buildBodyOrganisationFunktionLaesXML($orgFunktionId);
-        $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
+        $header = $this->buildHeaderXML($endpoint, $action);
         $request = $this->createXMLRequest($header, $body);
 
         $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
@@ -717,13 +676,13 @@ class SF1500
     /**
      * Performs organisation funktion soeg action.
      */
-    private function organisationFunktionSoeg(?string $brugerId, ?string $funktionsNavn, ?string $organisationsId, ?string $funktionsTypeId, $token)
+    private function organisationFunktionSoeg(?string $brugerId, ?string $funktionsNavn, ?string $organisationsId, ?string $funktionsTypeId)
     {
         $endpoint = $this->generateServiceEndpoint('/organisation/organisationfunktion/6/');
         $action = 'http://kombit.dk/sts/organisation/organisationfunktion/soeg';
 
         $body = $this->xmlBuilder->buildBodyOrganisationFunktionSoegXML($brugerId, $funktionsNavn, $organisationsId, $funktionsTypeId);
-        $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
+        $header = $this->buildHeaderXML($endpoint, $action);
         $request = $this->createXMLRequest($header, $body);
 
         $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
@@ -744,12 +703,12 @@ class SF1500
     /**
      * Performs person laes action.
      */
-    private function personLaes($personId, string $token)
+    private function personLaes($personId)
     {
         $endpoint = $this->generateServiceEndpoint('/organisation/person/6/');
         $action = 'http://kombit.dk/sts/organisation/person/laes';
 
-        $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
+        $header = $this->buildHeaderXML($endpoint, $action);
         $body = $this->xmlBuilder->buildBodyPersonLaesXML($personId);
         $request = $this->createXMLRequest($header, $body);
 
@@ -768,12 +727,12 @@ class SF1500
     /**
      * Performs person soeg action.
      */
-    private function personSoeg($name, string $token)
+    private function personSoeg($name)
     {
         $endpoint = $this->generateServiceEndpoint('/organisation/person/6/');
         $action = 'http://kombit.dk/sts/organisation/person/soeg';
 
-        $header = $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
+        $header = $this->buildHeaderXML($endpoint, $action);
         $body = $this->xmlBuilder->buildBodyPersonSoegXML($name);
         $request = $this->createXMLRequest($header, $body);
 
@@ -794,9 +753,7 @@ class SF1500
      */
     private function getBrugerAdresseAttribut(string $attribute, string $brugerId)
     {
-        $token = $this->fetchSAMLToken();
-
-        $data = $this->brugerLaes($brugerId, $token);
+        $data = $this->brugerLaes($brugerId);
 
         $adresseKeys = [
             'ns3LaesOutput',
@@ -809,7 +766,7 @@ class SF1500
         $adresser = $this->getValue($data, $adresseKeys);
 
         if (!is_array($adresser)) {
-            throw new SF1500Exception('Could not organisation address.');
+            throw new SF1500Exception('Cannot find organisation address.');
         }
 
         $adresseTekstKeys = [
@@ -839,13 +796,23 @@ class SF1500
                     continue;
                 }
 
-                $data = $this->adresseLaes($adresseId, $token);
+                $data = $this->adresseLaes($adresseId);
 
                 return $this->getValue($data, $adresseTekstKeys, '');
             }
         }
 
         return '';
+    }
+
+    /**
+     * Method for building header XML.
+     */
+    private function buildHeaderXML(string $endpoint, string $action)
+    {
+        $token = $this->getSAMLToken();
+        
+        return $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
     }
 
     /**

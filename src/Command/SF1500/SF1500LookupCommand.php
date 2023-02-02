@@ -18,6 +18,7 @@ use ItkDev\AzureKeyVault\KeyVault\VaultSecret;
 use ItkDev\Serviceplatformen\Certificate\AzureKeyVaultCertificateLocator;
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Certificate\FilesystemCertificateLocator;
+use ItkDev\Serviceplatformen\Service\Exception\InvalidArgumentException;
 use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
 use ItkDev\Serviceplatformen\Service\SF1500\SF1500;
 use ItkDev\Serviceplatformen\Service\SF1500\SF1500XMLBuilder;
@@ -140,8 +141,7 @@ HELP;
         $name = $sf1500->getPersonName($userId);
 
         if (!$name) {
-            $output->writeln(sprintf('Invalid user id: %s', $userId));
-            return static::FAILURE;
+            throw new InvalidArgumentException(sprintf('Invalid user id: %s', $userId));
         }
 
         if ($options['manager']) {
@@ -149,7 +149,7 @@ HELP;
             $managerInfos = $sf1500->getManagerBrugerAndFunktionsIdFromUserId($userId, $options['manager-type-id']);
 
             if (null !== $managerInfos) {
-                $output->writeln('Finding information on managers of: '. $sf1500->getPersonName($userId));
+                $output->writeln(sprintf('Finding information on managers of: %s', $name));
 
                 $count = 1;
                 foreach ($managerInfos as $managerInfo) {
@@ -161,29 +161,25 @@ HELP;
                     $userId = $managerInfo['brugerId'];
                     $organisationFunktionsId = $managerInfo['funktionsId'];
 
-                    $this->outputData($output, $sf1500, $userId, [$organisationFunktionsId]);
+                    $this->outputData($output, $sf1500, $userId, $organisationFunktionsId);
                     $count++;
                 }
 
                 return static::SUCCESS;
             } else {
-                $output->writeln('Could not find a manager for: '. $sf1500->getPersonName($userId));
-                return static::FAILURE;
+                $output->writeln(sprintf('Cannot find a manager for: %s', $name));
+                return static::SUCCESS;
             }
-        } else {
-            $organisationFunktionsIds = $sf1500->getOrganisationFunktionerFromUserId($userId);
         }
 
-        if (!$organisationFunktionsIds) {
-            $output->writeln('Could not find any organisation funktion(ansættelse) for provided user id.');
+        $organisationFunktionsIds = $sf1500->getOrganisationFunktionerFromUserId($userId);
+
+        if (empty($organisationFunktionsIds)) {
+            $output->writeln('Cannot find any organisation funktion(ansættelse) for provided user id.');
+            return static::SUCCESS;
         }
 
-        if (is_array($organisationFunktionsIds)) {
-            $this->outputData($output, $sf1500, $userId, $organisationFunktionsIds);
-        } else {
-            $this->outputData($output, $sf1500, $userId, [$organisationFunktionsIds]);
-        }
-
+        $this->outputData($output, $sf1500, $userId, $organisationFunktionsIds);
 
         return static::SUCCESS;
     }
@@ -196,8 +192,11 @@ HELP;
         $output->writeln('Az: '. $sf1500->getPersonAZIdent($userId));
         $output->writeln('Location: '. $sf1500->getPersonLocation($userId));
 
+        $count = 1;
         foreach ($funktiondIds as $funktionsId) {
+            $output->writeln(sprintf('Printing data for organisation funktion %s', $count));
             $this->outputFunktionsData($output, $sf1500, $funktionsId);
+            $count++;
         }
     }
 
