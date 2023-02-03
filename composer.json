@@ -14,13 +14,17 @@
         }
     ],
     "bin": [
+        "bin/serviceplatformen-sf1500-data-lookup",
         "bin/serviceplatformen-sf1601-kombipostafsend"
     ],
     "require": {
         "php": "^7.4 || ^8.0",
         "composer-runtime-api": "^2.2",
+        "ext-curl": "*",
         "ext-dom": "*",
+        "ext-json": "*",
         "ext-openssl": "*",
+        "ext-simplexml": "*",
         "ext-soap": "*",
         "goetas-webservices/xsd2php-runtime": "^0.2.16",
         "http-interop/http-factory-guzzle": "^1.2",
@@ -30,6 +34,7 @@
         "symfony/cache": "^5.4 || ^6.0",
         "symfony/http-client": "^5.4 || ^6.0",
         "symfony/options-resolver": "^5.4 || ^6.0",
+        "symfony/property-access": "^4.4 || ^5.4 || ^6.0",
         "symfony/string": "^5.4 || ^6.0",
         "symfony/uid": "^5.4 || ^6.0",
         "wsdltophp/packagebase": "^5.0"
