@@ -408,11 +408,12 @@ class SF1500
 
     /**
      * Fetches bruger and organisation funktions id for managers from funktions id.
-     * Returns empty array if no manager exists
+     * Returns empty array if no manager exists and does not allow user to be its own manager.
      * @throws SF1500Exception
      */
     private function getManagerBrugerAndFunktionsIdFromFunktionsId($funktionsId, $managerFunktionsTypeId): array
     {
+        $currentBrugerId = $this->getBrugerIdFromOrganisationFunktion($funktionsId);
         $orgId = $this->getOrganisationEnhed($funktionsId, true);
 
         // If current user is manager, start searching one level up in organisation tree.
@@ -443,6 +444,10 @@ class SF1500
 
         foreach ($managerFunktionIds as $managerFunktionId) {
             $managerBrugerId = $this->getBrugerIdFromOrganisationFunktion($managerFunktionId);
+
+            if ($managerBrugerId === $currentBrugerId) {
+                continue;
+            }
 
             $result[] = [
                 'brugerId' => $managerBrugerId,
