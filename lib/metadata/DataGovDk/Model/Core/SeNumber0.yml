@@ -1,4 +1,4 @@
-DataGovDk\Model\Core\SeNumber:
+DataGovDk\Model\Core\SeNumber0:
     xml_namespaces:
         memo: 'https://DigitalPost.dk/MeMo-1'
         gln: 'https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/'
