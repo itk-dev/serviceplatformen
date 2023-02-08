@@ -52,6 +52,14 @@ class FilesystemCertificateLocator extends AbstractCertificateLocator implements
     }
 
     /**
+     * @return string
+     */
+    public function getCertificate(): string
+    {
+        return file_get_contents($this->pathToCertificate);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getAbsolutePathToCertificate(): string

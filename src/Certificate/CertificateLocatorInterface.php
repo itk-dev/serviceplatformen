@@ -18,7 +18,14 @@ use ItkDev\Serviceplatformen\Certificate\Exception\CertificateLocatorException;
 interface CertificateLocatorInterface
 {
     /**
+     * Get the certificate.
+     */
+    public function getCertificate(): string;
+
+    /**
      * Returns the absolute path to the certificate.
+     *
+     * @deprecated Use self::getCertificate() to get the certificate and store it in a temporary file if needed.
      *
      * @return string the absolute path to the certificate.
      *

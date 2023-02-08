@@ -39,7 +39,7 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
     /**
      * {@inheritDoc}
      */
-    public function getAbsolutePathToCertificate(): string
+    public function getCertificate(): string
     {
         try {
             $secret = $this->vaultSecret->getSecret($this->certificateName, $this->version);
@@ -47,8 +47,17 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
             throw new AzureKeyVaultCertificateLocatorException($e->getMessage(), $e->getCode());
         }
 
-        $certificateStoreData = $this->getCertificateStoreDataFromSecret($secret);
-        $certificate = $this->extractCertificateFromStoreData($certificateStoreData);
+        $certificateStoreData = $this->getCertificateStoreDataFromSecret($secret->getValue());
+
+        return $this->extractCertificateFromStoreData($certificateStoreData);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAbsolutePathToCertificate(): string
+    {
+        $certificate = $this->getCertificate();
 
         return $this->getAbsoluteTmpPathByContent($certificate);
     }
