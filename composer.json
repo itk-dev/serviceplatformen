@@ -31,7 +31,7 @@
         "itk-dev/azure-key-vault-php": "^1.0",
         "jms/serializer": "^3.18",
         "php-http/guzzle6-adapter": "^2.0",
-        "symfony/cache": "^5.4 || ^6.0",
+        "symfony/cache": "^4.4 || ^5.4 || ^6.0",
         "symfony/http-client": "^5.4 || ^6.0",
         "symfony/options-resolver": "^5.4 || ^6.0",
         "symfony/property-access": "^4.4 || ^5.4 || ^6.0",
