@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Changed handling of `SoapClient` options in `AbstractService`.
+
 ## [1.3.0] - 2023-02-03
 
 ### Added
