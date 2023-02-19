@@ -27,7 +27,7 @@ use DigitalPost\MeMo\Reservation;
 use DigitalPost\MeMo\Sender;
 use DOMDocument;
 use GuzzleHttp\Client;
-use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 use Http\Factory\Guzzle\RequestFactory;
 use ItkDev\AzureKeyVault\Authorisation\VaultToken;
 use ItkDev\AzureKeyVault\KeyVault\VaultSecret;
