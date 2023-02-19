@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Changed handling of `SoapClient` options in `AbstractService`.
+- Upgraded to php-http/guzzle7-adapter
 
 ## [1.3.0] - 2023-02-03
 
