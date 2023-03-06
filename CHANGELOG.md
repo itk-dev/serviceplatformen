@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Cleaned up and added search command
+
 ### Changed
 
 - Handled "Fjernprint" in
