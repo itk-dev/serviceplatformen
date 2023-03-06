@@ -345,7 +345,7 @@ XML;
                 $tag = $documentRequest->getElementsByTagName('Assertion')[0];
             }
 
-            $canonicalXml = utf8_encode($tag->C14N(true, false));
+            $canonicalXml = mb_convert_encoding($tag->C14N(true, false), 'UTF-8');
 
             $digestValue = base64_encode(openssl_digest($canonicalXml, 'sha256', true));
 
