@@ -11,6 +11,7 @@
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
+use ItkDev\Serviceplatformen\Model\Bruger;
 use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
 use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
@@ -116,14 +117,7 @@ class SF1500
     {
         $data = $this->organisationFunktionSoeg($brugerId, $funktionsNavn, $organisationId, $funktionsTypeId);
 
-        $idListeKeys = [
-            'ns3SoegOutput',
-            'ns2IdListe',
-            'ns2UUIDIdentifikator',
-        ];
-
-        // If only one result is found convert it into array with one entry.
-        return (array)$this->getValue($data, $idListeKeys, []);
+        return $this->getSoegIdliste($data);
     }
 
     /**
@@ -495,6 +489,33 @@ class SF1500
         return $this->personSoeg($name);
     }
 
+    public function getBrugerSoeg(string $name): array
+    {
+        return $this->brugerSoeg($name);
+    }
+
+    public function getBrugerList(array $uuids): array
+    {
+        return $this->brugerList($uuids);
+    }
+
+    public function getAdresseSoeg(string $query): array
+    {
+        return $this->adresseSoeg($query);
+    }
+
+    public function getSoegIdliste(array $data): array
+    {
+        $idListeKeys = [
+            'ns3SoegOutput',
+            'ns2IdListe',
+            'ns2UUIDIdentifikator',
+        ];
+
+        // If only one result is found convert it into array with one entry.
+        return (array)$this->getValue($data, $idListeKeys, []);
+    }
+
     public function laesOrganisationFunktion($id): array
     {
         return $this->organisationFunktionLaes($id);
@@ -721,6 +742,92 @@ class SF1500
     }
 
     /**
+     * Performs adresse soeg action.
+     */
+    private function adresseSoeg($name): array
+    {
+        $endpoint = $this->generateServiceEndpoint('/organisation/adresse/6/');
+        $action = 'http://kombit.dk/sts/organisation/adresse/soeg';
+
+        $header = $this->buildHeaderXML($endpoint, $action);
+        $body = $this->xmlBuilder->buildBodyAdresseSoegXML($name);
+        $request = $this->createXMLRequest($header, $body);
+
+//        header('content-type: text/plain'); echo var_export($this->formatXML($request), true); die(__FILE__.':'.__LINE__.':'.__METHOD__);
+
+
+        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
+
+        $cacheKeyOptions = [
+            __METHOD__,
+            $name,
+        ];
+
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
+
+        header('content-type: text/plain'); echo var_export($this->formatXML($response), true); die(__FILE__.':'.__LINE__.':'.__METHOD__);
+
+        return $this->responseXMLToArray($response);
+    }
+
+    private function formatXML(string $xml): string
+    {
+        $document = new \DOMDocument();
+        $document->formatOutput = true;
+        $document->loadXML($xml);
+
+        return $document->saveXML();
+    }
+
+    /**
+     * Performs bruger soeg action.
+     */
+    private function brugerSoeg($name): array
+    {
+        $endpoint = $this->generateServiceEndpoint('/organisation/bruger/6/');
+        $action = 'http://kombit.dk/sts/organisation/bruger/soeg';
+
+        $header = $this->buildHeaderXML($endpoint, $action);
+        $body = $this->xmlBuilder->buildBodyBrugerSoegXML($name);
+        $request = $this->createXMLRequest($header, $body);
+
+        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
+
+        $cacheKeyOptions = [
+            __METHOD__,
+            $name,
+        ];
+
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
+
+        return $this->responseXMLToArray($response);
+    }
+
+    /**
+     * Performs bruger list action.
+     */
+    private function brugerList(array $uuids): array
+    {
+        $endpoint = $this->generateServiceEndpoint('/organisation/bruger/6/');
+        $action = 'http://kombit.dk/sts/organisation/bruger/list';
+
+        $header = $this->buildHeaderXML($endpoint, $action);
+        $body = $this->xmlBuilder->buildBodyBrugerListXML($uuids);
+        $request = $this->createXMLRequest($header, $body);
+
+        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
+
+        $cacheKeyOptions = [
+            __METHOD__,
+            $name,
+        ];
+
+        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
+header('content-type: text/plain'); echo var_export($this->formatXML($response), true); die(__FILE__.':'.__LINE__.':'.__METHOD__);
+        return $this->responseXMLToArray($response);
+    }
+
+    /**
      * Performs person soeg action.
      */
     private function personSoeg($name): array
@@ -807,7 +914,7 @@ class SF1500
     private function buildHeaderXML(string $endpoint, string $action): string
     {
         $token = $this->getSAMLToken();
-        
+
         return $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
     }
 

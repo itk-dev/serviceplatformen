@@ -114,6 +114,28 @@ XML;
     }
 
     /**
+     * Builds XML body for adresse soeg.
+     */
+    public function buildBodyAdresseSoegXML(string $name)
+    {
+        $name = $this->xmlEncode($name);
+
+        return <<<XML
+<s:Body u:Id="_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <SoegInput xmlns="http://stoettesystemerne.dk/organisation/adresse/6/">
+      <AttributListe>
+        <Egenskab>
+          <AdresseTekst xmlns="urn:oio:sts:6">$name</AdresseTekst>
+        </Egenskab>
+      </AttributListe>
+      <TilstandListe/>
+      <RelationListe/>
+    </SoegInput>
+</s:Body>
+XML;
+    }
+
+    /**
      * Builds XML body for adresse laes.
      */
     public function buildBodyAdresseLaesXML($uuid)
