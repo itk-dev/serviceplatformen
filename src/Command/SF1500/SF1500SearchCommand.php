@@ -11,7 +11,11 @@
 namespace ItkDev\Serviceplatformen\Command\SF1500;
 
 use Composer\Console\Input\InputArgument;
+use ItkDev\Serviceplatformen\Model\AbstractModel;
+use ItkDev\Serviceplatformen\Model\Bruger;
 use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
+use ItkDev\Serviceplatformen\Service\SF1500\BrugerService;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -91,12 +95,28 @@ HELP;
         $type = $input->getArgument('type');
         $query = $input->getArgument('query');
 
-        $sf1500 = $this->getSF1500($options);
-
-        $result = $sf1500->getPersonSoeg($query);
+        $result = $this->doSearch($type, $query, $options);
 
         $output->writeln(json_encode($result, JSON_PRETTY_PRINT));
 
         return static::SUCCESS;
+    }
+
+    /**
+     * @return AbstractModel[]
+     */
+    private function doSearch(string $type, string $query, array $options): array
+    {
+        $sf1500 = $this->getSF1500($options);
+
+        switch ($type) {
+            case 'person':
+                return $sf1500->getPersonSoeg($query);
+            case 'user':
+            case 'bruger':
+                return (new BrugerService($sf1500))->soeg($query);
+        }
+
+        throw new RuntimeException(sprintf('invalid search type: %s', $type));
     }
 }
