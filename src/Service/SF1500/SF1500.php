@@ -10,17 +10,13 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
-use Digitaliseringskataloget\SF1500\Organisation6\Person\Person;
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
-use ItkDev\Serviceplatformen\Model\Bruger;
 use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
 use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
 use ItkDev\Serviceplatformen\Service\SoapClient;
-use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Soeg;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\AttributListeType;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\EgenskabType;
-use ItkDev\Serviceplatformen\SF1500\Person\StructType\LaesInputType;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\SoegInputType;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\SoegOutputType;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -496,11 +492,6 @@ class SF1500
         return $this->personSoeg($name);
     }
 
-    public function getBrugerSoeg(string $name): array
-    {
-        return $this->brugerSoeg($name);
-    }
-
     public function getBrugerList(array $uuids): array
     {
         return $this->brugerList($uuids);
@@ -783,22 +774,6 @@ class SF1500
         $document->loadXML($xml);
 
         return $document->saveXML();
-    }
-
-    /**
-     * Performs bruger soeg action.
-     */
-    private function brugerSoeg($name): array
-    {
-        return \ItkDev\Serviceplatformen\Service\SF1500\SoapClient::getBrugerSoeg($this)
-            ->soeg(
-                (new SoegInputType())
-                    ->setAttributListe((new AttributListeType())
-                        ->setEgenskab([
-                            (new EgenskabType())
-                                ->setNavnTekst($name),
-                        ]))
-            );
     }
 
     /**

@@ -39,7 +39,7 @@ class _List extends SoapClientBase
      * @param \ItkDev\Serviceplatformen\SF1500\Person\StructType\ListInputType $request
      * @return \ItkDev\Serviceplatformen\SF1500\Person\StructType\ListOutputType|bool
      */
-    public function _list_1(\ItkDev\Serviceplatformen\SF1500\Person\StructType\ListInputType $request)
+    public function _list_11(\ItkDev\Serviceplatformen\SF1500\Person\StructType\ListInputType $request)
     {
         try {
             $this->setResult($resultList = $this->getSoapClient()->__soapCall('list', [

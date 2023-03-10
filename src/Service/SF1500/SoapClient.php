@@ -10,9 +10,8 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
-use ItkDev\Serviceplatformen\SF1500\Bruger\ClassMap as BrugerClassMap;
-use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Soeg as BrugerSoeg;
 use ItkDev\Serviceplatformen\SF1500\Person\ClassMap as PersonClassMap;
+use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\_List as PersonList;
 use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Laes as PersonLaes;
 use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Soeg as PersonSoeg;
 
@@ -47,16 +46,6 @@ class SoapClient extends \SoapClient
         return $this->lastRequest ?? parent::__getLastRequest();
     }
 
-    public static function getBrugerSoeg(SF1500 $sf1500, array $options = []): BrugerSoeg
-    {
-        return
-            (new BrugerSoeg([
-                    SoapClientBase::WSDL_URL => __DIR__.'/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Bruger.wsdl',
-                    SoapClientBase::WSDL_CLASSMAP => BrugerClassMap::get(),
-                ] + $options))
-                ->setSF1500($sf1500);
-    }
-
     public static function getPersonSoeg(SF1500 $sf1500, array $options = []): PersonSoeg
     {
         return
@@ -65,6 +54,16 @@ class SoapClient extends \SoapClient
                     SoapClientBase::WSDL_CLASSMAP => PersonClassMap::get(),
                 ] + $options))
             ->setSF1500($sf1500);
+    }
+
+    public static function getPersonList(SF1500 $sf1500, array $options = []): PersonList
+    {
+        return
+            (new PersonList([
+                    SoapClientBase::WSDL_URL => __DIR__.'/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Person.wsdl',
+                    SoapClientBase::WSDL_CLASSMAP => PersonClassMap::get(),
+                ] + $options))
+                ->setSF1500($sf1500);
     }
 
     public static function getPersonLaes(SF1500 $sf1500, array $options = []): PersonLaes
