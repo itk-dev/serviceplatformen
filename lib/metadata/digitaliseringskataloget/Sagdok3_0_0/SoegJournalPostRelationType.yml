@@ -1,0 +1,52 @@
+Digitaliseringskataloget\Sagdok3_0_0\SoegJournalPostRelationType:
+    properties:
+        journalPostIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: JournalPostIdentifikator
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getJournalPostIdentifikator
+                setter: setJournalPostIdentifikator
+            type: string
+        titelTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: TitelTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTitelTekst
+                setter: setTitelTekst
+            type: string
+        indeksIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: IndeksIdentifikator
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getIndeksIdentifikator
+                setter: setIndeksIdentifikator
+            type: int
+        offentlighedUndtaget:
+            expose: true
+            access_type: public_method
+            serialized_name: OffentlighedUndtaget
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getOffentlighedUndtaget
+                setter: setOffentlighedUndtaget
+            type: Digitaliseringskataloget\Sagdok3_0_0\OffentlighedUndtaget
+        tilhoersforholdKode:
+            expose: true
+            access_type: public_method
+            serialized_name: TilhoersforholdKode
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTilhoersforholdKode
+                setter: setTilhoersforholdKode
+            type: string

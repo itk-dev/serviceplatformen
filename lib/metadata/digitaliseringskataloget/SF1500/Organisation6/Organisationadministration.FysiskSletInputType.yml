@@ -1,0 +1,22 @@
+Digitaliseringskataloget\SF1500\Organisation6\Organisationadministration\FysiskSletInputType:
+    properties:
+        organisationUUID:
+            expose: true
+            access_type: public_method
+            serialized_name: OrganisationUUID
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationadministration/6/'
+            accessor:
+                getter: getOrganisationUUID
+                setter: setOrganisationUUID
+            type: string
+        organisationEnhedUUID:
+            expose: true
+            access_type: public_method
+            serialized_name: OrganisationEnhedUUID
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationadministration/6/'
+            accessor:
+                getter: getOrganisationEnhedUUID
+                setter: setOrganisationEnhedUUID
+            type: string

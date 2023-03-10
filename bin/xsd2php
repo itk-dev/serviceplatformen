@@ -5,10 +5,11 @@ IFS=$'\n\t'
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+project_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")"/../ && pwd)
+
 # XSD archive url (cf. https://www.digitaliser.dk/resource/5248921)
 XSD_ARCHIVE_URL="https://www.digitaliser.dk/resource/5248921/artefact/MeMo_XSD.zip?artefact=true&PID=6075979"
 
-project_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")"/../ && pwd)
 xsd_dir=/tmp/MeMo/xsd
 # Relative to project_dir
 lib_dir="lib"
@@ -30,3 +31,14 @@ rm -fr "$lib_dir"
 rm -fr "$xsd_dir"
 
 echo "${bold}Done${normal}"
+
+
+xsd_dir=/tmp/sf1500/xsd
+mkdir -p "$xsd_dir"
+
+curl --silent --location https://docs.kombit.dk/integration/sf1500/3.0/pakke >| "$xsd_dir"/sf1500.zip
+unzip -q -o "$xsd_dir"/sf1500.zip -d "$xsd_dir"
+unzip -q -o "$xsd_dir/SF1500 Bilag*.zip" -d "$xsd_dir" || true
+ls -l "$xsd_dir"/Tekniske*/*/xsd/6.0.STS-0/*.xsd
+
+"$project_dir"/vendor/bin/xsd2php convert xsd2php-config.yml "$xsd_dir"/Tekniske*/*/xsd/6.0.STS-0/*.xsd

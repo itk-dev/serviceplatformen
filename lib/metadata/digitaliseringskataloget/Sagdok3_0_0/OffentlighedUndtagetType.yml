@@ -1,0 +1,22 @@
+Digitaliseringskataloget\Sagdok3_0_0\OffentlighedUndtagetType:
+    properties:
+        titelAlternativTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: TitelAlternativTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTitelAlternativTekst
+                setter: setTitelAlternativTekst
+            type: string
+        offentlighedUndtagetHjemmelTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: OffentlighedUndtagetHjemmelTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getOffentlighedUndtagetHjemmelTekst
+                setter: setOffentlighedUndtagetHjemmelTekst
+            type: string

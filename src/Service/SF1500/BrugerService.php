@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * This file is part of itk-dev/serviceplatformen.
+ *
+ * (c) 2020 ITK Development
+ *
+ * This source file is subject to the MIT license.
+ */
+
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
 use ItkDev\Serviceplatformen\Model\Bruger;
@@ -19,6 +27,9 @@ class BrugerService
     public function soeg(string $query): array
     {
         $data = $this->sf1500->getBrugerSoeg($query);
+        header('content-type: text/plain');
+        echo var_export($data, true);
+        die(__FILE__.':'.__LINE__.':'.__METHOD__);
         $ids = $this->sf1500->getSoegIdliste($data);
 
         if (empty($ids)) {

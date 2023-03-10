@@ -1,0 +1,12 @@
+Digitaliseringskataloget\SF1500\Organisation6\Klassifikation\ImportInputType:
+    properties:
+        klassifikation:
+            expose: true
+            access_type: public_method
+            serialized_name: Klassifikation
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klassifikation/6/'
+            accessor:
+                getter: getKlassifikation
+                setter: setKlassifikation
+            type: Digitaliseringskataloget\SF1500\Organisation6\Klassifikation\Klassifikation

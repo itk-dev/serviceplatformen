@@ -1,0 +1,12 @@
+Digitaliseringskataloget\SF1500\Organisation6\Adresse\ImportInputType:
+    properties:
+        adresse:
+            expose: true
+            access_type: public_method
+            serialized_name: Adresse
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/adresse/6/'
+            accessor:
+                getter: getAdresse
+                setter: setAdresse
+            type: Digitaliseringskataloget\SF1500\Organisation6\Adresse\Adresse

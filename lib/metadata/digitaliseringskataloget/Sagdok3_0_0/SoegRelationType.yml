@@ -1,0 +1,22 @@
+Digitaliseringskataloget\Sagdok3_0_0\SoegRelationType:
+    properties:
+        soegVirkning:
+            expose: true
+            access_type: public_method
+            serialized_name: SoegVirkning
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getSoegVirkning
+                setter: setSoegVirkning
+            type: Digitaliseringskataloget\Sagdok3_0_0\SoegVirkning
+        referenceID:
+            expose: true
+            access_type: public_method
+            serialized_name: ReferenceID
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getReferenceID
+                setter: setReferenceID
+            type: Digitaliseringskataloget\Sagdok3_0_0\ReferenceID

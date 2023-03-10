@@ -1,0 +1,32 @@
+Digitaliseringskataloget\SF1500\Organisation6\Klassifikationsystem\FremsoegObjekthierarkiInputType:
+    properties:
+        klassifikationSoegEgenskab:
+            expose: true
+            access_type: public_method
+            serialized_name: KlassifikationSoegEgenskab
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klassifikationsystem/6/'
+            accessor:
+                getter: getKlassifikationSoegEgenskab
+                setter: setKlassifikationSoegEgenskab
+            type: Digitaliseringskataloget\SF1500\Organisation6\Klassifikationsystem\KlassifikationSoegEgenskab
+        facetSoegEgenskab:
+            expose: true
+            access_type: public_method
+            serialized_name: FacetSoegEgenskab
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klassifikationsystem/6/'
+            accessor:
+                getter: getFacetSoegEgenskab
+                setter: setFacetSoegEgenskab
+            type: Digitaliseringskataloget\SF1500\Organisation6\Klassifikationsystem\FacetSoegEgenskab
+        klasseSoegEgenskab:
+            expose: true
+            access_type: public_method
+            serialized_name: KlasseSoegEgenskab
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klassifikationsystem/6/'
+            accessor:
+                getter: getKlasseSoegEgenskab
+                setter: setKlasseSoegEgenskab
+            type: Digitaliseringskataloget\SF1500\Organisation6\Klassifikationsystem\KlasseSoegEgenskab

@@ -1,0 +1,12 @@
+Digitaliseringskataloget\SF1500\Organisation6\Itsystem\ImportInputType:
+    properties:
+        itSystem:
+            expose: true
+            access_type: public_method
+            serialized_name: ItSystem
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/itsystem/6/'
+            accessor:
+                getter: getItSystem
+                setter: setItSystem
+            type: Digitaliseringskataloget\SF1500\Organisation6\Itsystem\ItSystem

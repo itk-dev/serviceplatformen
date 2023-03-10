@@ -1,0 +1,22 @@
+Digitaliseringskataloget\SF1500\Organisation6\Interessefaellesskab\RegistreringBeskedType:
+    properties:
+        uUIDIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: UUIDIdentifikator
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getUUIDIdentifikator
+                setter: setUUIDIdentifikator
+            type: string
+        registrering:
+            expose: true
+            access_type: public_method
+            serialized_name: Registrering
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/interessefaellesskab/6/'
+            accessor:
+                getter: getRegistrering
+                setter: setRegistrering
+            type: Digitaliseringskataloget\SF1500\Organisation6\Interessefaellesskab\Registrering

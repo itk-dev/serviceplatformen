@@ -1,0 +1,14 @@
+Digitaliseringskataloget\Sagdok3_0_0\Sideordnede:
+    xml_namespaces:
+        memo: 'https://DigitalPost.dk/MeMo-1'
+        gln: 'https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/'
+        udd: 'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#'
+        rid: 'https://www.nets.eu/dk-da/l%C3%B8sninger/nemid/nemid-tjenesteudbyder/supplerende-tjenester/pid-rid-cpr-tjenester'
+        pnum: 'https://indberet.virk.dk/myndigheder/stat/ERST/P-enhedsloesningen'
+        form: 'http://www.form-online.dk/'
+        kle: 'http://kle-online.dk/'
+        dmv: 'https://motorregister.skat.dk/'
+        grd: 'https://data.gov.dk/model/core/'
+        sor: 'https://services.nsi.dk/en/Services/SOR'
+    xml_root_name: Sideordnede
+    xml_root_namespace: 'urn:oio:sagdok:3.0.0'

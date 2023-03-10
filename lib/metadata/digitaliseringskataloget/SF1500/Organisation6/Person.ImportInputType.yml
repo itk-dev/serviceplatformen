@@ -1,0 +1,12 @@
+Digitaliseringskataloget\SF1500\Organisation6\Person\ImportInputType:
+    properties:
+        person:
+            expose: true
+            access_type: public_method
+            serialized_name: Person
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/person/6/'
+            accessor:
+                getter: getPerson
+                setter: setPerson
+            type: Digitaliseringskataloget\SF1500\Organisation6\Person\Person

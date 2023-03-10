@@ -7,11 +7,25 @@ use WsdlToPhp\PackageGenerator\ConfigurationReader\GeneratorOptions;
 use WsdlToPhp\PackageGenerator\Generator\Generator;
 
 $services = [
+    // https://digitaliseringskataloget.dk/integration/sf1500
+    'sf1500' => [
+        'doc_url' => 'https://docs.kombit.dk/integration/sf1500/3.0/pakke',
+        'resource_zip_glob' => 'SF1500 Bilag*.zip',
+        'wsdl_paths' => [
+            'Bruger' => 'Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Bruger.wsdl',
+            'Person' => 'Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Person.wsdl',
+        ],
+        'namespace_name' => 'SF1500',
+        // @see https://github.com/WsdlToPhp/PackageEws365/blob/master/SoapClient/SoapClientBase.php
+        'soap_client_class' => \ItkDev\Serviceplatformen\Service\SF1500\SoapClientBase::class,
+    ],
     // https://digitaliseringskataloget.dk/integration/sf1600
     'sf1600' => [
         'doc_url' => 'https://docs.kombit.dk/integration/sf1600/2.5/pakke',
         'resource_zip_glob' => 'SF1600 Teknisk Spec*.zip',
-        'wsdl_path' => 'wsdl/token/PrintService.wsdl',
+        'wsdl_paths' => [
+            '' => 'wsdl/token/PrintService.wsdl',
+        ],
         'namespace_name' => 'SF1600',
     ],
 ];
@@ -66,10 +80,10 @@ class ResourceHelper extends Helper {
                 sprintf('cd %s && unzip -qq -o %s > /dev/null 2>&1', escapeshellarg($resourceDir), escapeshellarg(dirname($tmpPath).'/'.$spec['resource_zip_glob']))
             );
             if (0 !== $exitCode) {
-                throw new \RuntimeException(json_encode([
-                    'exit' => $exitCode,
-                    'output' => $output,
-                ], JSON_PRETTY_PRINT));
+                // throw new \RuntimeException(json_encode([
+                //     'exit' => $exitCode,
+                //     'output' => $output,
+                // ], JSON_PRETTY_PRINT));
             }
 
             echo ' done', PHP_EOL;
@@ -79,33 +93,42 @@ class ResourceHelper extends Helper {
 
 class ClassHelper extends Helper {
     public function run() {
-        // @see https://github.com/WsdlToPhp/PackageGenerator/wiki/Options
-        $options = GeneratorOptions::instance();
-        $options
-            ->setStandalone(false)
-            ->setSrcDirname('/')
-            ->setDestination(__DIR__.'/../generated-classes');
-
         foreach ($this->services as $name => $spec) {
-            if (!isset($spec['wsdl_path'])) {
-                throw new \RuntimeException(sprintf('Invalid spec for service %s: %s', $name, json_encode($spec)));
-            }
-
-            echo sprintf('Service %s', $name), PHP_EOL;
-
-            $wsdlPath = $this->getResourceDir($name).'/'.$spec['wsdl_path'];
-
-            echo sprintf('Generating classes …');
-
+            // @see https://github.com/WsdlToPhp/PackageGenerator/wiki/Options
+            GeneratorOptions::resetInstances();
+            $options = GeneratorOptions::instance();
             $options
-                ->setOrigin($wsdlPath)
-                ->setNameSpace(sprintf('ItkDev\Serviceplatformen\%s', $spec['namespace_name'] ?? $name));
+                ->setStandalone(false)
+                ->setSrcDirname('/')
+                ->setDestination(__DIR__.'/../generated-classes');
 
-            $generator = new Generator($options);
-            // Package generation
-            $generator->generatePackage();
+            if (isset($spec['soap_client_class'])) {
+                $options->setSoapClientClass($spec['soap_client_class']);
+            }
+            if (isset($spec['soap_options'])) {
+                $options->setSoapOptions($spec['soap_options']);
+            }
+            foreach ($spec['wsdl_paths'] as $className => $wsdlPath) {
+                echo sprintf('Service %s (%s)', $name, $wsdlPath), PHP_EOL;
 
-            echo ' done', PHP_EOL;
+                $wsdlPath = $this->getResourceDir($name).'/'.$wsdlPath;
+
+                echo sprintf('Generating classes …'), PHP_EOL;
+                $nameSpace = sprintf('ItkDev\\Serviceplatformen\\%s%s', $spec['namespace_name'] ?? $name, $className ? '\\'.$className : '');
+                echo $nameSpace, PHP_EOL;
+
+                $options
+                    ->setOrigin($wsdlPath)
+                    ->setNameSpace($nameSpace);
+
+
+
+                $generator = new Generator($options);
+                // Package generation
+                $generator->generatePackage();
+
+                echo ' done', PHP_EOL;
+            }
         }
     }
 }
@@ -123,6 +146,8 @@ abstract class Helper {
 
     protected function exec(string $cmd): array
     {
+        echo PHP_EOL, PHP_EOL, $cmd, PHP_EOL, PHP_EOL;
+
         exec($cmd, $output, $exitCode);
         return [$exitCode, $output];
     }

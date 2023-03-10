@@ -1,0 +1,126 @@
+Digitaliseringskataloget\SF1500\Organisation6\Klasse\RelationListeType:
+    properties:
+        ansvarlig:
+            expose: true
+            access_type: public_method
+            serialized_name: Ansvarlig
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getAnsvarlig
+                setter: setAnsvarlig
+            type: Digitaliseringskataloget\Sagdok3_0_0\Ansvarlig
+        ejer:
+            expose: true
+            access_type: public_method
+            serialized_name: Ejer
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getEjer
+                setter: setEjer
+            type: Digitaliseringskataloget\Sagdok3_0_0\Ejer
+        erstatter:
+            expose: true
+            access_type: public_method
+            serialized_name: Erstatter
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getErstatter
+                setter: setErstatter
+            xml_list:
+                inline: true
+                entry_name: Erstatter
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\Erstatter>
+        facet:
+            expose: true
+            access_type: public_method
+            serialized_name: Facet
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getFacet
+                setter: setFacet
+            type: Digitaliseringskataloget\Sagdok3_0_0\Facet
+        lovligeKombinationer:
+            expose: true
+            access_type: public_method
+            serialized_name: LovligeKombinationer
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getLovligeKombinationer
+                setter: setLovligeKombinationer
+            xml_list:
+                inline: true
+                entry_name: LovligeKombinationer
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\LovligeKombinationer>
+        mapninger:
+            expose: true
+            access_type: public_method
+            serialized_name: Mapninger
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getMapninger
+                setter: setMapninger
+            xml_list:
+                inline: true
+                entry_name: Mapninger
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\Mapninger>
+        overordnetKlasse:
+            expose: true
+            access_type: public_method
+            serialized_name: OverordnetKlasse
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getOverordnetKlasse
+                setter: setOverordnetKlasse
+            type: Digitaliseringskataloget\Sagdok3_0_0\OverordnetKlasse
+        redaktoerer:
+            expose: true
+            access_type: public_method
+            serialized_name: Redaktoerer
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getRedaktoerer
+                setter: setRedaktoerer
+            xml_list:
+                inline: true
+                entry_name: Redaktoerer
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\Redaktoerer>
+        sideordnede:
+            expose: true
+            access_type: public_method
+            serialized_name: Sideordnede
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getSideordnede
+                setter: setSideordnede
+            xml_list:
+                inline: true
+                entry_name: Sideordnede
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\Sideordnede>
+        tilfoejelser:
+            expose: true
+            access_type: public_method
+            serialized_name: Tilfoejelser
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTilfoejelser
+                setter: setTilfoejelser
+            xml_list:
+                inline: true
+                entry_name: Tilfoejelser
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\Tilfoejelser>

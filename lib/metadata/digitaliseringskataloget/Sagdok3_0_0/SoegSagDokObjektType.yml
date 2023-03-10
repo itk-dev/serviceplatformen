@@ -1,0 +1,32 @@
+Digitaliseringskataloget\Sagdok3_0_0\SoegSagDokObjektType:
+    properties:
+        uUIDIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: UUIDIdentifikator
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getUUIDIdentifikator
+                setter: setUUIDIdentifikator
+            type: string
+        soegRegistrering:
+            expose: true
+            access_type: public_method
+            serialized_name: SoegRegistrering
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getSoegRegistrering
+                setter: setSoegRegistrering
+            type: Digitaliseringskataloget\Sagdok3_0_0\SoegRegistrering
+        soegVirkning:
+            expose: true
+            access_type: public_method
+            serialized_name: SoegVirkning
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getSoegVirkning
+                setter: setSoegVirkning
+            type: Digitaliseringskataloget\Sagdok3_0_0\SoegVirkning

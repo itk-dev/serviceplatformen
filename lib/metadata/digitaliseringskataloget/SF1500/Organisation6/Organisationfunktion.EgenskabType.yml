@@ -1,0 +1,32 @@
+Digitaliseringskataloget\SF1500\Organisation6\Organisationfunktion\EgenskabType:
+    properties:
+        virkning:
+            expose: true
+            access_type: public_method
+            serialized_name: Virkning
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getVirkning
+                setter: setVirkning
+            type: Digitaliseringskataloget\Sagdok3_0_0\Virkning
+        brugervendtNoegleTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: BrugervendtNoegleTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getBrugervendtNoegleTekst
+                setter: setBrugervendtNoegleTekst
+            type: string
+        funktionNavn:
+            expose: true
+            access_type: public_method
+            serialized_name: FunktionNavn
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getFunktionNavn
+                setter: setFunktionNavn
+            type: string

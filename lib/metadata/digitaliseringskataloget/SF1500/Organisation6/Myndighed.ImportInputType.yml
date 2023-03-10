@@ -1,0 +1,12 @@
+Digitaliseringskataloget\SF1500\Organisation6\Myndighed\ImportInputType:
+    properties:
+        myndighed:
+            expose: true
+            access_type: public_method
+            serialized_name: Myndighed
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/myndighed/6/'
+            accessor:
+                getter: getMyndighed
+                setter: setMyndighed
+            type: Digitaliseringskataloget\SF1500\Organisation6\Myndighed\Myndighed

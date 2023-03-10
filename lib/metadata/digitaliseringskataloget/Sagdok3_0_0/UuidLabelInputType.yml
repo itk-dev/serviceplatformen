@@ -1,0 +1,12 @@
+Digitaliseringskataloget\Sagdok3_0_0\UuidLabelInputType:
+    properties:
+        label:
+            expose: true
+            access_type: public_method
+            serialized_name: Label
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getLabel
+                setter: setLabel
+            type: string

@@ -1,0 +1,32 @@
+Digitaliseringskataloget\Sagdok3_0_0\DynamicFlerRelationType:
+    properties:
+        rolle:
+            expose: true
+            access_type: public_method
+            serialized_name: Rolle
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getRolle
+                setter: setRolle
+            type: Digitaliseringskataloget\Sagdok3_0_0\UuidLabelInputType
+        type:
+            expose: true
+            access_type: public_method
+            serialized_name: Type
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getType
+                setter: setType
+            type: Digitaliseringskataloget\Sagdok3_0_0\UuidLabelInputType
+        indeks:
+            expose: true
+            access_type: public_method
+            serialized_name: Indeks
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getIndeks
+                setter: setIndeks
+            type: string

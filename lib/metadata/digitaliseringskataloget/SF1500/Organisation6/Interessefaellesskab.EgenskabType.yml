@@ -1,0 +1,42 @@
+Digitaliseringskataloget\SF1500\Organisation6\Interessefaellesskab\EgenskabType:
+    properties:
+        virkning:
+            expose: true
+            access_type: public_method
+            serialized_name: Virkning
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getVirkning
+                setter: setVirkning
+            type: Digitaliseringskataloget\Sagdok3_0_0\Virkning
+        brugervendtNoegleTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: BrugervendtNoegleTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getBrugervendtNoegleTekst
+                setter: setBrugervendtNoegleTekst
+            type: string
+        interessefaellesskabNavn:
+            expose: true
+            access_type: public_method
+            serialized_name: InteressefaellesskabNavn
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getInteressefaellesskabNavn
+                setter: setInteressefaellesskabNavn
+            type: string
+        interessefaellesskabTypeTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: InteressefaellesskabTypeTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getInteressefaellesskabTypeTekst
+                setter: setInteressefaellesskabTypeTekst
+            type: string

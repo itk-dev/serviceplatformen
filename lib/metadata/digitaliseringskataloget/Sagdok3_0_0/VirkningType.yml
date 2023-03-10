@@ -1,0 +1,52 @@
+Digitaliseringskataloget\Sagdok3_0_0\VirkningType:
+    properties:
+        fraTidspunkt:
+            expose: true
+            access_type: public_method
+            serialized_name: FraTidspunkt
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getFraTidspunkt
+                setter: setFraTidspunkt
+            type: Digitaliseringskataloget\Sagdok3_0_0\FraTidspunkt
+        tilTidspunkt:
+            expose: true
+            access_type: public_method
+            serialized_name: TilTidspunkt
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTilTidspunkt
+                setter: setTilTidspunkt
+            type: Digitaliseringskataloget\Sagdok3_0_0\TilTidspunkt
+        aktoerRef:
+            expose: true
+            access_type: public_method
+            serialized_name: AktoerRef
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getAktoerRef
+                setter: setAktoerRef
+            type: Digitaliseringskataloget\Sagdok3_0_0\AktoerRef
+        aktoerTypeKode:
+            expose: true
+            access_type: public_method
+            serialized_name: AktoerTypeKode
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getAktoerTypeKode
+                setter: setAktoerTypeKode
+            type: string
+        noteTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: NoteTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getNoteTekst
+                setter: setNoteTekst
+            type: string
