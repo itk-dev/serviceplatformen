@@ -1,0 +1,32 @@
+Digitaliseringskataloget\SF1500\Organisation6\Klasse\SoegeordType:
+    properties:
+        soegeordIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: SoegeordIdentifikator
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getSoegeordIdentifikator
+                setter: setSoegeordIdentifikator
+            type: string
+        beskrivelseTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: BeskrivelseTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getBeskrivelseTekst
+                setter: setBeskrivelseTekst
+            type: string
+        soegeordKategoriTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: SoegeordKategoriTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getSoegeordKategoriTekst
+                setter: setSoegeordKategoriTekst
+            type: string

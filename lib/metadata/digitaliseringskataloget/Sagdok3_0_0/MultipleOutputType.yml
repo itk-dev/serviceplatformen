@@ -1,0 +1,30 @@
+Digitaliseringskataloget\Sagdok3_0_0\MultipleOutputType:
+    properties:
+        unikRetur:
+            expose: true
+            access_type: public_method
+            serialized_name: UnikRetur
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getUnikRetur
+                setter: setUnikRetur
+            xml_list:
+                inline: true
+                entry_name: UnikRetur
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\UnikReturType>
+        standardRetur:
+            expose: true
+            access_type: public_method
+            serialized_name: StandardRetur
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getStandardRetur
+                setter: setStandardRetur
+            xml_list:
+                inline: true
+                entry_name: StandardRetur
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\StandardReturType>

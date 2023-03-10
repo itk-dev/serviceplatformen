@@ -1,0 +1,26 @@
+Digitaliseringskataloget\SF1500\Organisation6\Organisationenhed\AttributListeType:
+    properties:
+        egenskab:
+            expose: true
+            access_type: public_method
+            serialized_name: Egenskab
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationenhed/6/'
+            accessor:
+                getter: getEgenskab
+                setter: setEgenskab
+            xml_list:
+                inline: true
+                entry_name: Egenskab
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationenhed/6/'
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Organisationenhed\Egenskab>
+        lokalUdvidelse:
+            expose: true
+            access_type: public_method
+            serialized_name: LokalUdvidelse
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getLokalUdvidelse
+                setter: setLokalUdvidelse
+            type: Digitaliseringskataloget\Sagdok3_0_0\LokalUdvidelse

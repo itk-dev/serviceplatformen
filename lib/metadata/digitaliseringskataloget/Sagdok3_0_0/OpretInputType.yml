@@ -1,0 +1,12 @@
+Digitaliseringskataloget\Sagdok3_0_0\OpretInputType:
+    properties:
+        noteTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: NoteTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getNoteTekst
+                setter: setNoteTekst
+            type: string

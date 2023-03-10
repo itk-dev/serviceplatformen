@@ -1,0 +1,148 @@
+Digitaliseringskataloget\SF1500\Organisation6\Bruger\RelationListeType:
+    properties:
+        adresser:
+            expose: true
+            access_type: public_method
+            serialized_name: Adresser
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getAdresser
+                setter: setAdresser
+            xml_list:
+                inline: true
+                entry_name: Adresser
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\Adresser>
+        brugerTyper:
+            expose: true
+            access_type: public_method
+            serialized_name: BrugerTyper
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getBrugerTyper
+                setter: setBrugerTyper
+            xml_list:
+                inline: true
+                entry_name: BrugerTyper
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\BrugerTyper>
+        tilknyttedeOpgaver:
+            expose: true
+            access_type: public_method
+            serialized_name: TilknyttedeOpgaver
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTilknyttedeOpgaver
+                setter: setTilknyttedeOpgaver
+            xml_list:
+                inline: true
+                entry_name: TilknyttedeOpgaver
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\TilknyttedeOpgaver>
+        tilhoerer:
+            expose: true
+            access_type: public_method
+            serialized_name: Tilhoerer
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTilhoerer
+                setter: setTilhoerer
+            type: Digitaliseringskataloget\Sagdok3_0_0\Tilhoerer
+        tilknyttedeEnheder:
+            expose: true
+            access_type: public_method
+            serialized_name: TilknyttedeEnheder
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTilknyttedeEnheder
+                setter: setTilknyttedeEnheder
+            xml_list:
+                inline: true
+                entry_name: TilknyttedeEnheder
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\TilknyttedeEnheder>
+        tilknyttedeFunktioner:
+            expose: true
+            access_type: public_method
+            serialized_name: TilknyttedeFunktioner
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTilknyttedeFunktioner
+                setter: setTilknyttedeFunktioner
+            xml_list:
+                inline: true
+                entry_name: TilknyttedeFunktioner
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\TilknyttedeFunktioner>
+        tilknyttedeInteressefaellesskaber:
+            expose: true
+            access_type: public_method
+            serialized_name: TilknyttedeInteressefaellesskaber
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTilknyttedeInteressefaellesskaber
+                setter: setTilknyttedeInteressefaellesskaber
+            xml_list:
+                inline: true
+                entry_name: TilknyttedeInteressefaellesskaber
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\TilknyttedeInteressefaellesskaber>
+        tilknyttedeOrganisationer:
+            expose: true
+            access_type: public_method
+            serialized_name: TilknyttedeOrganisationer
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTilknyttedeOrganisationer
+                setter: setTilknyttedeOrganisationer
+            xml_list:
+                inline: true
+                entry_name: TilknyttedeOrganisationer
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\TilknyttedeOrganisationer>
+        tilknyttedePersoner:
+            expose: true
+            access_type: public_method
+            serialized_name: TilknyttedePersoner
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTilknyttedePersoner
+                setter: setTilknyttedePersoner
+            xml_list:
+                inline: true
+                entry_name: TilknyttedePersoner
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\TilknyttedePersoner>
+        tilknyttedeItSystemer:
+            expose: true
+            access_type: public_method
+            serialized_name: TilknyttedeItSystemer
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTilknyttedeItSystemer
+                setter: setTilknyttedeItSystemer
+            xml_list:
+                inline: true
+                entry_name: TilknyttedeItSystemer
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\TilknyttedeItSystemer>
+        lokalUdvidelse:
+            expose: true
+            access_type: public_method
+            serialized_name: LokalUdvidelse
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getLokalUdvidelse
+                setter: setLokalUdvidelse
+            type: Digitaliseringskataloget\Sagdok3_0_0\LokalUdvidelse

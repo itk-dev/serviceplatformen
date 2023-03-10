@@ -1,0 +1,12 @@
+Digitaliseringskataloget\SF1500\Organisation6\Virksomhed\ImportInputType:
+    properties:
+        virksomhed:
+            expose: true
+            access_type: public_method
+            serialized_name: Virksomhed
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/virksomhed/6/'
+            accessor:
+                getter: getVirksomhed
+                setter: setVirksomhed
+            type: Digitaliseringskataloget\SF1500\Organisation6\Virksomhed\Virksomhed

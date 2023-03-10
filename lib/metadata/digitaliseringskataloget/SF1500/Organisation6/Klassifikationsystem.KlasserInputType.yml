@@ -1,0 +1,16 @@
+Digitaliseringskataloget\SF1500\Organisation6\Klassifikationsystem\KlasserInputType:
+    properties:
+        klasse:
+            expose: true
+            access_type: public_method
+            serialized_name: Klasse
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klasse/6/'
+            accessor:
+                getter: getKlasse
+                setter: setKlasse
+            xml_list:
+                inline: true
+                entry_name: Klasse
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klasse/6/'
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Klasse\Klasse>

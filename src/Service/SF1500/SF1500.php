@@ -10,12 +10,19 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
+use Digitaliseringskataloget\SF1500\Organisation6\Person\Person;
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Model\Bruger;
 use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
 use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
 use ItkDev\Serviceplatformen\Service\SoapClient;
+use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Soeg;
+use ItkDev\Serviceplatformen\SF1500\Person\StructType\AttributListeType;
+use ItkDev\Serviceplatformen\SF1500\Person\StructType\EgenskabType;
+use ItkDev\Serviceplatformen\SF1500\Person\StructType\LaesInputType;
+use ItkDev\Serviceplatformen\SF1500\Person\StructType\SoegInputType;
+use ItkDev\Serviceplatformen\SF1500\Person\StructType\SoegOutputType;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -484,7 +491,7 @@ class SF1500
         return $this->personLaes($personId);
     }
 
-    public function getPersonSoeg($name): array
+    public function getPersonSoeg($name): SoegOutputType
     {
         return $this->personSoeg($name);
     }
@@ -753,9 +760,6 @@ class SF1500
         $body = $this->xmlBuilder->buildBodyAdresseSoegXML($name);
         $request = $this->createXMLRequest($header, $body);
 
-//        header('content-type: text/plain'); echo var_export($this->formatXML($request), true); die(__FILE__.':'.__LINE__.':'.__METHOD__);
-
-
         $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
 
         $cacheKeyOptions = [
@@ -765,7 +769,9 @@ class SF1500
 
         $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
 
-        header('content-type: text/plain'); echo var_export($this->formatXML($response), true); die(__FILE__.':'.__LINE__.':'.__METHOD__);
+        header('content-type: text/plain');
+        echo var_export($this->formatXML($response), true);
+        die(__FILE__.':'.__LINE__.':'.__METHOD__);
 
         return $this->responseXMLToArray($response);
     }
@@ -784,23 +790,15 @@ class SF1500
      */
     private function brugerSoeg($name): array
     {
-        $endpoint = $this->generateServiceEndpoint('/organisation/bruger/6/');
-        $action = 'http://kombit.dk/sts/organisation/bruger/soeg';
-
-        $header = $this->buildHeaderXML($endpoint, $action);
-        $body = $this->xmlBuilder->buildBodyBrugerSoegXML($name);
-        $request = $this->createXMLRequest($header, $body);
-
-        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-
-        $cacheKeyOptions = [
-            __METHOD__,
-            $name,
-        ];
-
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
-
-        return $this->responseXMLToArray($response);
+        return \ItkDev\Serviceplatformen\Service\SF1500\SoapClient::getBrugerSoeg($this)
+            ->soeg(
+                (new SoegInputType())
+                    ->setAttributListe((new AttributListeType())
+                        ->setEgenskab([
+                            (new EgenskabType())
+                                ->setNavnTekst($name),
+                        ]))
+            );
     }
 
     /**
@@ -823,32 +821,26 @@ class SF1500
         ];
 
         $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
-header('content-type: text/plain'); echo var_export($this->formatXML($response), true); die(__FILE__.':'.__LINE__.':'.__METHOD__);
+        header('content-type: text/plain');
+        echo var_export($this->formatXML($response), true);
+        die(__FILE__.':'.__LINE__.':'.__METHOD__);
         return $this->responseXMLToArray($response);
     }
 
     /**
      * Performs person soeg action.
      */
-    private function personSoeg($name): array
+    private function personSoeg($name): SoegOutputType
     {
-        $endpoint = $this->generateServiceEndpoint('/organisation/person/6/');
-        $action = 'http://kombit.dk/sts/organisation/person/soeg';
-
-        $header = $this->buildHeaderXML($endpoint, $action);
-        $body = $this->xmlBuilder->buildBodyPersonSoegXML($name);
-        $request = $this->createXMLRequest($header, $body);
-
-        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-
-        $cacheKeyOptions = [
-            __METHOD__,
-            $name,
-        ];
-
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
-
-        return $this->responseXMLToArray($response);
+        return \ItkDev\Serviceplatformen\Service\SF1500\SoapClient::getPersonSoeg($this)
+            ->soeg(
+                (new SoegInputType())
+                ->setAttributListe((new AttributListeType())
+                    ->setEgenskab([
+                        (new EgenskabType())
+                            ->setNavnTekst($name),
+                    ]))
+            );
     }
 
     /**
@@ -971,5 +963,57 @@ header('content-type: text/plain'); echo var_export($this->formatXML($response),
             ->setAllowedTypes('certificate_locator', CertificateLocatorInterface::class)
             ->setAllowedTypes('cache', CacheInterface::class)
         ;
+    }
+
+    public function getSoapLocation(string $location): string
+    {
+        $domain = $this->options['service_endpoint_domain'];
+
+        $path = preg_replace('@^.*(?=/organisation/)@', '', $location);
+
+        $soapLocation = $domain.$path.'/'.($this->options['service_verion'] ?? '6');
+
+        return $soapLocation;
+    }
+
+
+    public const SOAP_ENVELOPE_NAMESPACE = 'http://www.w3.org/2003/05/soap-envelope';
+
+    public function formatSoapRequest(
+        string $request,
+        string $location,
+        string $action,
+        int $version,
+        bool $oneWay = false
+    ): string {
+        $doc = new \DOMDocument();
+        $doc->loadXML($request);
+
+        // Set an id.
+        /** @var \DOMElement $body */
+        $body = $doc->getElementsByTagNameNS(self::SOAP_ENVELOPE_NAMESPACE, 'Body')[0];
+        $body->setAttributeNS(
+            'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd',
+            'u:Id',
+            '_1'
+        );
+
+        $token = $this->getSAMLToken();
+        $this->xmlBuilder->buildSoapHeader($doc->getElementsByTagNameNS(self::SOAP_ENVELOPE_NAMESPACE, 'Header')[0], $location, $action, $token);
+
+        // HACK!
+        // @see https://bugs.php.net/bug.php?id=55294
+        $xsldoc = new \DOMDocument();
+        $xsldoc->load(__DIR__.'/resources/insert-token.xslt');
+
+        $tokenPath = __FILE__.'.token.xml';
+        file_put_contents($tokenPath, $token);
+        $xsl = new \XSLTProcessor();
+        $xsl->importStylesheet($xsldoc);
+        $xsl->setParameter('', 'token-path', $tokenPath);
+        $request = $xsl->transformToXml($doc);
+        unlink($tokenPath);
+
+        return $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
     }
 }

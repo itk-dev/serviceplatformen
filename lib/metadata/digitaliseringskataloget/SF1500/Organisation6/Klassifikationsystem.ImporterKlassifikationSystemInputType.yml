@@ -1,0 +1,42 @@
+Digitaliseringskataloget\SF1500\Organisation6\Klassifikationsystem\ImporterKlassifikationSystemInputType:
+    properties:
+        klassifikation:
+            expose: true
+            access_type: public_method
+            serialized_name: Klassifikation
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klassifikation/6/'
+            accessor:
+                getter: getKlassifikation
+                setter: setKlassifikation
+            type: Digitaliseringskataloget\SF1500\Organisation6\Klassifikation\Klassifikation
+        facetterInput:
+            expose: true
+            access_type: public_method
+            serialized_name: FacetterInput
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klassifikationsystem/6/'
+            accessor:
+                getter: getFacetterInput
+                setter: setFacetterInput
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Facet\Facet>
+            xml_list:
+                inline: false
+                entry_name: Facet
+                skip_when_empty: false
+                namespace: 'http://stoettesystemerne.dk/klassifikation/facet/6/'
+        klasserInput:
+            expose: true
+            access_type: public_method
+            serialized_name: KlasserInput
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klassifikationsystem/6/'
+            accessor:
+                getter: getKlasserInput
+                setter: setKlasserInput
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Klasse\Klasse>
+            xml_list:
+                inline: false
+                entry_name: Klasse
+                skip_when_empty: false
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klasse/6/'

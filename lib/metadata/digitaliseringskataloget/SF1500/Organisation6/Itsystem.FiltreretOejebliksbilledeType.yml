@@ -1,0 +1,26 @@
+Digitaliseringskataloget\SF1500\Organisation6\Itsystem\FiltreretOejebliksbilledeType:
+    properties:
+        objektType:
+            expose: true
+            access_type: public_method
+            serialized_name: ObjektType
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/itsystem/6/'
+            accessor:
+                getter: getObjektType
+                setter: setObjektType
+            type: Digitaliseringskataloget\Sagdok3_0_0\SagDokObjektType
+        registrering:
+            expose: true
+            access_type: public_method
+            serialized_name: Registrering
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/itsystem/6/'
+            accessor:
+                getter: getRegistrering
+                setter: setRegistrering
+            xml_list:
+                inline: true
+                entry_name: Registrering
+                namespace: 'http://stoettesystemerne.dk/organisation/itsystem/6/'
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Itsystem\RegistreringType>

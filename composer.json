@@ -58,6 +58,7 @@
     "autoload": {
         "psr-4": {
             "ItkDev\\Serviceplatformen\\": "src/",
+            "ItkDev\\Serviceplatformen\\SF1500\\": "generated-classes/ItkDev/Serviceplatformen/SF1500/",
             "ItkDev\\Serviceplatformen\\SF1600\\": "generated-classes/ItkDev/Serviceplatformen/SF1600/",
             "DigitalPost\\MeMo\\":                                                                                  "lib/DigitalPost/MeMo/",
             "DataGovDk\\Model\\DataTypes\\":                                                                        "lib/DataGovDk/Model/DataTypes/",
@@ -68,7 +69,8 @@
             "KleOnlineDk\\":                                                                                        "lib/KleOnlineDk/",
             "WwwFormOnlineDk\\":                                                                                    "lib/WwwFormOnlineDk/",
             "WwwDstDk\\Da\\TilSalg\\Forskningsservice\\Dokumentation\\Hoejkvalitetsvariable\\Elevregister2\\Udd\\": "lib/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/",
-            "Oio\\":                                                                                                "lib/Oio/"
+            "Oio\\":                                                                                                "lib/Oio/",
+            "Digitaliseringskataloget\\":                                                                           "lib/digitaliseringskataloget"
         }
     },
     "autoload-dev": {

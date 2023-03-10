@@ -1,0 +1,26 @@
+Digitaliseringskataloget\SF1500\Organisation6\Organisationfunktion\TilstandListeType:
+    properties:
+        gyldighed:
+            expose: true
+            access_type: public_method
+            serialized_name: Gyldighed
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/6/'
+            accessor:
+                getter: getGyldighed
+                setter: setGyldighed
+            xml_list:
+                inline: true
+                entry_name: Gyldighed
+                namespace: 'http://stoettesystemerne.dk/organisation/6/'
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Gyldighed>
+        lokalUdvidelse:
+            expose: true
+            access_type: public_method
+            serialized_name: LokalUdvidelse
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getLokalUdvidelse
+                setter: setLokalUdvidelse
+            type: Digitaliseringskataloget\Sagdok3_0_0\LokalUdvidelse

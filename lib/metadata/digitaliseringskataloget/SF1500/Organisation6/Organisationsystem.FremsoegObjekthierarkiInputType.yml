@@ -1,0 +1,62 @@
+Digitaliseringskataloget\SF1500\Organisation6\Organisationsystem\FremsoegObjekthierarkiInputType:
+    properties:
+        organisationSoegEgenskab:
+            expose: true
+            access_type: public_method
+            serialized_name: OrganisationSoegEgenskab
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationsystem/6/'
+            accessor:
+                getter: getOrganisationSoegEgenskab
+                setter: setOrganisationSoegEgenskab
+            type: Digitaliseringskataloget\SF1500\Organisation6\Organisationsystem\OrganisationSoegEgenskab
+        organisationEnhedSoegEgenskab:
+            expose: true
+            access_type: public_method
+            serialized_name: OrganisationEnhedSoegEgenskab
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationsystem/6/'
+            accessor:
+                getter: getOrganisationEnhedSoegEgenskab
+                setter: setOrganisationEnhedSoegEgenskab
+            type: Digitaliseringskataloget\SF1500\Organisation6\Organisationsystem\OrganisationEnhedSoegEgenskab
+        organisationFunktionSoegEgenskab:
+            expose: true
+            access_type: public_method
+            serialized_name: OrganisationFunktionSoegEgenskab
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationsystem/6/'
+            accessor:
+                getter: getOrganisationFunktionSoegEgenskab
+                setter: setOrganisationFunktionSoegEgenskab
+            type: Digitaliseringskataloget\SF1500\Organisation6\Organisationsystem\OrganisationFunktionSoegEgenskab
+        brugerSoegEgenskab:
+            expose: true
+            access_type: public_method
+            serialized_name: BrugerSoegEgenskab
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationsystem/6/'
+            accessor:
+                getter: getBrugerSoegEgenskab
+                setter: setBrugerSoegEgenskab
+            type: Digitaliseringskataloget\SF1500\Organisation6\Organisationsystem\BrugerSoegEgenskab
+        interessefaellesskabSoegEgenskab:
+            expose: true
+            access_type: public_method
+            serialized_name: InteressefaellesskabSoegEgenskab
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationsystem/6/'
+            accessor:
+                getter: getInteressefaellesskabSoegEgenskab
+                setter: setInteressefaellesskabSoegEgenskab
+            type: Digitaliseringskataloget\SF1500\Organisation6\Organisationsystem\InteressefaellesskabSoegEgenskab
+        itSystemSoegEgenskab:
+            expose: true
+            access_type: public_method
+            serialized_name: ItSystemSoegEgenskab
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationsystem/6/'
+            accessor:
+                getter: getItSystemSoegEgenskab
+                setter: setItSystemSoegEgenskab
+            type: Digitaliseringskataloget\SF1500\Organisation6\Organisationsystem\ItSystemSoegEgenskab

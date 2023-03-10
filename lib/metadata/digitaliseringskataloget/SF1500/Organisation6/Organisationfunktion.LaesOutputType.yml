@@ -1,0 +1,12 @@
+Digitaliseringskataloget\SF1500\Organisation6\Organisationfunktion\LaesOutputType:
+    properties:
+        filtreretOejebliksbillede:
+            expose: true
+            access_type: public_method
+            serialized_name: FiltreretOejebliksbillede
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationfunktion/6/'
+            accessor:
+                getter: getFiltreretOejebliksbillede
+                setter: setFiltreretOejebliksbillede
+            type: Digitaliseringskataloget\SF1500\Organisation6\Organisationfunktion\FiltreretOejebliksbilledeType

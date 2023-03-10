@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * This file is part of itk-dev/serviceplatformen.
+ *
+ * (c) 2020 ITK Development
+ *
+ * This source file is subject to the MIT license.
+ */
+
 namespace ItkDev\Serviceplatformen\Model;
 
 abstract class AbstractModel implements \JsonSerializable
@@ -56,5 +64,7 @@ abstract class AbstractModel implements \JsonSerializable
         return $this->data;
     }
 
-    protected function build(array $data) {}
+    protected function build(array $data)
+    {
+    }
 }
