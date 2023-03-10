@@ -45,7 +45,7 @@ class AbstractSF1500Command extends Command
         return $this->inputOptions;
     }
 
-    protected function getSF1500(array $options): SF1500
+    protected function getSF1500(string $className, array $options): SF1500
     {
         $certificateLocator = $this->getCertificateLocator($options['certificate'], $options['certificate-passphrase']);
 
@@ -66,7 +66,7 @@ class AbstractSF1500Command extends Command
 
         unset($serviceOptions['sts_applies_to']);
 
-        return new SF1500($soapClient, $sf1514, $sf1500XMLBuilder, new PropertyAccessor(), $serviceOptions);
+        return new $className($soapClient, $sf1514, $sf1500XMLBuilder, new PropertyAccessor(), $serviceOptions);
     }
 
     protected function getCertificateLocator(string $spec, string $passphrase): CertificateLocatorInterface

@@ -11,10 +11,30 @@ $services = [
     'sf1500' => [
         'doc_url' => 'https://docs.kombit.dk/integration/sf1500/3.0/pakke',
         'resource_zip_glob' => 'SF1500 Bilag*.zip',
-        'wsdl_paths' => [
-            'Bruger' => 'Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Bruger.wsdl',
-            'Person' => 'Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Person.wsdl',
-        ],
+        'wsdl_paths' => (static function() {
+            $types = [
+                'Adresse',
+                'Bruger',
+                'Facet',
+                'Interessefaellesskab',
+                'ItSystem',
+                'Klasse',
+                'Klassifikation',
+                'KlassifikationSystem',
+                'Myndighed',
+                'Organisation',
+                'OrganisationAdministration',
+                'OrganisationEnhed',
+                'OrganisationFunktion',
+                'OrganisationSystem',
+                'Person',
+                'Virksomhed',
+            ];
+            return array_map(
+                static fn ($type) => 'Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/'.$type.'.wsdl',
+                array_combine($types, $types)
+            );
+        })(),
         'namespace_name' => 'SF1500',
         // @see https://github.com/WsdlToPhp/PackageEws365/blob/master/SoapClient/SoapClientBase.php
         'soap_client_class' => \ItkDev\Serviceplatformen\Service\SF1500\SoapClientBase::class,

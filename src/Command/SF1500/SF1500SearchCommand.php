@@ -11,10 +11,12 @@
 namespace ItkDev\Serviceplatformen\Command\SF1500;
 
 use Composer\Console\Input\InputArgument;
-use ItkDev\Serviceplatformen\Model\AbstractModel;
-use ItkDev\Serviceplatformen\Model\Bruger;
 use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
+use ItkDev\Serviceplatformen\Service\SF1500\AdresseService;
 use ItkDev\Serviceplatformen\Service\SF1500\BrugerService;
+use ItkDev\Serviceplatformen\Service\SF1500\Model\AbstractModel;
+use ItkDev\Serviceplatformen\Service\SF1500\Model\Bruger;
+use ItkDev\Serviceplatformen\Service\SF1500\PersonService;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,6 +36,7 @@ class SF1500SearchCommand extends AbstractSF1500Command
             new InputOption('authority-cvr', null, InputOption::VALUE_REQUIRED, 'authority cvr'),
             new InputArgument('type', InputArgument::REQUIRED, 'The object type', null, ['user', 'hest']),
             new InputArgument('query', InputArgument::REQUIRED, 'The search query'),
+            new InputOption('fields', null, InputOption::VALUE_REQUIRED, 'List of fields to include'),
         ];
         $this->setDefinition(new InputDefinition($definition));
 
@@ -97,7 +100,10 @@ HELP;
 
         $result = $this->doSearch($type, $query, $options);
 
-        $output->writeln(json_encode($result, JSON_PRETTY_PRINT));
+        foreach ($result as $item) {
+            $output->writeln(json_encode($item, JSON_PRETTY_PRINT));
+        }
+
 
         return static::SUCCESS;
     }
@@ -107,14 +113,16 @@ HELP;
      */
     private function doSearch(string $type, string $query, array $options): array
     {
-        $sf1500 = $this->getSF1500($options);
+        $fields = preg_split('/\s*,\s*/', $options['fields'] ?? '', PREG_SPLIT_NO_EMPTY);
 
         switch ($type) {
+            case 'adresse':
+                return ($this->getSF1500(AdresseService::class, $options))->soeg($query, $fields);
             case 'person':
-                return $sf1500->getPersonSoeg($query);
+                return ($this->getSF1500(PersonService::class, $options))->soeg($query, $fields);
             case 'user':
             case 'bruger':
-                return (new BrugerService($sf1500))->soeg($query);
+                return ($this->getSF1500(BrugerService::class, $options))->soeg($query, $fields);
         }
 
         throw new RuntimeException(sprintf('invalid search type: %s', $type));
