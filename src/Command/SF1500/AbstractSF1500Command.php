@@ -18,6 +18,9 @@ use ItkDev\AzureKeyVault\KeyVault\VaultSecret;
 use ItkDev\Serviceplatformen\Certificate\AzureKeyVaultCertificateLocator;
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Certificate\FilesystemCertificateLocator;
+use ItkDev\Serviceplatformen\Service\SF1500\AdresseService;
+use ItkDev\Serviceplatformen\Service\SF1500\BrugerService;
+use ItkDev\Serviceplatformen\Service\SF1500\PersonService;
 use ItkDev\Serviceplatformen\Service\SF1500\SF1500;
 use ItkDev\Serviceplatformen\Service\SF1500\SF1500XMLBuilder;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
@@ -45,7 +48,12 @@ class AbstractSF1500Command extends Command
         return $this->inputOptions;
     }
 
-    protected function getSF1500(string $className, array $options): SF1500
+    /**
+     * @template T of SF1500
+     * @param class-string<T> $className
+     * @return T
+     */
+    protected function getService(string $className, array $options): SF1500
     {
         $certificateLocator = $this->getCertificateLocator($options['certificate'], $options['certificate-passphrase']);
 
@@ -67,6 +75,30 @@ class AbstractSF1500Command extends Command
         unset($serviceOptions['sts_applies_to']);
 
         return new $className($soapClient, $sf1514, $sf1500XMLBuilder, new PropertyAccessor(), $serviceOptions);
+    }
+
+    protected function getAdresseService(array $options): AdresseService
+    {
+        $service = $this->getService(AdresseService::class, $options);
+        assert($service instanceof AdresseService);
+
+        return $service;
+    }
+
+    protected function getPersonService(array $options): PersonService
+    {
+        $service = $this->getService(PersonService::class, $options);
+        assert($service instanceof PersonService);
+
+        return $service;
+    }
+
+    protected function getBrugerService(array $options): BrugerService
+    {
+        $service = $this->getService(BrugerService::class, $options);
+        assert($service instanceof BrugerService);
+
+        return $service;
     }
 
     protected function getCertificateLocator(string $spec, string $passphrase): CertificateLocatorInterface

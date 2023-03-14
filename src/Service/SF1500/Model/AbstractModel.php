@@ -63,6 +63,7 @@ abstract class AbstractModel implements \JsonSerializable
         throw new \RuntimeException(sprintf('%s is immutable', static::class));
     }
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return ['data' => $this->data, 'relations' => $this->relations];

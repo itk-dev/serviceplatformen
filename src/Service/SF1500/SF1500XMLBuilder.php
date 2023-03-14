@@ -356,7 +356,7 @@ XML;
         $header->appendChild($frameworkElement);
 
         $actionElement = $document->createElementNS(self::NS_A, 'a:Action');
-        $actionElement->setAttributeNS(self::NS_S, 's:mustUnderstand', 1);
+        $actionElement->setAttributeNS(self::NS_S, 's:mustUnderstand', '1');
         $actionElement->setAttributeNS(self::NS_U, 'u:Id', '_2');
         $actionElement->nodeValue = $action;
         $header->appendChild($actionElement);
@@ -380,7 +380,7 @@ XML;
         $header->appendChild($replyElement);
 
         $toElement = $document->createElementNS(self::NS_A, 'a:To');
-        $toElement->setAttributeNS(self::NS_S, 's:mustUnderstand', 1);
+        $toElement->setAttributeNS(self::NS_S, 's:mustUnderstand', '1');
         $toElement->setAttributeNS(self::NS_U, 'u:Id', '_5');
         $toElement->nodeValue = $to;
         $header->appendChild($toElement);

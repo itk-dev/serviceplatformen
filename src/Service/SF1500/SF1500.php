@@ -15,18 +15,21 @@ use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
 use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
 use ItkDev\Serviceplatformen\Service\SoapClient;
-use ItkDev\Serviceplatformen\SF1500\Person\StructType\AttributListeType;
-use ItkDev\Serviceplatformen\SF1500\Person\StructType\EgenskabType;
-use ItkDev\Serviceplatformen\SF1500\Person\StructType\SoegInputType;
-use ItkDev\Serviceplatformen\SF1500\Person\StructType\SoegOutputType;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class SF1500
 {
+    /**
+     * Client instances indexed by class name.
+     * @var array
+     */
+    protected array $clients = [];
+
     private SoapClient $client;
     private PropertyAccessor $propertyAccessor;
     private SF1500XMLBuilder $xmlBuilder;
@@ -39,9 +42,7 @@ class SF1500
         $this->sf1514 = $sf1514;
         $this->xmlBuilder = $xmlBuilder;
         $this->propertyAccessor = $propertyAccessor;
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
+        $this->options = $this->resolveOptions($options);
     }
 
     /**
@@ -487,16 +488,6 @@ class SF1500
         return $this->personLaes($personId);
     }
 
-    public function getPersonSoeg($name): SoegOutputType
-    {
-        return $this->personSoeg($name);
-    }
-
-    public function getBrugerList(array $uuids): array
-    {
-        return $this->brugerList($uuids);
-    }
-
     public function getAdresseSoeg(string $query): array
     {
         return $this->adresseSoeg($query);
@@ -760,62 +751,7 @@ class SF1500
 
         $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
 
-        header('content-type: text/plain');
-        echo var_export($this->formatXML($response), true);
-        die(__FILE__.':'.__LINE__.':'.__METHOD__);
-
         return $this->responseXMLToArray($response);
-    }
-
-    private function formatXML(string $xml): string
-    {
-        $document = new \DOMDocument();
-        $document->formatOutput = true;
-        $document->loadXML($xml);
-
-        return $document->saveXML();
-    }
-
-    /**
-     * Performs bruger list action.
-     */
-    private function brugerList(array $uuids): array
-    {
-        $endpoint = $this->generateServiceEndpoint('/organisation/bruger/6/');
-        $action = 'http://kombit.dk/sts/organisation/bruger/list';
-
-        $header = $this->buildHeaderXML($endpoint, $action);
-        $body = $this->xmlBuilder->buildBodyBrugerListXML($uuids);
-        $request = $this->createXMLRequest($header, $body);
-
-        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-
-        $cacheKeyOptions = [
-            __METHOD__,
-            $name,
-        ];
-
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
-        header('content-type: text/plain');
-        echo var_export($this->formatXML($response), true);
-        die(__FILE__.':'.__LINE__.':'.__METHOD__);
-        return $this->responseXMLToArray($response);
-    }
-
-    /**
-     * Performs person soeg action.
-     */
-    private function personSoeg($name): SoegOutputType
-    {
-        return \ItkDev\Serviceplatformen\Service\SF1500\SoapClient::getPersonSoeg($this)
-            ->soeg(
-                (new SoegInputType())
-                ->setAttributListe((new AttributListeType())
-                    ->setEgenskab([
-                        (new EgenskabType())
-                            ->setNavnTekst($name),
-                    ]))
-            );
     }
 
     /**
@@ -908,9 +844,9 @@ class SF1500
         return $defaultValue;
     }
 
-    private function configureOptions(OptionsResolver $resolver)
+    private function resolveOptions(array $options): array
     {
-        $resolver
+        return (new OptionsResolver())
             ->setRequired([
                 'certificate_locator',
                 'authority_cvr',
@@ -933,10 +869,15 @@ class SF1500
                         ? 'https://organisation.eksterntest-stoettesystemerne.dk'
                         : 'https://organisation.stoettesystemerne.dk';
                 },
+                'soap_request_cache_expiration_time' => ['+1 hour'],
+                'soap_service_version' => '6',
             ])
             ->setInfo('saml_token_expiration_time_offset', 'Offset used when checking if SAML token is expired. By default the SAML token expires 8 hours after being issued.')
             ->setAllowedTypes('certificate_locator', CertificateLocatorInterface::class)
             ->setAllowedTypes('cache', CacheInterface::class)
+            ->setAllowedTypes('soap_request_cache_expiration_time', 'string[]')
+            ->setAllowedTypes('soap_service_version', 'string')
+            ->resolve($options)
         ;
     }
 
@@ -946,13 +887,13 @@ class SF1500
 
         $path = preg_replace('@^.*(?=/organisation/)@', '', $location);
 
-        $soapLocation = $domain.$path.'/'.($this->options['service_verion'] ?? '6');
+        $soapLocation = $domain.$path.'/'.$this->options['soap_service_version'];
 
         return $soapLocation;
     }
 
 
-    public const SOAP_ENVELOPE_NAMESPACE = 'http://www.w3.org/2003/05/soap-envelope';
+    public const NS_SOAP_ENVELOPE = 'http://www.w3.org/2003/05/soap-envelope';
 
     public function formatSoapRequest(
         string $request,
@@ -966,7 +907,7 @@ class SF1500
 
         // Set an id.
         /** @var \DOMElement $body */
-        $body = $doc->getElementsByTagNameNS(self::SOAP_ENVELOPE_NAMESPACE, 'Body')[0];
+        $body = $doc->getElementsByTagNameNS(self::NS_SOAP_ENVELOPE, 'Body')[0];
         $body->setAttributeNS(
             'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd',
             'u:Id',
@@ -974,7 +915,7 @@ class SF1500
         );
 
         $token = $this->getSAMLToken();
-        $this->xmlBuilder->buildSoapHeader($doc->getElementsByTagNameNS(self::SOAP_ENVELOPE_NAMESPACE, 'Header')[0], $location, $action, $token);
+        $this->xmlBuilder->buildSoapHeader($doc->getElementsByTagNameNS(self::NS_SOAP_ENVELOPE, 'Header')[0], $location, $action, $token);
 
         // HACK!
         // @see https://bugs.php.net/bug.php?id=55294
@@ -990,5 +931,51 @@ class SF1500
         unlink($tokenPath);
 
         return $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
+    }
+
+    public function cacheSoapRequest(array $cacheKeys, callable $callable)
+    {
+        $cache = $this->getCache();
+        $cacheKey = $this->getSoapRequestCacheKey(__METHOD__, $cacheKeys);
+        $expirationTime = $this->getSoapRequestCacheExpirationDateTime();
+
+        return $cache->get($cacheKey, function (ItemInterface $item) use ($callable, $expirationTime) {
+            $response = $callable();
+            $item->expiresAt($expirationTime);
+
+            return $response;
+        });
+    }
+
+    private function getCache(): CacheInterface
+    {
+        return $this->options['cache'];
+    }
+
+    private function getSoapRequestCacheKey(string $key, array $payload): string
+    {
+        return preg_replace(
+            '#[{}()/\\\\@:]+#',
+            '_',
+            $key . '|' . sha1(json_encode($payload+$this->options))
+        );
+    }
+
+    public function getSoapRequestCacheExpirationDateTime(): ?\DateTimeImmutable
+    {
+        $now = new \DateTimeImmutable('now');
+        $times = [];
+        foreach ($this->options['soap_request_cache_expiration_time'] as $spec) {
+            try {
+                $time = $now->modify($spec);
+                if ($time > $now) {
+                    $times[] = $time;
+                }
+            } catch (\Exception $exception) {
+                // Ignore any exceptions.
+            }
+        }
+
+        return empty($times) ? null : min([...$times]);
     }
 }

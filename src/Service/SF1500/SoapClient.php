@@ -10,15 +10,9 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
-use ItkDev\Serviceplatformen\SF1500\Person\ClassMap as PersonClassMap;
-use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\_List as PersonList;
-use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Laes as PersonLaes;
-use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Soeg as PersonSoeg;
-
 class SoapClient extends \SoapClient
 {
     public SF1500 $sf1500;
-
 
     private ?string $lastRequest;
 
@@ -28,51 +22,31 @@ class SoapClient extends \SoapClient
     #[\ReturnTypeWillChange]
     public function __doRequest($request, $location, $action, $version, $oneWay = null)
     {
+        $formattedRequest = $request;
         if (null !== $this->sf1500) {
             $location = $this->sf1500->getSoapLocation($location);
-            $request = $this->sf1500->formatSoapRequest($request, $location, $action, (int)$version, (bool)$oneWay);
+            $formattedRequest = $this->sf1500->formatSoapRequest($request, $location, $action, (int)$version, (bool)$oneWay);
         }
-
-        // TODO: Cache the request and response!
 
         $this->lastRequest = $request;
 
-        return parent::__doRequest($request, $location, $action, $version, $oneWay);
+//        $response = parent::__doRequest($formattedRequest, $location, $action, $version, $oneWay);
+//        var_export([
+//            'request' => SF1500::formatXML($request),
+//            'response' => SF1500::formatXML($response),
+//        ]);
+//        return $response;
+
+        return $this->sf1500->cacheSoapRequest(
+            // Use original request in cache key.
+            [__METHOD__, $request, $location, $action, $version],
+            fn () => parent::__doRequest($formattedRequest, $location, $action, $version, $oneWay)
+        );
     }
 
     #[\ReturnTypeWillChange]
     public function __getLastRequest()
     {
         return $this->lastRequest ?? parent::__getLastRequest();
-    }
-
-    public static function getPersonSoeg(SF1500 $sf1500, array $options = []): PersonSoeg
-    {
-        return
-            (new PersonSoeg([
-                    SoapClientBase::WSDL_URL => __DIR__.'/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Person.wsdl',
-                    SoapClientBase::WSDL_CLASSMAP => PersonClassMap::get(),
-                ] + $options))
-            ->setSF1500($sf1500);
-    }
-
-    public static function getPersonList(SF1500 $sf1500, array $options = []): PersonList
-    {
-        return
-            (new PersonList([
-                    SoapClientBase::WSDL_URL => __DIR__.'/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Person.wsdl',
-                    SoapClientBase::WSDL_CLASSMAP => PersonClassMap::get(),
-                ] + $options))
-                ->setSF1500($sf1500);
-    }
-
-    public static function getPersonLaes(SF1500 $sf1500, array $options = []): PersonLaes
-    {
-        return
-            (new PersonLaes([
-                    SoapClientBase::WSDL_URL => __DIR__.'/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Person.wsdl',
-                    SoapClientBase::WSDL_CLASSMAP => PersonClassMap::get(),
-                ] + $options))
-                ->setSF1500($sf1500);
     }
 }
