@@ -10,23 +10,23 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
-use ItkDev\Serviceplatformen\Service\SF1500\Model\Adresse;
-use ItkDev\Serviceplatformen\SF1500\Adresse\ClassMap;
-use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\_List;
-use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Laes;
-use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Soeg;
-use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\AttributListeType;
-use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\EgenskabType;
-use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\FiltreretOejebliksbilledeType;
-use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\LaesInputType;
-use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\LaesOutputType;
-use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\ListInputType;
-use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\ListOutputType;
-use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\RelationListeType;
-use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\SoegInputType;
-use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\SoegOutputType;
+use ItkDev\Serviceplatformen\Service\SF1500\Model\Virksomhed;
+use ItkDev\Serviceplatformen\SF1500\Virksomhed\ClassMap;
+use ItkDev\Serviceplatformen\SF1500\Virksomhed\ServiceType\_List;
+use ItkDev\Serviceplatformen\SF1500\Virksomhed\ServiceType\Laes;
+use ItkDev\Serviceplatformen\SF1500\Virksomhed\ServiceType\Soeg;
+use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\AttributListeType;
+use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\EgenskabType;
+use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\FiltreretOejebliksbilledeType;
+use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\LaesInputType;
+use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\LaesOutputType;
+use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\ListInputType;
+use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\ListOutputType;
+use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\RelationListeType;
+use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\SoegInputType;
+use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\SoegOutputType;
 
-final class AdresseService extends SF1500 implements ServiceInterface
+final class VirksomhedService extends SF1500 implements ServiceInterface
 {
     /**
      * {@inheritdoc}
@@ -56,7 +56,7 @@ final class AdresseService extends SF1500 implements ServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function laes(string $id, array $fields = [])
+    public function laes(string $id, array $fields = []): ?Virksomhed
     {
         $data = $this->doLaes($id);
 
@@ -68,13 +68,14 @@ final class AdresseService extends SF1500 implements ServiceInterface
         return $this->buildModel($oejebliksbillede);
     }
 
-    private function buildModel(FiltreretOejebliksbilledeType $oejebliksbillede): Adresse
+    private function buildModel(FiltreretOejebliksbilledeType $oejebliksbillede): Virksomhed
     {
         $id = $oejebliksbillede->getObjektType()->getUUIDIdentifikator();
-        $model = new Adresse(['id' => $id]);
+        $model = new Virksomhed(['id' => $id]);
         foreach ($oejebliksbillede->getRegistrering() as $registrering) {
             foreach ($registrering->getAttributListe()->getEgenskab() as $egenskab) {
-                $model->adressetekst = $egenskab->getAdresseTekst();
+                $model->navn = $egenskab->getNavnTekst();
+                $model->cvrNummer = $egenskab->getCVR_NummerTekst();
             }
         }
 
@@ -84,9 +85,9 @@ final class AdresseService extends SF1500 implements ServiceInterface
     protected function doSoeg(array $query): SoegOutputType
     {
         $attributListe = new AttributListeType();
-        if (isset($query['adressetekst'])) {
+        if (isset($query['navntekst'])) {
             $attributListe->addToEgenskab((new EgenskabType())
-                ->setAdresseTekst($query['adressetekst']));
+                ->setNavnTekst($query['navntekst']));
         }
 
         $relationListe = new RelationListeType();
@@ -101,7 +102,7 @@ final class AdresseService extends SF1500 implements ServiceInterface
     protected function doList(array $ids): ListOutputType
     {
         return $this->clientList()
-            ->_list((new ListInputType())
+            ->_list_12((new ListInputType())
                 ->setUUIDIdentifikator($ids));
     }
 
@@ -111,6 +112,7 @@ final class AdresseService extends SF1500 implements ServiceInterface
             ->laes((new LaesInputType())
                 ->setUUIDIdentifikator($id));
     }
+
 
     private function clientSoeg(array $options = []): Soeg
     {
@@ -143,7 +145,7 @@ final class AdresseService extends SF1500 implements ServiceInterface
     {
         if (!isset($this->clients[$className])) {
             $this->clients[$className] = (new $className([
-                    SoapClientBase::WSDL_URL => __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Adresse.wsdl',
+                    SoapClientBase::WSDL_URL => __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Virksomhed.wsdl',
                     SoapClientBase::WSDL_CLASSMAP => ClassMap::get(),
                 ] + $options))
                 ->setSF1500($this);

@@ -39,9 +39,8 @@ class SoapClientBase extends AbstractSoapClientBase
     public function getSoapClient(): ?SoapClient
     {
         $soapClient = parent::getSoapClient();
-        if ($soapClient instanceof SoapClient && isset($this->sf1500)) {
-            $soapClient->sf1500 = $this->sf1500;
-        }
+        assert($soapClient instanceof SoapClient);
+        $soapClient->sf1500 = $this->sf1500;
 
         return $soapClient;
     }

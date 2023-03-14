@@ -19,9 +19,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SF1500SearchCommand extends AbstractSF1500Command
+class SF1500ReadCommand extends AbstractSF1500Command
 {
-    protected static $defaultName = 'serviceplatformen:sf1500:search';
+    protected static $defaultName = 'serviceplatformen:sf1500:read';
 
     protected function configure()
     {
@@ -37,22 +37,12 @@ class SF1500SearchCommand extends AbstractSF1500Command
             ),
             new InputOption('authority-cvr', null, InputOption::VALUE_REQUIRED, 'authority cvr'),
             new InputArgument('type', InputArgument::REQUIRED, 'The object type', null, ['user', 'hest']),
-            new InputArgument('query', InputArgument::REQUIRED, 'The search query'),
+            new InputArgument('id', InputArgument::REQUIRED, 'The object id'),
             new InputOption('fields', null, InputOption::VALUE_REQUIRED, 'List of fields to include'),
         ];
         $this->setDefinition(new InputDefinition($definition));
 
-        $this->setDescription('Helper script for testing “SF1500: Organisation”.');
-
         $help = <<<HELP
-
-user-id:
-    a user id, e.g.
-    'ffdb7559-2ad3-4662-9fd4-d69859939b66'
-
-manager-type-id:
-    the id associated with manager type, e.g.
-    '46c73630-f7ad-4000-9624-c06131cde671'
 
 certificate:
     The certificate option can be a file path to a PKCS #12 certificate or a url query string with options for getting the certificate from an Azure Key Vault, e.g. (newlines added for readability and proper url encoding skipped)
@@ -67,7 +57,7 @@ certificate:
     If using path option make sure the path is relative to project root to the certificate file, e.g.
     '/app/src/Command/SF1500/certificate.p12'
  
-passphrase:
+certificate-passphrase:
     the passphrase for p12 certificate, i.e.
     'XYZ'
     defaults to the empty string if not provided
@@ -78,9 +68,6 @@ authority-cvr:
 
 production:
     use --production to use production mode rather than test mode
-
-manager:
-    use --manager to get information on the manager of provided user-id
 
 HELP;
 
@@ -102,33 +89,27 @@ HELP;
             )
         );
         $type = $input->getArgument('type');
-        $query = @json_decode($input->getArgument('query'), true) ?? [];
+        $id = $input->getArgument('id');
 
-        $result = $this->doSearch($type, $query, $options);
+        $item = $this->doRead($type, $id, $options);
 
-        foreach ($result as $item) {
-            $output->writeln(json_encode($item, JSON_PRETTY_PRINT));
-        }
-
+        $output->writeln(json_encode($item, JSON_PRETTY_PRINT));
 
         return static::SUCCESS;
     }
 
-    /**
-     * @return AbstractModel[]
-     */
-    private function doSearch(string $type, array $query, array $options): array
+    private function doRead(string $type, string $id, array $options): ?AbstractModel
     {
         $fields = preg_split('/\s*,\s*/', $options['fields'] ?? '', PREG_SPLIT_NO_EMPTY);
 
         switch ($type) {
             case 'adresse':
-                return ($this->getAdresseService($options))->soeg($query, $fields);
+                return ($this->getAdresseService($options))->laes($id, $fields);
             case 'person':
-                return ($this->getPersonService($options))->soeg($query, $fields);
+                return ($this->getPersonService($options))->laes($id, $fields);
             case 'user':
             case 'bruger':
-                return ($this->getBrugerService($options))->soeg($query, $fields);
+                return ($this->getBrugerService($options))->laes($id, $fields);
         }
 
         throw new RuntimeException(sprintf('invalid search type: %s', $type));

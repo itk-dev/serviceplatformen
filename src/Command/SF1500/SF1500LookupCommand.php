@@ -102,7 +102,7 @@ HELP;
 
         $userId = $options['user-id'];
 
-        $sf1500 = $this->getSF1500($options);
+        $sf1500 = $this->getService(SF1500::class, $options);
 
         // Use a lookup on name as an indicator for whether user-id exists or not.
         $name = $sf1500->getPersonName($userId);
