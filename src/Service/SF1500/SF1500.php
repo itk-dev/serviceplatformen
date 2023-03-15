@@ -17,13 +17,23 @@ use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
 use ItkDev\Serviceplatformen\Service\SoapClient;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ClassMap as AdresseClassMap;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Laes as AdresseLaes;
+use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\LaesInputType as AdresseLaesInputType;
+use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\LaesOutputType as AdresseLaesOutputType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ClassMap as BrugerClassMap;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Laes as BrugerLaes;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Soeg as BrugerSoeg;
+use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesInputType as BrugerLaesInputType;
+use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesOutputType as BrugerLaesOutputType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ClassMap as OrganisationFunktionClassMap;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ServiceType\Laes as OrganisationFunktionLaes;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ServiceType\Soeg as OrganisationFunktionSoeg;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\LaesInputType as OrganisationFunktionLaesInputType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\LaesOutputType as OrganisationFunktionLaesOutputType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\SoegInputType as OrganisationFunktionSoegInputType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\SoegOutputType as OrganisationFunktionSoegOutputType;
 use ItkDev\Serviceplatformen\SF1500\Person\ClassMap as PersonClassMap;
 use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Laes as PersonLaes;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\LaesInputType as PersonLaesInputType;
-use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\LaesInputType as AdresseLaesInputType;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -60,9 +70,7 @@ class SF1500
     public function getPersonName(string $brugerId): string
     {
       try {
-        $brugerLaesClient = $this->getClient(BrugerLaes::class);
-        $response = $brugerLaesClient->laes((new \ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesInputType)
-          ->setUUIDIdentifikator($brugerId));
+        $response = $this->brugerLaes($brugerId);
 
         $personId = $response
           ->getFiltreretOejebliksbillede()
@@ -90,20 +98,35 @@ class SF1500
       }
     }
 
-    /**
-     * Fetches person phone from SF1500.
-     */
-    public function getPersonPhone(string $brugerId): string
-    {
-        return $this->getBrugerAdresseAttribut('Mobiltelefon_bruger', $brugerId);
-    }
+  /**
+   * Fetches person az ident from SF1500.
+   */
+  public function getPersonAZIdent(string $brugerId): string
+  {
+    $response = $this->brugerLaes($brugerId);
+
+    return $response
+      ->getFiltreretOejebliksbillede()
+      ->getRegistrering()[0]
+      ->getAttributListe()
+      ->getEgenskab()[0]
+      ->getBrugerNavn();
+  }
+
+  /**
+   * Fetches person phone from SF1500.
+   */
+  public function getPersonPhone(string $brugerId): string
+  {
+    return $this->getBrugerAdresse('Mobiltelefon_bruger', $brugerId);
+  }
 
     /**
      * Fetches person location from SF1500.
      */
     public function getPersonLocation(string $brugerId): string
     {
-        return $this->getBrugerAdresseAttribut('Lokation_bruger', $brugerId);
+        return $this->getBrugerAdresse('Lokation_bruger', $brugerId);
     }
 
     /**
@@ -111,7 +134,7 @@ class SF1500
      */
     public function getPersonEmail(string $brugerId): string
     {
-        return $this->getBrugerAdresseAttribut('Email_bruger', $brugerId);
+        return $this->getBrugerAdresse('Email_bruger', $brugerId);
     }
 
     /**
@@ -235,25 +258,6 @@ class SF1500
         ];
 
         return $this->getValue($data, $enhedsNavnKeys, '');
-    }
-
-    /**
-     * Fetches person az ident from SF1500.
-     */
-    public function getPersonAZIdent(string $brugerId): string
-    {
-        $data = $this->brugerLaes($brugerId);
-
-        $brugerNavnKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3AttributListe',
-            'ns3Egenskab',
-            'ns2BrugerNavn',
-        ];
-
-        return $this->getValue($data, $brugerNavnKeys, '');
     }
 
     /**
@@ -593,38 +597,21 @@ class SF1500
     /**
      * Performs bruger laes action.
      */
-    private function brugerLaes($brugerId): array
+    private function brugerLaes($brugerId): BrugerLaesOutputType
     {
-        $endpoint = $this->generateServiceEndpoint('/organisation/bruger/6/');
-        $action = 'http://kombit.dk/sts/organisation/bruger/laes';
-
-
-        $header = $this->buildHeaderXML($endpoint, $action);
-        $body = $this->xmlBuilder->buildBodyBrugerLaesXML($brugerId);
-        $request = $this->createXMLRequest($header, $body);
-
-        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-
-        $cacheKeyOptions = [
-            __METHOD__,
-            $brugerId,
-        ];
-
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
-
-        return $this->responseXMLToArray($response);
+      $brugerLaesClient = $this->getClient(BrugerLaes::class);
+      return $brugerLaesClient->laes((new BrugerLaesInputType())
+        ->setUUIDIdentifikator($brugerId));
     }
 
     /**
      * Performs adresse laes action.
      */
-    private function adresseLaes($adresseId): ?\ItkDev\Serviceplatformen\SF1500\Adresse\StructType\FiltreretOejebliksbilledeType
+    private function adresseLaes($adresseId): AdresseLaesOutputType
     {
       $adresseLaesClient = $this->getClient(AdresseLaes::class);
-      $response = $adresseLaesClient->laes((new AdresseLaesInputType())
+      return $adresseLaesClient->laes((new AdresseLaesInputType())
         ->setUUIDIdentifikator($adresseId));
-
-      return $response->getFiltreretOejebliksbillede();
     }
 
     /**
@@ -753,11 +740,11 @@ class SF1500
     /**
      * Fetches bruger adresse attribut.
      */
-    private function getBrugerAdresseAttribut(string $attribute, string $brugerId): string
+    private function getBrugerAdresse(string $rolle, string $brugerId): string
     {
       try {
         $brugerLaesClient = $this->getClient(BrugerLaes::class);
-        $response = $brugerLaesClient->laes((new \ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesInputType)
+        $response = $brugerLaesClient->laes((new BrugerLaesInputType)
           ->setUUIDIdentifikator($brugerId));
 
         $adresser = $response
@@ -767,10 +754,11 @@ class SF1500
             ->getAdresser();
 
         foreach ($adresser as $adresse) {
-          if ($attribute === $adresse->getRolle()->getLabel()) {
+          if ($rolle === $adresse->getRolle()->getLabel()) {
             $adresse = $this->adresseLaes($adresse->getReferenceID()->getUUIDIdentifikator());
 
             return $adresse
+              ->getFiltreretOejebliksbillede()
               ->getRegistrering()[0]
               ->getAttributListe()
               ->getEgenskab()[0]
@@ -780,7 +768,7 @@ class SF1500
 
         return '';
       } catch (\Throwable $throwable) {
-        throw new SF1500Exception(sprintf('Cannot find adresse %s for bruger id %s', $attribute, $brugerId), $throwable->getCode(), $throwable);
+        throw new SF1500Exception(sprintf('Cannot find adresse %s for bruger id %s', $rolle, $brugerId), $throwable->getCode(), $throwable);
       }
     }
 
@@ -984,6 +972,12 @@ class SF1500
         return [
           __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Bruger.wsdl',
           BrugerClassMap::get(),
+        ];
+      case OrganisationFunktionSoeg::class:
+      case OrganisationFunktionLaes::class:
+        return [
+          __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/OrganisationFunktion.wsdl',
+          OrganisationFunktionClassMap::get(),
         ];
       case PersonLaes::class:
         return [
