@@ -14,7 +14,8 @@ class SoapClient extends \SoapClient
 {
     public SF1500 $sf1500;
 
-    private ?string $lastRequest;
+  private ?string $lastRequest;
+  private ?string $lastFormattedRequest;
 
     /**
      * TODO: Update signature cf. https://www.php.net/manual/en/soapclient.dorequest.php.
@@ -29,13 +30,7 @@ class SoapClient extends \SoapClient
         }
 
         $this->lastRequest = $request;
-
-//        $response = parent::__doRequest($formattedRequest, $location, $action, $version, $oneWay);
-//        var_export([
-//            'request' => SF1500::formatXML($request),
-//            'response' => SF1500::formatXML($response),
-//        ]);
-//        return $response;
+        $this->lastFormattedRequest = $formattedRequest;
 
         return $this->sf1500->cacheSoapRequest(
             // Use original request in cache key.
@@ -49,4 +44,9 @@ class SoapClient extends \SoapClient
     {
         return $this->lastRequest ?? parent::__getLastRequest();
     }
+
+  public function __getLastFormattedRequest(): ?string
+  {
+    return $this->lastFormattedRequest;
+  }
 }
