@@ -15,6 +15,15 @@ use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
 use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
 use ItkDev\Serviceplatformen\Service\SoapClient;
+use ItkDev\Serviceplatformen\SF1500\Adresse\ClassMap as AdresseClassMap;
+use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Laes as AdresseLaes;
+use ItkDev\Serviceplatformen\SF1500\Bruger\ClassMap as BrugerClassMap;
+use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Laes as BrugerLaes;
+use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Soeg as BrugerSoeg;
+use ItkDev\Serviceplatformen\SF1500\Person\ClassMap as PersonClassMap;
+use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Laes as PersonLaes;
+use ItkDev\Serviceplatformen\SF1500\Person\StructType\LaesInputType as PersonLaesInputType;
+use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\LaesInputType as AdresseLaesInputType;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -50,36 +59,35 @@ class SF1500
      */
     public function getPersonName(string $brugerId): string
     {
-        $data = $this->brugerLaes($brugerId);
+      try {
+        $brugerLaesClient = $this->getClient(BrugerLaes::class);
+        $response = $brugerLaesClient->laes((new \ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesInputType)
+          ->setUUIDIdentifikator($brugerId));
 
-        $personIdKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3RelationListe',
-            'ns2TilknyttedePersoner',
-            'ns2ReferenceID',
-            'ns2UUIDIdentifikator',
-        ];
+        $personId = $response
+          ->getFiltreretOejebliksbillede()
+          ->getRegistrering()[0]
+          ->getRelationListe()->getTilknyttedePersoner()[0]
+          ->getReferenceID()
+          ->getUUIDIdentifikator();
+      } catch (\Throwable $throwable) {
+        throw new SF1500Exception(sprintf('Cannot find person id for bruger id %s', $brugerId), $throwable->getCode(), $throwable);
+      }
 
-        $personId = $this->getValue($data, $personIdKeys);
+      try {
+        $personLaesClient = $this->getClient(PersonLaes::class);
+        $response = $personLaesClient->laes((new PersonLaesInputType())
+          ->setUUIDIdentifikator($personId));
 
-        if (null === $personId) {
-            throw new SF1500Exception('Cannot find person id.');
-        }
-
-        $data = $this->personLaes($personId);
-
-        $navnTekstKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3AttributListe',
-            'ns3Egenskab',
-            'ns3NavnTekst',
-        ];
-
-        return $this->getValue($data, $navnTekstKeys, '');
+        return $response
+          ->getFiltreretOejebliksbillede()
+          ->getRegistrering()[0]
+          ->getAttributListe()
+          ->getEgenskab()[0]
+          ->getNavnTekst();
+      } catch (\Throwable $throwable) {
+        throw new SF1500Exception(sprintf('Cannot find person name for person id %s', $personId), $throwable->getCode(), $throwable);
+      }
     }
 
     /**
@@ -610,25 +618,13 @@ class SF1500
     /**
      * Performs adresse laes action.
      */
-    private function adresseLaes($adresseID): array
+    private function adresseLaes($adresseId): ?\ItkDev\Serviceplatformen\SF1500\Adresse\StructType\FiltreretOejebliksbilledeType
     {
-        $endpoint = $this->generateServiceEndpoint('/organisation/adresse/6/');
-        $action = 'http://kombit.dk/sts/organisation/adresse/laes';
+      $adresseLaesClient = $this->getClient(AdresseLaes::class);
+      $response = $adresseLaesClient->laes((new AdresseLaesInputType())
+        ->setUUIDIdentifikator($adresseId));
 
-        $header = $this->buildHeaderXML($endpoint, $action);
-        $body = $this->xmlBuilder->buildBodyAdresseLaesXML($adresseID);
-        $request = $this->createXMLRequest($header, $body);
-
-        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-
-        $cacheKeyOptions = [
-            __METHOD__,
-            $adresseID,
-        ];
-
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
-
-        return $this->responseXMLToArray($response);
+      return $response->getFiltreretOejebliksbillede();
     }
 
     /**
@@ -759,56 +755,33 @@ class SF1500
      */
     private function getBrugerAdresseAttribut(string $attribute, string $brugerId): string
     {
-        $data = $this->brugerLaes($brugerId);
+      try {
+        $brugerLaesClient = $this->getClient(BrugerLaes::class);
+        $response = $brugerLaesClient->laes((new \ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesInputType)
+          ->setUUIDIdentifikator($brugerId));
 
-        $adresseKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3RelationListe',
-            'ns2Adresser',
-        ];
-
-        $adresser = $this->getValue($data, $adresseKeys);
-
-        if (!is_array($adresser)) {
-            throw new SF1500Exception('Cannot find organisation address.');
-        }
-
-        $adresseTekstKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3AttributListe',
-            'ns3Egenskab',
-            'ns4AdresseTekst',
-        ];
-
-        $adresseRolleLabelKeys = [
-            'ns2Rolle',
-            'ns2Label',
-        ];
-
-        $adresseReferenceUuidKeys = [
-            'ns2ReferenceID',
-            'ns2UUIDIdentifikator',
-        ];
+        $adresser = $response
+            ->getFiltreretOejebliksbillede()
+            ->getRegistrering()[0]
+            ->getRelationListe()
+            ->getAdresser();
 
         foreach ($adresser as $adresse) {
-            if ($this->getValue($adresse, $adresseRolleLabelKeys) === $attribute) {
-                $adresseId = $this->getValue($adresse, $adresseReferenceUuidKeys);
+          if ($attribute === $adresse->getRolle()->getLabel()) {
+            $adresse = $this->adresseLaes($adresse->getReferenceID()->getUUIDIdentifikator());
 
-                if (null === $adresseId) {
-                    continue;
-                }
-
-                $data = $this->adresseLaes($adresseId);
-
-                return $this->getValue($data, $adresseTekstKeys, '');
-            }
+            return $adresse
+              ->getRegistrering()[0]
+              ->getAttributListe()
+              ->getEgenskab()[0]
+              ->getAdresseTekst();
+          }
         }
 
         return '';
+      } catch (\Throwable $throwable) {
+        throw new SF1500Exception(sprintf('Cannot find adresse %s for bruger id %s', $attribute, $brugerId), $throwable->getCode(), $throwable);
+      }
     }
 
     /**
@@ -978,4 +951,47 @@ class SF1500
 
         return empty($times) ? null : min([...$times]);
     }
+
+  /**
+   * @template Client of SoapClientBase
+   * @param class-string<Client> $className
+   * @return Client
+   */
+  public function getClient(string $className, array $options = []): SoapClientBase
+  {
+    if (!isset($this->clients[$className])) {
+      [$wsdlUrl, $classMap] = $this->getSoapClientInfo($className);
+      $this->clients[$className] = (new $className([
+          SoapClientBase::WSDL_URL => $wsdlUrl,
+          SoapClientBase::WSDL_CLASSMAP => $classMap,
+        ] + $options))
+        ->setSF1500($this);
+    }
+
+    return $this->clients[$className];
+  }
+
+  protected function getSoapClientInfo(string $className): array
+  {
+    switch ($className) {
+      case AdresseLaes::class:
+        return [
+          __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Adresse.wsdl',
+          AdresseClassMap::get(),
+        ];
+      case BrugerSoeg::class:
+      case BrugerLaes::class:
+        return [
+          __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Bruger.wsdl',
+          BrugerClassMap::get(),
+        ];
+      case PersonLaes::class:
+        return [
+          __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Person.wsdl',
+          PersonClassMap::get(),
+        ];
+    }
+
+    throw new \InvalidArgumentException(sprintf('Invalid class name: %s', $className));
+  }
 }
