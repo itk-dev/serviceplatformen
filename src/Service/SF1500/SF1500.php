@@ -200,18 +200,13 @@ class SF1500
      */
     public function getFunktionsNavn(string $funktionsId): string
     {
-        $data = $this->organisationFunktionLaes($funktionsId);
-
-        $funktionsNavnKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3AttributListe',
-            'ns3Egenskab',
-            'ns2FunktionNavn',
-        ];
-
-        return $this->getValue($data, $funktionsNavnKeys, '');
+        $response = $this->organisationFunktionLaes($funktionsId);
+      return $response
+        ->getFiltreretOejebliksbillede()
+        ->getRegistrering()[0]
+        ->getAttributListe()
+        ->getEgenskab()[0]
+        ->getFunktionNavn();
     }
 
     /**
@@ -494,28 +489,6 @@ class SF1500
     }
 
     /**
-     * Creates XML request.
-     */
-    private function createXMLRequest(string $header, string $body): string
-    {
-        return <<<XML
-    <s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing" xmlns:u="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">$header$body</s:Envelope>
-    XML;
-    }
-
-    /**
-     * Converts XML response to array.
-     */
-    private function responseXMLToArray(string $response): array
-    {
-        // Handle xml namespaces.
-        $response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $response);
-        $xml = simplexml_load_string($response);
-        $body = $xml->xpath('//soapBody')[0];
-        return json_decode(json_encode((array) $body), true);
-    }
-
-    /**
      * Performs bruger laes action.
      */
     private function brugerLaes($brugerId): BrugerLaesOutputType
@@ -625,39 +598,6 @@ class SF1500
       } catch (\Throwable $throwable) {
         throw new SF1500Exception(sprintf('Cannot find adresse %s for bruger id %s', $rolle, $brugerId), $throwable->getCode(), $throwable);
       }
-    }
-
-    /**
-     * Method for building header XML.
-     */
-    private function buildHeaderXML(string $endpoint, string $action): string
-    {
-        $token = $this->getSAMLToken();
-
-        return $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
-    }
-
-    /**
-     * Computes full service endpoint.
-     */
-    private function generateServiceEndpoint(string $serviceEndpointPath): string
-    {
-        return $this->options['service_endpoint_domain'].$serviceEndpointPath;
-    }
-
-    /**
-     * Gets value from data according to keys.
-     */
-    private function getValue($data, array $keys, $defaultValue = null)
-    {
-        // @see https://symfony.com/doc/current/components/property_access.html#reading-from-arrays
-        $propertyPath = '[' . implode('][', $keys) . ']';
-
-        if ($this->propertyAccessor->isReadable($data, $propertyPath)) {
-            return $this->propertyAccessor->getValue($data, $propertyPath) ?: $defaultValue;
-        }
-
-        return $defaultValue;
     }
 
     private function resolveOptions(array $options): array
