@@ -212,12 +212,14 @@ class SF1500XMLBuilder
      *
      * @internal
      */
-    public function getElementId(\DOMElement $element)
+    public function getElementId(\DOMNode $element)
     {
-        /** @var \DOMAttr $attribute */
-        foreach ($element->attributes as $attribute) {
-            if (false !== strpos($attribute->name, 'Id') || false !== strpos($attribute->name, 'ID')) {
-                return $attribute->value;
+        if ($element instanceof \DOMElement) {
+            /** @var \DOMAttr $attribute */
+            foreach ($element->attributes as $attribute) {
+                if (false !== strpos($attribute->name, 'Id') || false !== strpos($attribute->name, 'ID')) {
+                    return $attribute->value;
+                }
             }
         }
 

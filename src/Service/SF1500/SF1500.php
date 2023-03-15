@@ -14,7 +14,6 @@ use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
 use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
-use ItkDev\Serviceplatformen\Service\SoapClient;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ClassMap as AdresseClassMap;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Laes as AdresseLaes;
 use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\LaesInputType as AdresseLaesInputType;
@@ -26,28 +25,30 @@ use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesInputType as BrugerLae
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesOutputType as BrugerLaesOutputType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\ClassMap as OrganisationEnhedClassMap;
 use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\ServiceType\Laes as OrganisationEnhedLaes;
-use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\ServiceType\Soeg as OrganisationEnhedSoeg;
 use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\StructType\LaesInputType as OrganisationEnhedLaesInputType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\StructType\LaesOutputType as OrganisationEnhedLaesOutputType;
-use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\StructType\SoegInputType as OrganisationEnhedSoegInputType;
-use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\StructType\SoegOutputType as OrganisationEnhedSoegOutputType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ClassMap as OrganisationFunktionClassMap;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ServiceType\Laes as OrganisationFunktionLaes;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ServiceType\Soeg as OrganisationFunktionSoeg;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\AttributListeType as OrganisationFunktionAttributListeType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\BrugerFlerRelationType as OrganisationFunktionBrugerFlerRelationType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\EgenskabType as OrganisationFunktionEgenskabType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\KlasseRelationType as OrganisationFunktionKlasseRelationType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\LaesInputType as OrganisationFunktionLaesInputType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\LaesOutputType as OrganisationFunktionLaesOutputType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\OrganisationEnhedFlerRelationType as OrganisationFunktionOrganisationEnhedFlerRelationType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\RelationListeType as OrganisationFunktionRelationListeType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\SoegInputType as OrganisationFunktionSoegInputType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\SoegOutputType as OrganisationFunktionSoegOutputType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\UnikIdType as OrganisationFunktionUnikIdType;
 use ItkDev\Serviceplatformen\SF1500\Person\ClassMap as PersonClassMap;
 use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Laes as PersonLaes;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\LaesInputType as PersonLaesInputType;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
-use WsdlToPhp\PackageBase\AbstractSoapClientBase;
 
 class SF1500
 {
@@ -57,18 +58,14 @@ class SF1500
      */
     protected array $clients = [];
 
-    private SoapClient $client;
-    private PropertyAccessor $propertyAccessor;
     private SF1500XMLBuilder $xmlBuilder;
     private SF1514 $sf1514;
     private array $options;
 
-    public function __construct(SoapClient $client, SF1514 $sf1514, SF1500XMLBuilder $xmlBuilder, PropertyAccessor $propertyAccessor, array $options)
+    public function __construct(SF1514 $sf1514, array $options)
     {
-        $this->client = $client;
         $this->sf1514 = $sf1514;
-        $this->xmlBuilder = $xmlBuilder;
-        $this->propertyAccessor = $propertyAccessor;
+        $this->xmlBuilder = new SF1500XMLBuilder();
         $this->options = $this->resolveOptions($options);
     }
 
@@ -232,7 +229,7 @@ class SF1500
               ->getUUIDIdentifikator();
 
             if (null === $orgEnhedId) {
-                throw new SF1500Exception(sprintf('Cannot find organisation enheds id for %s.', $orgEnhedId));
+                throw new SF1500Exception('Cannot find organisation enheds id');
             }
 
             $response = $this->organisationEnhedLaes($orgEnhedId);
@@ -243,7 +240,7 @@ class SF1500
               ->getEgenskab()[0]
               ->getEnhedNavn();
         } catch (\Throwable $throwable) {
-            throw new SF1500Exception(sprintf('Cannot find organisation enheds id for %s.', $orgEnhedId), $throwable->getCode(), $throwable);
+            throw new SF1500Exception('Cannot find organisation enheds id', $throwable->getCode(), $throwable);
         }
     }
 
@@ -513,7 +510,7 @@ class SF1500
     private function organisationEnhedLaes($orgEnhedId): ?OrganisationEnhedLaesOutputType
     {
         return $this->getClient(OrganisationEnhedLaes::class)
-          ->laes(new OrganisationEnhedLaesInputType($orgEnhedId));
+          ->laes(new OrganisationEnhedLaesInputType($orgEnhedId)) ?: null;
     }
 
     /**
@@ -523,8 +520,7 @@ class SF1500
     {
         return $this
           ->getClient(OrganisationFunktionLaes::class)
-          ->laes((new OrganisationFunktionLaesInputType())
-            ->setUUIDIdentifikator($orgFunktionId));
+          ->laes(new OrganisationFunktionLaesInputType($orgFunktionId)) ?: null;
     }
 
     /**
@@ -532,28 +528,28 @@ class SF1500
      */
     private function organisationFunktionSoeg(?string $brugerId, ?string $funktionsNavn, ?string $organisationsId, ?string $funktionsTypeId): ?OrganisationFunktionSoegOutputType
     {
-        $attributListe = new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\AttributListeType();
+        $attributListe = new OrganisationFunktionAttributListeType();
         if (null !== $funktionsNavn) {
-            $attributListe->addToEgenskab((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\EgenskabType())
+            $attributListe->addToEgenskab((new OrganisationFunktionEgenskabType())
               ->setFunktionNavn($funktionsNavn));
         }
 
-        $relationsListe = new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\RelationListeType();
+        $relationsListe = new OrganisationFunktionRelationListeType();
         if (null !== $brugerId) {
-            $relationsListe->addToTilknyttedeBrugere((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\BrugerFlerRelationType)
-              ->setReferenceID((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\UnikIdType)
-                ->setUUIDIdentifikator($brugerId)));
+            $relationsListe->addToTilknyttedeBrugere((new OrganisationFunktionBrugerFlerRelationType)
+                ->setReferenceID((new OrganisationFunktionUnikIdType)
+                    ->setUUIDIdentifikator($brugerId)));
         }
         if (null !== $organisationsId) {
-            // TODO: Why is organisationsId as enhed?!
-            $relationsListe->addToTilknyttedeEnheder((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\OrganisationEnhedFlerRelationType())
-              ->setReferenceID((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\UnikIdType)
+            // TODO: Why is organisationsId an enhed?!
+            $relationsListe->addToTilknyttedeEnheder((new OrganisationFunktionOrganisationEnhedFlerRelationType())
+              ->setReferenceID((new OrganisationFunktionUnikIdType)
                 ->setUUIDIdentifikator($organisationsId)));
         }
         if (null !== $funktionsTypeId) {
-            $relationsListe->setFunktionstype((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\KlasseRelationType)
-              ->setReferenceID((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\UnikIdType)
-                ->setUUIDIdentifikator($funktionsTypeId)));
+            $relationsListe->setFunktionstype((new OrganisationFunktionKlasseRelationType)
+                ->setReferenceID((new OrganisationFunktionUnikIdType)
+                    ->setUUIDIdentifikator($funktionsTypeId)));
         }
 
         $request = (new OrganisationFunktionSoegInputType())
@@ -562,7 +558,7 @@ class SF1500
 
         return $this
           ->getClient(OrganisationFunktionSoeg::class)
-          ->soeg($request);
+          ->soeg($request) ?: null;
     }
 
     /**
@@ -745,8 +741,6 @@ class SF1500
    */
     public function getClient(string $className, array $options = []): SoapClientBase
     {
-        $options[AbstractSoapClientBase::WSDL_TRACE] = true;
-
         if (!isset($this->clients[$className])) {
             [$wsdlUrl, $classMap] = $this->getSoapClientInfo($className);
             $this->clients[$className] = (new $className([

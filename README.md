@@ -245,6 +245,12 @@ docker run --volume ${PWD}:/app --workdir /app node:18 yarn install
 docker run --volume ${PWD}:/app --workdir /app node:18 yarn coding-standards-check
 ```
 
+### Code analysis
+
+```sh
+docker run --interactive --tty --rm --volume ${PWD}:/app --env COMPOSER_MEMORY_LIMIT=-1 itkdev/php7.4-fpm:latest composer code-analysis
+```
+
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available,
