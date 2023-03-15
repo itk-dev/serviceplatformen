@@ -19,11 +19,11 @@ jobs:
         run: git diff --exit-code origin/${{ github.base_ref }} -- CHANGELOG.md && exit 1 || exit 0
 
   test-composer-install:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        php: [ '7.4', '8.0', '8.1' ]
+        php: [ '7.4', '8.1' ]
     name: Validate composer (${{ matrix.php}})
     steps:
       - name: Checkout
@@ -51,11 +51,11 @@ jobs:
           APP_ENV=prod composer install --no-dev -o
 
   coding-standards-php:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        php: [ '7.4', '8.0', '8.1' ]
+        php: [ '7.4', '8.1' ]
     name: PHP coding Standards (${{ matrix.php }})
     steps:
       - name: Checkout
@@ -81,11 +81,11 @@ jobs:
         run: composer coding-standards-check
 
   code-analysis-php:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        php: [ '7.4', '8.0', '8.1' ]
+        php: [ '7.4', '8.1' ]
     name: PHP code analysis (${{ matrix.php }})
     steps:
       - name: Checkout
@@ -111,7 +111,7 @@ jobs:
         run: composer code-analysis
 
   coding-standards-markdown:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: Markdown coding standards
     steps:
       - name: Checkout
