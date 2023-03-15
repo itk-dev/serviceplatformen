@@ -77,57 +77,57 @@ class SF1500
      */
     public function getPersonName(string $brugerId): string
     {
-      try {
-        $response = $this->brugerLaes($brugerId);
+        try {
+            $response = $this->brugerLaes($brugerId);
 
-        $personId = $response
-          ->getFiltreretOejebliksbillede()
-          ->getRegistrering()[0]
-          ->getRelationListe()->getTilknyttedePersoner()[0]
-          ->getReferenceID()
-          ->getUUIDIdentifikator();
-      } catch (\Throwable $throwable) {
-        throw new SF1500Exception(sprintf('Cannot find person id for bruger id %s', $brugerId), $throwable->getCode(), $throwable);
-      }
+            $personId = $response
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getRelationListe()->getTilknyttedePersoner()[0]
+              ->getReferenceID()
+              ->getUUIDIdentifikator();
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception(sprintf('Cannot find person id for bruger id %s', $brugerId), $throwable->getCode(), $throwable);
+        }
 
-      try {
-        $personLaesClient = $this->getClient(PersonLaes::class);
-        $response = $personLaesClient->laes((new PersonLaesInputType())
-          ->setUUIDIdentifikator($personId));
+        try {
+            $personLaesClient = $this->getClient(PersonLaes::class);
+            $response = $personLaesClient->laes((new PersonLaesInputType())
+              ->setUUIDIdentifikator($personId));
 
-        return $response
-          ->getFiltreretOejebliksbillede()
-          ->getRegistrering()[0]
-          ->getAttributListe()
-          ->getEgenskab()[0]
-          ->getNavnTekst();
-      } catch (\Throwable $throwable) {
-        throw new SF1500Exception(sprintf('Cannot find person name for person id %s', $personId), $throwable->getCode(), $throwable);
-      }
+            return $response
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getAttributListe()
+              ->getEgenskab()[0]
+              ->getNavnTekst();
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception(sprintf('Cannot find person name for person id %s', $personId), $throwable->getCode(), $throwable);
+        }
     }
 
   /**
    * Fetches person az ident from SF1500.
    */
-  public function getPersonAZIdent(string $brugerId): string
-  {
-    $response = $this->brugerLaes($brugerId);
+    public function getPersonAZIdent(string $brugerId): string
+    {
+        $response = $this->brugerLaes($brugerId);
 
-    return $response
-      ->getFiltreretOejebliksbillede()
-      ->getRegistrering()[0]
-      ->getAttributListe()
-      ->getEgenskab()[0]
-      ->getBrugerNavn();
-  }
+        return $response
+        ->getFiltreretOejebliksbillede()
+        ->getRegistrering()[0]
+        ->getAttributListe()
+        ->getEgenskab()[0]
+        ->getBrugerNavn();
+    }
 
   /**
    * Fetches person phone from SF1500.
    */
-  public function getPersonPhone(string $brugerId): string
-  {
-    return $this->getBrugerAdresse('Mobiltelefon_bruger', $brugerId);
-  }
+    public function getPersonPhone(string $brugerId): string
+    {
+        return $this->getBrugerAdresse('Mobiltelefon_bruger', $brugerId);
+    }
 
     /**
      * Fetches person location from SF1500.
@@ -158,10 +158,10 @@ class SF1500
      */
     public function soegOrganisationFunktioner(?string $brugerId, ?string $funktionsNavn, ?string $organisationId, ?string $funktionsTypeId): array
     {
-      $response = $this->organisationFunktionSoeg($brugerId, $funktionsNavn, $organisationId, $funktionsTypeId);
-      $idListe = $response->getIdListe();
+        $response = $this->organisationFunktionSoeg($brugerId, $funktionsNavn, $organisationId, $funktionsTypeId);
+        $idListe = $response->getIdListe();
 
-      return null === $idListe ? [] : ($idListe->getUUIDIdentifikator() ?? []);
+        return null === $idListe ? [] : ($idListe->getUUIDIdentifikator() ?? []);
     }
 
     /**
@@ -169,30 +169,30 @@ class SF1500
      */
     public function getOrganisationEnhed(string $funktionsId, bool $returnOrganisationID = false): string
     {
-      try {
-        $response = $this->organisationFunktionLaes($funktionsId);
-        $orgEnhedId = $response
+        try {
+            $response = $this->organisationFunktionLaes($funktionsId);
+            $orgEnhedId = $response
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getRelationListe()
+              ->getTilknyttedeEnheder()[0]
+              ->getReferenceID()
+              ->getUUIDIdentifikator();
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception(sprintf('Cannot find organisation enheds id for funktionsid %s', $funktionsId), $throwable->getCode(), $throwable);
+        }
+
+        if ($returnOrganisationID) {
+            return $orgEnhedId;
+        }
+
+        return $this
+          ->organisationEnhedLaes($orgEnhedId)
           ->getFiltreretOejebliksbillede()
           ->getRegistrering()[0]
-          ->getRelationListe()
-          ->getTilknyttedeEnheder()[0]
-          ->getReferenceID()
-          ->getUUIDIdentifikator();
-      } catch (\Throwable $throwable) {
-        throw new SF1500Exception(sprintf('Cannot find organisation enheds id for funktionsid %s', $funktionsId), $throwable->getCode(), $throwable);
-      }
-
-      if ($returnOrganisationID) {
-        return $orgEnhedId;
-      }
-
-      return $this
-        ->organisationEnhedLaes($orgEnhedId)
-        ->getFiltreretOejebliksbillede()
-        ->getRegistrering()[0]
-        ->getAttributListe()
-        ->getEgenskab()[0]
-        ->getEnhedNavn();
+          ->getAttributListe()
+          ->getEgenskab()[0]
+          ->getEnhedNavn();
     }
 
     /**
@@ -201,12 +201,12 @@ class SF1500
     public function getFunktionsNavn(string $funktionsId): string
     {
         $response = $this->organisationFunktionLaes($funktionsId);
-      return $response
-        ->getFiltreretOejebliksbillede()
-        ->getRegistrering()[0]
-        ->getAttributListe()
-        ->getEgenskab()[0]
-        ->getFunktionNavn();
+        return $response
+          ->getFiltreretOejebliksbillede()
+          ->getRegistrering()[0]
+          ->getAttributListe()
+          ->getEgenskab()[0]
+          ->getFunktionNavn();
     }
 
     /**
@@ -214,37 +214,37 @@ class SF1500
      */
     public function getOrganisationEnhedNiveauTo(string $funktionsId): string
     {
-      try {
-        $orgEnhedId = $this->getOrganisationEnhed($funktionsId, true);
+        try {
+            $orgEnhedId = $this->getOrganisationEnhed($funktionsId, true);
 
-        if (empty($orgEnhedId)) {
-          return '';
+            if (empty($orgEnhedId)) {
+                return '';
+            }
+
+            // Niveau 1.
+            $response = $this->organisationEnhedLaes($orgEnhedId);
+            $orgEnhedId = $response
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getRelationListe()
+              ->getOverordnet()
+              ->getReferenceID()
+              ->getUUIDIdentifikator();
+
+            if (null === $orgEnhedId) {
+                throw new SF1500Exception(sprintf('Cannot find organisation enheds id for %s.', $orgEnhedId));
+            }
+
+            $response = $this->organisationEnhedLaes($orgEnhedId);
+            return $response
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getAttributListe()
+              ->getEgenskab()[0]
+              ->getEnhedNavn();
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception(sprintf('Cannot find organisation enheds id for %s.', $orgEnhedId), $throwable->getCode(), $throwable);
         }
-
-        // Niveau 1.
-        $response = $this->organisationEnhedLaes($orgEnhedId);
-        $orgEnhedId = $response
-          ->getFiltreretOejebliksbillede()
-          ->getRegistrering()[0]
-          ->getRelationListe()
-          ->getOverordnet()
-          ->getReferenceID()
-          ->getUUIDIdentifikator();
-
-        if (null === $orgEnhedId) {
-          throw new SF1500Exception(sprintf('Cannot find organisation enheds id for %s.', $orgEnhedId));
-        }
-
-        $response = $this->organisationEnhedLaes($orgEnhedId);
-        return $response
-          ->getFiltreretOejebliksbillede()
-          ->getRegistrering()[0]
-          ->getAttributListe()
-          ->getEgenskab()[0]
-          ->getEnhedNavn();
-      } catch (\Throwable $throwable) {
-        throw new SF1500Exception(sprintf('Cannot find organisation enheds id for %s.', $orgEnhedId), $throwable->getCode(), $throwable);
-      }
     }
 
     /**
@@ -259,28 +259,28 @@ class SF1500
         }
 
         try {
-          $response = $this->organisationEnhedLaes($orgEnhedId);
-          $adresser = $response
-            ->getFiltreretOejebliksbillede()
-            ->getRegistrering()[0]
-            ->getRelationListe()
-            ->getAdresser();
+            $response = $this->organisationEnhedLaes($orgEnhedId);
+            $adresser = $response
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getRelationListe()
+              ->getAdresser();
 
-          foreach ($adresser as $adresse) {
-            if ('Postadresse' === $adresse->getRolle()->getLabel()) {
-              $adresseId = $adresse->getReferenceID()->getUUIDIdentifikator();
-              $adresse = $this->adresseLaes($adresseId);
+            foreach ($adresser as $adresse) {
+                if ('Postadresse' === $adresse->getRolle()->getLabel()) {
+                    $adresseId = $adresse->getReferenceID()->getUUIDIdentifikator();
+                    $adresse = $this->adresseLaes($adresseId);
 
-              return $adresse
-                ->getFiltreretOejebliksbillede()
-                ->getRegistrering()[0]
-                ->getAttributListe()
-                ->getEgenskab()[0]
-                ->getAdresseTekst();
+                    return $adresse
+                      ->getFiltreretOejebliksbillede()
+                      ->getRegistrering()[0]
+                      ->getAttributListe()
+                      ->getEgenskab()[0]
+                      ->getAdresseTekst();
+                }
             }
-          }
 
-          return '';
+            return '';
         } catch (\Throwable $throwable) {
             throw new SF1500Exception(sprintf('Cannot find organisation address for funktionsid %s', $funktionsId), $throwable->getCode(), $throwable);
         }
@@ -298,20 +298,20 @@ class SF1500
         }
 
         $response = $this->organisationEnhedLaes($orgEnhedId);
-      $enhedNavn = $response
-        ->getFiltreretOejebliksbillede()
-        ->getRegistrering()[0]
-        ->getAttributListe()
-        ->getEgenskab()[0]
-        ->getEnhedNavn();
+        $enhedNavn = $response
+          ->getFiltreretOejebliksbillede()
+          ->getRegistrering()[0]
+          ->getAttributListe()
+          ->getEgenskab()[0]
+          ->getEnhedNavn();
 
-      $data = $this->getEnhedNavnOgOverordnetOrganisationsId($orgEnhedId);
-      while ($orgEnhedId = $data['overordnet_id']) {
-        $enhedNavn = $data['enhedNavn'];
         $data = $this->getEnhedNavnOgOverordnetOrganisationsId($orgEnhedId);
-      }
+        while ($orgEnhedId = $data['overordnet_id']) {
+            $enhedNavn = $data['enhedNavn'];
+            $data = $this->getEnhedNavnOgOverordnetOrganisationsId($orgEnhedId);
+        }
 
-      return $enhedNavn;
+        return $enhedNavn;
     }
 
     /**
@@ -319,33 +319,33 @@ class SF1500
      */
     public function getEnhedNavnOgOverordnetOrganisationsId($organisationEnhedsId): array
     {
-      $overordnetId = null;
-      $enhedNavn = null;
+        $overordnetId = null;
+        $enhedNavn = null;
 
-      try {
-        $data = $this->organisationEnhedLaes($organisationEnhedsId);
-        $registrering = $data
-          ->getFiltreretOejebliksbillede()
-          ->getRegistrering()[0];
+        try {
+            $data = $this->organisationEnhedLaes($organisationEnhedsId);
+            $registrering = $data
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0];
 
-        $overordnetId = $registrering
-          ->getRelationListe()
-          ->getOverordnet()
-          ->getReferenceID()
-          ->getUUIDIdentifikator();
+            $overordnetId = $registrering
+              ->getRelationListe()
+              ->getOverordnet()
+              ->getReferenceID()
+              ->getUUIDIdentifikator();
 
-        $enhedNavn = $registrering
-          ->getAttributListe()
-          ->getEgenskab()[0]
-          ->getEnhedNavn();
-      } catch (\Throwable $throwable) {
-        // Ignore any errors.
-      }
+            $enhedNavn = $registrering
+              ->getAttributListe()
+              ->getEgenskab()[0]
+              ->getEnhedNavn();
+        } catch (\Throwable $throwable) {
+            // Ignore any errors.
+        }
 
-      return [
-        'overordnet_id' => $overordnetId,
-        'enhedNavn' => $enhedNavn,
-      ];
+        return [
+          'overordnet_id' => $overordnetId,
+          'enhedNavn' => $enhedNavn,
+        ];
     }
 
     /**
@@ -431,34 +431,34 @@ class SF1500
 
     public function getOrganisationFunktionsTypeFromOrganisationFunktion($id): string
     {
-      try {
-        return $this
-          ->organisationFunktionLaes($id)
-          ->getFiltreretOejebliksbillede()
-          ->getRegistrering()[0]
-          ->getRelationListe()
-          ->getFunktionstype()
-          ->getReferenceID()
-          ->getUUIDIdentifikator();
-      } catch (\Throwable $throwable) {
-        throw new SF1500Exception(sprintf('Cannot find organisation funktions type for organisation funktion id %s', $id), $throwable->getCode(), $throwable);
-      }
+        try {
+            return $this
+              ->organisationFunktionLaes($id)
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getRelationListe()
+              ->getFunktionstype()
+              ->getReferenceID()
+              ->getUUIDIdentifikator();
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception(sprintf('Cannot find organisation funktions type for organisation funktion id %s', $id), $throwable->getCode(), $throwable);
+        }
     }
 
     public function getBrugerIdFromOrganisationFunktion($organisationFunktionsId): string
     {
-      try {
-        return $this
-          ->organisationFunktionLaes($organisationFunktionsId)
-          ->getFiltreretOejebliksbillede()
-          ->getRegistrering()[0]
-          ->getRelationListe()
-          ->getTilknyttedeBrugere()[0]
-          ->getReferenceID()
-          ->getUUIDIdentifikator();
-      } catch (\Throwable $throwable) {
-        throw new SF1500Exception(sprintf('Cannot read bruger id from organisation funktion %s', $organisationFunktionsId), $throwable->getCode(), $throwable);
-      }
+        try {
+            return $this
+              ->organisationFunktionLaes($organisationFunktionsId)
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getRelationListe()
+              ->getTilknyttedeBrugere()[0]
+              ->getReferenceID()
+              ->getUUIDIdentifikator();
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception(sprintf('Cannot read bruger id from organisation funktion %s', $organisationFunktionsId), $throwable->getCode(), $throwable);
+        }
     }
 
     /**
@@ -493,9 +493,9 @@ class SF1500
      */
     private function brugerLaes($brugerId): BrugerLaesOutputType
     {
-      $brugerLaesClient = $this->getClient(BrugerLaes::class);
-      return $brugerLaesClient->laes((new BrugerLaesInputType())
-        ->setUUIDIdentifikator($brugerId));
+        $brugerLaesClient = $this->getClient(BrugerLaes::class);
+        return $brugerLaesClient->laes((new BrugerLaesInputType())
+          ->setUUIDIdentifikator($brugerId));
     }
 
     /**
@@ -503,8 +503,8 @@ class SF1500
      */
     private function adresseLaes($adresseId): AdresseLaesOutputType
     {
-      return $this->getClient(AdresseLaes::class)
-        ->laes(new AdresseLaesInputType($adresseId));
+        return $this->getClient(AdresseLaes::class)
+          ->laes(new AdresseLaesInputType($adresseId));
     }
 
     /**
@@ -512,8 +512,8 @@ class SF1500
      */
     private function organisationEnhedLaes($orgEnhedId): ?OrganisationEnhedLaesOutputType
     {
-      return $this->getClient(OrganisationEnhedLaes::class)
-        ->laes(new OrganisationEnhedLaesInputType($orgEnhedId));
+        return $this->getClient(OrganisationEnhedLaes::class)
+          ->laes(new OrganisationEnhedLaesInputType($orgEnhedId));
     }
 
     /**
@@ -521,10 +521,10 @@ class SF1500
      */
     private function organisationFunktionLaes(string $orgFunktionId): ?OrganisationFunktionLaesOutputType
     {
-      return $this
-        ->getClient(OrganisationFunktionLaes::class)
-        ->laes((new OrganisationFunktionLaesInputType())
-          ->setUUIDIdentifikator($orgFunktionId));
+        return $this
+          ->getClient(OrganisationFunktionLaes::class)
+          ->laes((new OrganisationFunktionLaesInputType())
+            ->setUUIDIdentifikator($orgFunktionId));
     }
 
     /**
@@ -532,37 +532,37 @@ class SF1500
      */
     private function organisationFunktionSoeg(?string $brugerId, ?string $funktionsNavn, ?string $organisationsId, ?string $funktionsTypeId): ?OrganisationFunktionSoegOutputType
     {
-      $attributListe = new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\AttributListeType();
-      if (null !== $funktionsNavn) {
-        $attributListe->addToEgenskab((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\EgenskabType())
-          ->setFunktionNavn($funktionsNavn));
-      }
+        $attributListe = new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\AttributListeType();
+        if (null !== $funktionsNavn) {
+            $attributListe->addToEgenskab((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\EgenskabType())
+              ->setFunktionNavn($funktionsNavn));
+        }
 
-      $relationsListe = new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\RelationListeType();
-      if (null !== $brugerId) {
-        $relationsListe->addToTilknyttedeBrugere((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\BrugerFlerRelationType)
-          ->setReferenceID((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\UnikIdType)
-            ->setUUIDIdentifikator($brugerId)));
-      }
-      if (null !== $organisationsId) {
-        // TODO: Why is organisationsId as enhed?!
-        $relationsListe->addToTilknyttedeEnheder((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\OrganisationEnhedFlerRelationType())
-          ->setReferenceID((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\UnikIdType)
-            ->setUUIDIdentifikator($organisationsId)));
-      }
-      if (null !== $funktionsTypeId) {
-        $relationsListe->setFunktionstype((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\KlasseRelationType)
-          ->setReferenceID((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\UnikIdType)
-            ->setUUIDIdentifikator($funktionsTypeId)));
-      }
+        $relationsListe = new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\RelationListeType();
+        if (null !== $brugerId) {
+            $relationsListe->addToTilknyttedeBrugere((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\BrugerFlerRelationType)
+              ->setReferenceID((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\UnikIdType)
+                ->setUUIDIdentifikator($brugerId)));
+        }
+        if (null !== $organisationsId) {
+            // TODO: Why is organisationsId as enhed?!
+            $relationsListe->addToTilknyttedeEnheder((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\OrganisationEnhedFlerRelationType())
+              ->setReferenceID((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\UnikIdType)
+                ->setUUIDIdentifikator($organisationsId)));
+        }
+        if (null !== $funktionsTypeId) {
+            $relationsListe->setFunktionstype((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\KlasseRelationType)
+              ->setReferenceID((new \ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\UnikIdType)
+                ->setUUIDIdentifikator($funktionsTypeId)));
+        }
 
-      $request = (new OrganisationFunktionSoegInputType())
-        ->setAttributListe($attributListe)
-        ->setRelationListe($relationsListe);
+        $request = (new OrganisationFunktionSoegInputType())
+          ->setAttributListe($attributListe)
+          ->setRelationListe($relationsListe);
 
-      return $this
-        ->getClient(OrganisationFunktionSoeg::class)
-        ->soeg($request);
+        return $this
+          ->getClient(OrganisationFunktionSoeg::class)
+          ->soeg($request);
     }
 
     /**
@@ -570,34 +570,34 @@ class SF1500
      */
     private function getBrugerAdresse(string $rolle, string $brugerId): string
     {
-      try {
-        $brugerLaesClient = $this->getClient(BrugerLaes::class);
-        $response = $brugerLaesClient->laes((new BrugerLaesInputType)
-          ->setUUIDIdentifikator($brugerId));
+        try {
+            $brugerLaesClient = $this->getClient(BrugerLaes::class);
+            $response = $brugerLaesClient->laes((new BrugerLaesInputType)
+              ->setUUIDIdentifikator($brugerId));
 
-        $adresser = $response
-            ->getFiltreretOejebliksbillede()
-            ->getRegistrering()[0]
-            ->getRelationListe()
-            ->getAdresser();
+            $adresser = $response
+                ->getFiltreretOejebliksbillede()
+                ->getRegistrering()[0]
+                ->getRelationListe()
+                ->getAdresser();
 
-        foreach ($adresser as $adresse) {
-          if ($rolle === $adresse->getRolle()->getLabel()) {
-            $adresse = $this->adresseLaes($adresse->getReferenceID()->getUUIDIdentifikator());
+            foreach ($adresser as $adresse) {
+                if ($rolle === $adresse->getRolle()->getLabel()) {
+                    $adresse = $this->adresseLaes($adresse->getReferenceID()->getUUIDIdentifikator());
 
-            return $adresse
-              ->getFiltreretOejebliksbillede()
-              ->getRegistrering()[0]
-              ->getAttributListe()
-              ->getEgenskab()[0]
-              ->getAdresseTekst();
-          }
+                    return $adresse
+                      ->getFiltreretOejebliksbillede()
+                      ->getRegistrering()[0]
+                      ->getAttributListe()
+                      ->getEgenskab()[0]
+                      ->getAdresseTekst();
+                }
+            }
+
+            return '';
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception(sprintf('Cannot find adresse %s for bruger id %s', $rolle, $brugerId), $throwable->getCode(), $throwable);
         }
-
-        return '';
-      } catch (\Throwable $throwable) {
-        throw new SF1500Exception(sprintf('Cannot find adresse %s for bruger id %s', $rolle, $brugerId), $throwable->getCode(), $throwable);
-      }
     }
 
     private function resolveOptions(array $options): array
@@ -743,54 +743,54 @@ class SF1500
    * @param class-string<Client> $className
    * @return Client
    */
-  public function getClient(string $className, array $options = []): SoapClientBase
-  {
-    $options[AbstractSoapClientBase::WSDL_TRACE] = true;
+    public function getClient(string $className, array $options = []): SoapClientBase
+    {
+        $options[AbstractSoapClientBase::WSDL_TRACE] = true;
 
-    if (!isset($this->clients[$className])) {
-      [$wsdlUrl, $classMap] = $this->getSoapClientInfo($className);
-      $this->clients[$className] = (new $className([
-          SoapClientBase::WSDL_URL => $wsdlUrl,
-          SoapClientBase::WSDL_CLASSMAP => $classMap,
-        ] + $options))
-        ->setSF1500($this);
+        if (!isset($this->clients[$className])) {
+            [$wsdlUrl, $classMap] = $this->getSoapClientInfo($className);
+            $this->clients[$className] = (new $className([
+              SoapClientBase::WSDL_URL => $wsdlUrl,
+              SoapClientBase::WSDL_CLASSMAP => $classMap,
+            ] + $options))
+              ->setSF1500($this);
+        }
+
+        return $this->clients[$className];
     }
 
-    return $this->clients[$className];
-  }
+    protected function getSoapClientInfo(string $className): array
+    {
+        switch ($className) {
+            case AdresseLaes::class:
+                return [
+                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Adresse.wsdl',
+                AdresseClassMap::get(),
+              ];
+            case BrugerSoeg::class:
+            case BrugerLaes::class:
+                return [
+                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Bruger.wsdl',
+                BrugerClassMap::get(),
+              ];
+            case OrganisationEnhedLaes::class:
+                return [
+                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/OrganisationEnhed.wsdl',
+                OrganisationEnhedClassMap::get(),
+              ];
+            case OrganisationFunktionSoeg::class:
+            case OrganisationFunktionLaes::class:
+                return [
+                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/OrganisationFunktion.wsdl',
+                OrganisationFunktionClassMap::get(),
+              ];
+            case PersonLaes::class:
+                return [
+                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Person.wsdl',
+                PersonClassMap::get(),
+              ];
+        }
 
-  protected function getSoapClientInfo(string $className): array
-  {
-    switch ($className) {
-      case AdresseLaes::class:
-        return [
-          __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Adresse.wsdl',
-          AdresseClassMap::get(),
-        ];
-      case BrugerSoeg::class:
-      case BrugerLaes::class:
-        return [
-          __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Bruger.wsdl',
-          BrugerClassMap::get(),
-        ];
-      case OrganisationEnhedLaes::class:
-        return [
-          __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/OrganisationEnhed.wsdl',
-          OrganisationEnhedClassMap::get(),
-        ];
-      case OrganisationFunktionSoeg::class:
-      case OrganisationFunktionLaes::class:
-        return [
-          __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/OrganisationFunktion.wsdl',
-          OrganisationFunktionClassMap::get(),
-        ];
-      case PersonLaes::class:
-        return [
-          __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Person.wsdl',
-          PersonClassMap::get(),
-        ];
+        throw new \InvalidArgumentException(sprintf('Invalid class name: %s', $className));
     }
-
-    throw new \InvalidArgumentException(sprintf('Invalid class name: %s', $className));
-  }
 }

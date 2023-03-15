@@ -14,22 +14,22 @@ class SoapClient extends \SoapClient
 {
     public SF1500 $sf1500;
 
-  private ?string $lastRequest;
-  private ?string $lastFormattedRequest;
-  private bool $disableCache;
+    private ?string $lastRequest;
+    private ?string $lastFormattedRequest;
+    private bool $disableCache;
 
-  public function __construct(?string $wsdl, array $options = null)
-  {
-      $this->disableCache = (bool)($options[SoapClientBase::SOAP_DISABLE_CACHE] ?? false);
-      unset($options[SoapClientBase::SOAP_DISABLE_CACHE]);
+    public function __construct(?string $wsdl, array $options = null)
+    {
+        $this->disableCache = (bool)($options[SoapClientBase::SOAP_DISABLE_CACHE] ?? false);
+        unset($options[SoapClientBase::SOAP_DISABLE_CACHE]);
 
-      parent::__construct($wsdl, $options);
-  }
+        parent::__construct($wsdl, $options);
+    }
 
-    /**
-     * TODO: Update signature cf. https://www.php.net/manual/en/soapclient.dorequest.php.
-     */
-    #[\ReturnTypeWillChange]
+      /**
+       * TODO: Update signature cf. https://www.php.net/manual/en/soapclient.dorequest.php.
+       */
+      #[\ReturnTypeWillChange]
     public function __doRequest($request, $location, $action, $version, $oneWay = null)
     {
         $formattedRequest = $request;
@@ -52,14 +52,14 @@ class SoapClient extends \SoapClient
         );
     }
 
-    #[\ReturnTypeWillChange]
+      #[\ReturnTypeWillChange]
     public function __getLastRequest()
     {
         return $this->lastRequest ?? parent::__getLastRequest();
     }
 
-  public function __getLastFormattedRequest(): ?string
-  {
-    return $this->lastFormattedRequest;
-  }
+    public function __getLastFormattedRequest(): ?string
+    {
+        return $this->lastFormattedRequest;
+    }
 }

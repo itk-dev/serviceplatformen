@@ -26,11 +26,11 @@ class SF1500XMLBuilder
     private const NS_XMLDSIG = 'http://www.w3.org/2000/09/xmldsig#';
     public const NS_ASSERTION = 'urn:oasis:names:tc:SAML:2.0:assertion';
 
-  /**
-   * Build SOAP header.
-   *
-   * @internal
-   */
+    /**
+     * Build SOAP header.
+     *
+     * @internal
+     */
     public function buildSoapHeader(\DOMElement $header, string $to, string $action, string $tokenXml)
     {
         /** @var \DOMDocument $document */
@@ -214,12 +214,12 @@ class SF1500XMLBuilder
      */
     public function getElementId(\DOMElement $element)
     {
-      /** @var \DOMAttr $attribute */
-      foreach ($element->attributes as $attribute) {
-        if (false !== strpos($attribute->name, 'Id') || false !== strpos($attribute->name, 'ID')) {
-          return $attribute->value;
+        /** @var \DOMAttr $attribute */
+        foreach ($element->attributes as $attribute) {
+            if (false !== strpos($attribute->name, 'Id') || false !== strpos($attribute->name, 'ID')) {
+                return $attribute->value;
+            }
         }
-      }
 
         return null;
     }
