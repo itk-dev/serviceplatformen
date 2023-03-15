@@ -89,7 +89,7 @@ class SF1500XMLBuilder
         $tokenDocument = new \DOMDocument();
         $tokenDocument->loadXML($tokenXml);
         $tokenElement = $document->importNode($tokenDocument->documentElement, true);
-        $tokenUuid = $this->getDocEleId($tokenElement);
+        $tokenUuid = $this->getElementId($tokenElement);
 
         // @see https://bugs.php.net/bug.php?id=55294
         $tokenElement = $document->createElementNS(self::NS_ASSERTION, 'assertion:insert-token-here');
@@ -166,7 +166,7 @@ class SF1500XMLBuilder
             $tags = $documentRequest->getElementsByTagName($value);
 
             $tag = $tags[0];
-            $tagId = $this->getDocEleId($tag);
+            $tagId = $this->getElementId($tag);
 
             if ($isSTR) {
                 $tag = $documentRequest->getElementsByTagName('Assertion')[0];
@@ -212,13 +212,15 @@ class SF1500XMLBuilder
      *
      * @internal
      */
-    public function getDocEleId($docEle)
+    public function getElementId(\DOMElement $element)
     {
-        for ($i = 0; $i < $docEle->attributes->length; ++$i) {
-            if (strpos($docEle->attributes->item($i)->name, 'Id') !== false || strpos($docEle->attributes->item($i)->name, 'ID') !== false) {
-                return $docEle->attributes->item($i)->value;
-            }
+      /** @var \DOMAttr $attribute */
+      foreach ($element->attributes as $attribute) {
+        if (false !== strpos($attribute->name, 'Id') || false !== strpos($attribute->name, 'ID')) {
+          return $attribute->value;
         }
+      }
+
         return null;
     }
 
