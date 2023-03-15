@@ -16,6 +16,15 @@ class SoapClient extends \SoapClient
 
   private ?string $lastRequest;
   private ?string $lastFormattedRequest;
+  private bool $disableCache;
+
+  public function __construct(?string $wsdl, array $options = null)
+  {
+      $this->disableCache = (bool)($options[SoapClientBase::SOAP_DISABLE_CACHE] ?? false);
+      unset($options[SoapClientBase::SOAP_DISABLE_CACHE]);
+
+      parent::__construct($wsdl, $options);
+  }
 
     /**
      * TODO: Update signature cf. https://www.php.net/manual/en/soapclient.dorequest.php.
@@ -31,6 +40,10 @@ class SoapClient extends \SoapClient
 
         $this->lastRequest = $request;
         $this->lastFormattedRequest = $formattedRequest;
+
+        if ($this->disableCache) {
+            return parent::__doRequest($formattedRequest, $location, $action, $version, $oneWay);
+        }
 
         return $this->sf1500->cacheSoapRequest(
             // Use original request in cache key.

@@ -19,6 +19,8 @@ class SoapClientBase extends AbstractSoapClientBase
 {
     protected SF1500 $sf1500;
 
+    const SOAP_DISABLE_CACHE = 'soap_disable_cache';
+
     public function getSoapClientClassName(?string $soapClientClassName = null): string
     {
         return parent::getSoapClientClassName(SoapClient::class);
@@ -26,7 +28,9 @@ class SoapClientBase extends AbstractSoapClientBase
 
     public static function getDefaultWsdlOptions(): array
     {
-        return [self::WSDL_SOAP_VERSION => SOAP_1_2]+parent::getDefaultWsdlOptions();
+        return [
+                self::WSDL_SOAP_VERSION => SOAP_1_2,
+            ]+parent::getDefaultWsdlOptions();
     }
 
     public function setSF1500(SF1500 $sf1500): self
