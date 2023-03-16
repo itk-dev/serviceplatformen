@@ -32,27 +32,32 @@ class SoapClient extends \SoapClient
       #[\ReturnTypeWillChange]
     public function __doRequest($request, $location, $action, $version, $oneWay = null)
     {
-        $formattedRequest = $request;
-        if (null !== $this->sf1500) {
-            $location = $this->sf1500->getSoapLocation($location);
-            $formattedRequest = $this->sf1500->formatSoapRequest($request, $location, $action, (int)$version, (bool)$oneWay);
-        }
-
         $this->lastRequest = $request;
-        $this->lastFormattedRequest = $formattedRequest;
 
-        if ($this->disableCache) {
-            return parent::__doRequest($formattedRequest, $location, $action, $version, $oneWay);
-        }
+        $location = $this->sf1500->getSoapLocation($location);
 
-        return $this->sf1500->cacheSoapRequest(
-            // Use original request in cache key.
-            [__METHOD__, $request, $location, $action, $version],
-            fn () => parent::__doRequest($formattedRequest, $location, $action, $version, $oneWay)
-        );
+        return $this->disableCache
+            ? $this->doRequest($request, $location, $action, $version, $oneWay)
+            : $this->sf1500->cacheSoapRequest(
+                [__METHOD__, $request, $location, $action, $version],
+                fn () => $this->doRequest($request, $location, $action, $version, $oneWay)
+            );
     }
 
-      #[\ReturnTypeWillChange]
+    private function doRequest(
+        string $request,
+        string $location,
+        string $action,
+        int $version,
+        bool $oneWay = false
+    ): ?string {
+        $formattedRequest = $this->sf1500->formatSoapRequest($request, $location, $action, $version, $oneWay);
+        $this->lastFormattedRequest = $formattedRequest;
+
+        return parent::__doRequest($formattedRequest, $location, $action, $version, $oneWay);
+    }
+
+    #[\ReturnTypeWillChange]
     public function __getLastRequest()
     {
         return $this->lastRequest ?? parent::__getLastRequest();
