@@ -89,8 +89,7 @@ class SF1500
 
         try {
             $personLaesClient = $this->getClient(PersonLaes::class);
-            $response = $personLaesClient->laes((new PersonLaesInputType())
-              ->setUUIDIdentifikator($personId));
+            $response = $personLaesClient->laes(new PersonLaesInputType($personId));
 
             return $response
               ->getFiltreretOejebliksbillede()
@@ -491,8 +490,7 @@ class SF1500
     private function brugerLaes($brugerId): BrugerLaesOutputType
     {
         $brugerLaesClient = $this->getClient(BrugerLaes::class);
-        return $brugerLaesClient->laes((new BrugerLaesInputType())
-          ->setUUIDIdentifikator($brugerId));
+        return $brugerLaesClient->laes(new BrugerLaesInputType($brugerId));
     }
 
     /**
@@ -537,19 +535,16 @@ class SF1500
         $relationsListe = new OrganisationFunktionRelationListeType();
         if (null !== $brugerId) {
             $relationsListe->addToTilknyttedeBrugere((new OrganisationFunktionBrugerFlerRelationType)
-                ->setReferenceID((new OrganisationFunktionUnikIdType)
-                    ->setUUIDIdentifikator($brugerId)));
+                ->setReferenceID(new OrganisationFunktionUnikIdType($brugerId)));
         }
         if (null !== $organisationsId) {
             // TODO: Why is organisationsId an enhed?!
             $relationsListe->addToTilknyttedeEnheder((new OrganisationFunktionOrganisationEnhedFlerRelationType())
-              ->setReferenceID((new OrganisationFunktionUnikIdType)
-                ->setUUIDIdentifikator($organisationsId)));
+              ->setReferenceID(new OrganisationFunktionUnikIdType($organisationsId)));
         }
         if (null !== $funktionsTypeId) {
             $relationsListe->setFunktionstype((new OrganisationFunktionKlasseRelationType)
-                ->setReferenceID((new OrganisationFunktionUnikIdType)
-                    ->setUUIDIdentifikator($funktionsTypeId)));
+                ->setReferenceID(new OrganisationFunktionUnikIdType($funktionsTypeId)));
         }
 
         $request = (new OrganisationFunktionSoegInputType())
@@ -568,8 +563,7 @@ class SF1500
     {
         try {
             $brugerLaesClient = $this->getClient(BrugerLaes::class);
-            $response = $brugerLaesClient->laes((new BrugerLaesInputType)
-              ->setUUIDIdentifikator($brugerId));
+            $response = $brugerLaesClient->laes(new BrugerLaesInputType($brugerId));
 
             $adresser = $response
                 ->getFiltreretOejebliksbillede()
