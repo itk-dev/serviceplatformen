@@ -18,11 +18,11 @@ generate PHP classes for talking to SOAP services. To update
 [resources](./resources) and [generated classes](./generated-classes), run
 
 ```sh
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer install
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer install
 # Update WSDL resources.
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest bin/generate resources
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest bin/generate resources
 # Generate PHP classes from WSDL resources.
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest bin/generate classes
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest bin/generate classes
 ```
 
 ## Test commands
@@ -35,7 +35,7 @@ Use `bin/serviceplatformen-sf1601-kombipostafsend` (symlinked to
 `bin/SF1601/kombipostafsend`) during development of this library. i.e.
 
 ```sh
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest bin/serviceplatformen-sf1601-kombipostafsend
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest bin/serviceplatformen-sf1601-kombipostafsend
 ```
 
 ## Getting Started
@@ -71,13 +71,13 @@ composer install
 Unit tests:
 
 ```sh
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer2 tests/unit
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer2 tests/unit
 ```
 
 End to end tests:
 
 ```sh
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer2 tests/end-to-end
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer2 tests/end-to-end
 ```
 
 ### And coding style tests
@@ -229,15 +229,15 @@ reviewer to merge it for you.
 ### Coding standards
 
 ```sh
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer install
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer coding-standards-check
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer install
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer coding-standards-check
 ```
 
 Apply coding standards:
 
 ```sh
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer install
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php7.4-fpm:latest composer coding-standards-apply
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer install
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer coding-standards-apply
 ```
 
 ```sh
