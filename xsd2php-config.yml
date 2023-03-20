@@ -12,6 +12,20 @@ xsd2php:
     'http://www.form-online.dk/':                                                                              'WwwFormOnlineDk'
     'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#': 'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd'
 
+    'http://rep.oio.dk/cpr.dk/xml/schemas/core/2005/03/18/':                                                   'Oio\Cpr'
+    'http://rep.oio.dk/cpr.dk/xml/schemas/core/2005/05/19/':                                                   'Oio\Cpr'
+    'http://rep.oio.dk/cvr.dk/xml/schemas/2005/03/22/':                                                        'Oio\Cvr'
+    'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/':                                                    'Oio\Ebxml'
+    'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/03/15/':                                                    'Oio\Ebxml'
+    'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/13/':                                                    'Oio\Ebxml'
+    'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/':                                                    'Oio\Ebxml'
+    'http://rep.oio.dk/itst.dk/xml/schemas/2006/01/17/':                                                       'Oio\Itst'
+    'http://rep.oio.dk/xkom.dk/xml/schemas/2005/03/15/':                                                       'Oio\Xkom'
+    'urn:oio:adir:dagpenge:2009.07.01':                                                                        'Oio\Adir\Dagpenge'
+    'urn:oio:dkal:1.0.0':                                                                                      'Oio\Dkal'
+    'urn:oio:fjernprint:1.0.0':                                                                                'Oio\Fjernprint'
+    'urn:oio:sagdok:3.0.0':                                                                                    'Oio\Sagdok'
+
   destinations_php:
     # These must also be set in autoload.psr-4 in composer.json.
     'DigitalPost\MeMo':                                                                            'lib/DigitalPost/MeMo/'
@@ -24,7 +38,10 @@ xsd2php:
     'WwwFormOnlineDk':                                                                             'lib/WwwFormOnlineDk/'
     'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd': 'lib/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/'
 
+    'Oio':                                                                                         'lib/Oio'
+
   destinations_jms:
+    # These must also be set in src/Service/SF1601/Serializer.php
     'DigitalPost\MeMo':                                                                            'lib/metadata/DigitalPost/MeMo/'
     'DataGovDk\Model\DataTypes':                                                                   'lib/metadata/DataGovDk/Model/DataTypes/'
     'DataGovDk\Model\Core':                                                                        'lib/metadata/DataGovDk/Model/Core/'
@@ -34,6 +51,8 @@ xsd2php:
     'KleOnlineDk':                                                                                 'lib/metadata/KleOnlineDk/'
     'WwwFormOnlineDk':                                                                             'lib/metadata/WwwFormOnlineDk/'
     'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd': 'lib/metadata/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/'
+
+    'Oio': 'lib/metadata/Oio'
 
   xml_namespaces:
     # prefix: namespace

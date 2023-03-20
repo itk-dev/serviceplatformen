@@ -1,0 +1,52 @@
+Oio\Fjernprint\PostParametreType:
+    properties:
+        postKategoriKode:
+            expose: true
+            access_type: public_method
+            serialized_name: PostKategoriKode
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getPostKategoriKode
+                setter: setPostKategoriKode
+            type: string
+        allokeringsIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: AllokeringsIdentifikator
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getAllokeringsIdentifikator
+                setter: setAllokeringsIdentifikator
+            type: int
+        returposthaandteringHosLeverandoerIndikator:
+            expose: true
+            access_type: public_method
+            serialized_name: ReturposthaandteringHosLeverandoerIndikator
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getReturposthaandteringHosLeverandoerIndikator
+                setter: setReturposthaandteringHosLeverandoerIndikator
+            type: bool
+        informationVedAdresseAendringIndikator:
+            expose: true
+            access_type: public_method
+            serialized_name: InformationVedAdresseAendringIndikator
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getInformationVedAdresseAendringIndikator
+                setter: setInformationVedAdresseAendringIndikator
+            type: bool
+        sideKvantitet:
+            expose: true
+            access_type: public_method
+            serialized_name: SideKvantitet
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getSideKvantitet
+                setter: setSideKvantitet
+            type: int

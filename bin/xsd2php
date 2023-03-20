@@ -5,27 +5,64 @@ IFS=$'\n\t'
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-# XSD archive url (cf. https://www.digitaliser.dk/resource/5248921)
-XSD_ARCHIVE_URL="https://www.digitaliser.dk/resource/5248921/artefact/MeMo_XSD.zip?artefact=true&PID=6075979"
-
 project_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")"/../ && pwd)
-xsd_dir=/tmp/MeMo/xsd
+
+cd "$project_dir"
+
 # Relative to project_dir
 lib_dir="lib"
 
-echo "${bold}Fetching XSD${normal}"
+# Remove old generated files
+rm -fr "$lib_dir"
+
+xsd_dir=/tmp/serviceplatformen/xsd
+
+################################################################################
+# MeMo                                                                         #
+################################################################################
+
+# XSD archive url (cf. https://www.digitaliser.dk/resource/5248921)
+XSD_ARCHIVE_URL="https://www.digitaliser.dk/resource/5248921/artefact/MeMo_XSD.zip?artefact=true&PID=6075979"
+
+echo "${bold}Fetching MeMo XSD${normal}"
 
 mkdir -p "$xsd_dir"
 curl --silent --location "$XSD_ARCHIVE_URL" >| "$xsd_dir"/MeMo_XSD.zip
 unzip -q -o "$xsd_dir"/MeMo_XSD.zip -d "$xsd_dir"
 
-echo "${bold}Generating PHP classes in $lib_dir${normal}"
+echo "${bold}Generating MeMo PHP classes in $lib_dir${normal}"
 
-cd "$project_dir"
-# Remove old generated files
-rm -fr "$lib_dir"
 # Generate PHP classes
 "$project_dir"/vendor/bin/xsd2php convert xsd2php-config.yml "$xsd_dir"/MeMo*.xsd
+
+################################################################################
+# Fjernprint                                                                   #
+################################################################################
+
+
+# echo "${bold}Fetching Fjernprint XSD${normal}"
+
+mkdir -p "$xsd_dir"
+
+curl --silent --location https://docs.kombit.dk/integration/sf1601/1.0/pakke >| "$xsd_dir"/sf1601.zip
+unzip -q -o "$xsd_dir"/sf1601.zip -d "$xsd_dir"
+unzip -q -o "$xsd_dir/SF1601 Bilag*.zip" -d "$xsd_dir"
+
+# DigitalPostParametre og dets underliggende entiteter er legacy, af hensyn til
+# at kunne sende digital post igennem fjernprint. Dette element bør kun anvendes
+# i de situationer, hvor hverken NgDP eller NgDP legacy ikke anvendes, men at
+# der sendes digital post via fjernprint leverandøren.
+
+cp ./resources/sf1600/SF1600_EP_SP1-2/xsd/oio/*.xsd "$xsd_dir"
+
+echo "${bold}Generating Fjernprint PHP classes in $lib_dir${normal}"
+
+# Move xsd files
+mv "$xsd_dir/SF1601 Bilag"*/*/*/*.xsd "$xsd_dir"
+
+# Generate PHP classes
+"$project_dir"/vendor/bin/xsd2php convert xsd2php-config.yml "$xsd_dir"/ForsendelseI.xsd
+
 # Clean up
 rm -fr "$xsd_dir"
 

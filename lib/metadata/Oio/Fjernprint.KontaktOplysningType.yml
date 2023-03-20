@@ -1,0 +1,172 @@
+Oio\Fjernprint\KontaktOplysningType:
+    properties:
+        personName:
+            expose: true
+            access_type: public_method
+            serialized_name: PersonName
+            xml_element:
+                namespace: 'http://rep.oio.dk/itst.dk/xml/schemas/2006/01/17/'
+            accessor:
+                getter: getPersonName
+                setter: setPersonName
+            type: string
+        coNavn:
+            expose: true
+            access_type: public_method
+            serialized_name: CoNavn
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getCoNavn
+                setter: setCoNavn
+            type: string
+        streetName:
+            expose: true
+            access_type: public_method
+            serialized_name: StreetName
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/03/15/'
+            accessor:
+                getter: getStreetName
+                setter: setStreetName
+            type: string
+        streetBuildingIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: StreetBuildingIdentifier
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/'
+            accessor:
+                getter: getStreetBuildingIdentifier
+                setter: setStreetBuildingIdentifier
+            type: string
+        floorIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: FloorIdentifier
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/'
+            accessor:
+                getter: getFloorIdentifier
+                setter: setFloorIdentifier
+            type: string
+        suiteIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: SuiteIdentifier
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/'
+            accessor:
+                getter: getSuiteIdentifier
+                setter: setSuiteIdentifier
+            type: string
+        mailDeliverySublocationIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: MailDeliverySublocationIdentifier
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/'
+            accessor:
+                getter: getMailDeliverySublocationIdentifier
+                setter: setMailDeliverySublocationIdentifier
+            type: string
+        postCodeIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: PostCodeIdentifier
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/03/15/'
+            accessor:
+                getter: getPostCodeIdentifier
+                setter: setPostCodeIdentifier
+            type: string
+        districtSubdivisionIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: DistrictSubdivisionIdentifier
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/03/15/'
+            accessor:
+                getter: getDistrictSubdivisionIdentifier
+                setter: setDistrictSubdivisionIdentifier
+            type: string
+        postOfficeBoxIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: PostOfficeBoxIdentifier
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/13/'
+            accessor:
+                getter: getPostOfficeBoxIdentifier
+                setter: setPostOfficeBoxIdentifier
+            type: int
+        postalAddressFirstLineText:
+            expose: true
+            access_type: public_method
+            serialized_name: PostalAddressFirstLineText
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/'
+            accessor:
+                getter: getPostalAddressFirstLineText
+                setter: setPostalAddressFirstLineText
+            type: string
+        postalAddressSecondLineText:
+            expose: true
+            access_type: public_method
+            serialized_name: PostalAddressSecondLineText
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/'
+            accessor:
+                getter: getPostalAddressSecondLineText
+                setter: setPostalAddressSecondLineText
+            type: string
+        postalAddressThirdLineText:
+            expose: true
+            access_type: public_method
+            serialized_name: PostalAddressThirdLineText
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/'
+            accessor:
+                getter: getPostalAddressThirdLineText
+                setter: setPostalAddressThirdLineText
+            type: string
+        postalAddressFourthLineText:
+            expose: true
+            access_type: public_method
+            serialized_name: PostalAddressFourthLineText
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/'
+            accessor:
+                getter: getPostalAddressFourthLineText
+                setter: setPostalAddressFourthLineText
+            type: string
+        postalAddressFifthLineText:
+            expose: true
+            access_type: public_method
+            serialized_name: PostalAddressFifthLineText
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/'
+            accessor:
+                getter: getPostalAddressFifthLineText
+                setter: setPostalAddressFifthLineText
+            type: string
+        postalAddressSixthLineText:
+            expose: true
+            access_type: public_method
+            serialized_name: PostalAddressSixthLineText
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/'
+            accessor:
+                getter: getPostalAddressSixthLineText
+                setter: setPostalAddressSixthLineText
+            type: string
+        countryIdentificationCode:
+            expose: true
+            access_type: public_method
+            serialized_name: CountryIdentificationCode
+            xml_element:
+                namespace: 'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/'
+            accessor:
+                getter: getCountryIdentificationCode
+                setter: setCountryIdentificationCode
+            type: Oio\Ebxml\CountryIdentificationCode

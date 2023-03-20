@@ -1,0 +1,22 @@
+Oio\Fjernprint\ForsendelseModtagerType:
+    properties:
+        afsendelseModtager:
+            expose: true
+            access_type: public_method
+            serialized_name: AfsendelseModtager
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getAfsendelseModtager
+                setter: setAfsendelseModtager
+            type: Oio\Dkal\AfsendelseModtager
+        modtagerAdresse:
+            expose: true
+            access_type: public_method
+            serialized_name: ModtagerAdresse
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getModtagerAdresse
+                setter: setModtagerAdresse
+            type: Oio\Fjernprint\ModtagerAdresse
