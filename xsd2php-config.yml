@@ -49,6 +49,20 @@ xsd2php:
     "urn:oio:sts:6": "Digitaliseringskataloget\\Sts6"
     "urn:oio:sts:part:6": "Digitaliseringskataloget\\Sts6\\Part"
 
+    'http://rep.oio.dk/cpr.dk/xml/schemas/core/2005/03/18/':                                                   'Oio\Cpr'
+    'http://rep.oio.dk/cpr.dk/xml/schemas/core/2005/05/19/':                                                   'Oio\Cpr'
+    'http://rep.oio.dk/cvr.dk/xml/schemas/2005/03/22/':                                                        'Oio\Cvr'
+    'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/':                                                    'Oio\Ebxml'
+    'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/03/15/':                                                    'Oio\Ebxml'
+    'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/13/':                                                    'Oio\Ebxml'
+    'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/':                                                    'Oio\Ebxml'
+    'http://rep.oio.dk/itst.dk/xml/schemas/2006/01/17/':                                                       'Oio\Itst'
+    'http://rep.oio.dk/xkom.dk/xml/schemas/2005/03/15/':                                                       'Oio\Xkom'
+    'urn:oio:adir:dagpenge:2009.07.01':                                                                        'Oio\Adir\Dagpenge'
+    'urn:oio:dkal:1.0.0':                                                                                      'Oio\Dkal'
+    'urn:oio:fjernprint:1.0.0':                                                                                'Oio\Fjernprint'
+    'urn:oio:sagdok:3.0.0':                                                                                    'Oio\Sagdok'
+
   destinations_php:
     # These must also be set in autoload.psr-4 in composer.json.
     'DigitalPost\MeMo':                                                                            'lib/DigitalPost/MeMo/'
@@ -69,6 +83,8 @@ xsd2php:
     "Digitaliseringskataloget\\Sagdok3_0_0": "lib/digitaliseringskataloget/Sagdok3_0_0"
     "Digitaliseringskataloget\\SF1500\\Organisation6": "lib/digitaliseringskataloget/SF1500/Organisation6"
 
+    'Oio':                                                                                         'lib/Oio'
+
   destinations_jms:
     # These must also be set in src/Service/SF1601/Serializer.php
     'DigitalPost\MeMo':                                                                            'lib/metadata/DigitalPost/MeMo/'
@@ -88,6 +104,8 @@ xsd2php:
     "Digitaliseringskataloget\\Sts6": "lib/metadata/digitaliseringskataloget/Sts6"
     "Digitaliseringskataloget\\Sagdok3_0_0": "lib/metadata/digitaliseringskataloget/Sagdok3_0_0"
     "Digitaliseringskataloget\\SF1500\\Organisation6": "lib/metadata/digitaliseringskataloget/SF1500/Organisation6"
+
+    'Oio': 'lib/metadata/Oio'
 
   xml_namespaces:
     # prefix: namespace
