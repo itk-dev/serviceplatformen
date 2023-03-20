@@ -1,0 +1,72 @@
+Oio\Fjernprint\DigitalPostParametreType:
+    properties:
+        afsendelseDatoTid:
+            expose: true
+            access_type: public_method
+            serialized_name: AfsendelseDatoTid
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getAfsendelseDatoTid
+                setter: setAfsendelseDatoTid
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime
+        meddelelseIndholdstypeIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: MeddelelseIndholdstypeIdentifikator
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getMeddelelseIndholdstypeIdentifikator
+                setter: setMeddelelseIndholdstypeIdentifikator
+            type: int
+        meddelelseSvarTypeNavn:
+            expose: true
+            access_type: public_method
+            serialized_name: MeddelelseSvarTypeNavn
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getMeddelelseSvarTypeNavn
+                setter: setMeddelelseSvarTypeNavn
+            type: string
+        meddelelseSvarPostkasseIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: MeddelelseSvarPostkasseIdentifikator
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getMeddelelseSvarPostkasseIdentifikator
+                setter: setMeddelelseSvarPostkasseIdentifikator
+            type: int
+        meddelelseSvarEmneIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: MeddelelseSvarEmneIdentifikator
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getMeddelelseSvarEmneIdentifikator
+                setter: setMeddelelseSvarEmneIdentifikator
+            type: int
+        meddelelseFESDmetadata:
+            expose: true
+            access_type: public_method
+            serialized_name: MeddelelseFESDmetadata
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getMeddelelseFESDmetadata
+                setter: setMeddelelseFESDmetadata
+            type: Oio\Dkal\MeddelelseFESDmetadata
+        medsendDokumentRegistreringIndikator:
+            expose: true
+            access_type: public_method
+            serialized_name: MedsendDokumentRegistreringIndikator
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getMedsendDokumentRegistreringIndikator
+                setter: setMedsendDokumentRegistreringIndikator
+            type: bool

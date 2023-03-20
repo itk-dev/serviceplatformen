@@ -1,0 +1,16 @@
+Oio\Fjernprint\BilagSamlingType:
+    properties:
+        bilag:
+            expose: true
+            access_type: public_method
+            serialized_name: Bilag
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getBilag
+                setter: setBilag
+            xml_list:
+                inline: true
+                entry_name: Bilag
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            type: array<Oio\Fjernprint\Bilag>

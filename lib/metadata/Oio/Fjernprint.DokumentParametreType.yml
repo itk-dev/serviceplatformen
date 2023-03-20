@@ -1,0 +1,42 @@
+Oio\Fjernprint\DokumentParametreType:
+    properties:
+        titelTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: TitelTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTitelTekst
+                setter: setTitelTekst
+            type: string
+        uUIDIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: UUIDIdentifikator
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getUUIDIdentifikator
+                setter: setUUIDIdentifikator
+            type: string
+        brevDato:
+            expose: true
+            access_type: public_method
+            serialized_name: BrevDato
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getBrevDato
+                setter: setBrevDato
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\Date
+        meddelelsesFormatObjekt:
+            expose: true
+            access_type: public_method
+            serialized_name: MeddelelsesFormatObjekt
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getMeddelelsesFormatObjekt
+                setter: setMeddelelsesFormatObjekt
+            type: Oio\Fjernprint\MeddelelsesFormatObjekt

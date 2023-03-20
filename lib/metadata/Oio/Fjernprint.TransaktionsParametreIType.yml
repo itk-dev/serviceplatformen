@@ -1,0 +1,42 @@
+Oio\Fjernprint\TransaktionsParametreIType:
+    properties:
+        transaktionsDatoTid:
+            expose: true
+            access_type: public_method
+            serialized_name: TransaktionsDatoTid
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getTransaktionsDatoTid
+                setter: setTransaktionsDatoTid
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime
+        masseForsendelseIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: MasseForsendelseIdentifikator
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getMasseForsendelseIdentifikator
+                setter: setMasseForsendelseIdentifikator
+            type: string
+        kvitteringsTypeKode:
+            expose: true
+            access_type: public_method
+            serialized_name: KvitteringsTypeKode
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getKvitteringsTypeKode
+                setter: setKvitteringsTypeKode
+            type: string
+        kvitteringsEmail:
+            expose: true
+            access_type: public_method
+            serialized_name: KvitteringsEmail
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getKvitteringsEmail
+                setter: setKvitteringsEmail
+            type: string

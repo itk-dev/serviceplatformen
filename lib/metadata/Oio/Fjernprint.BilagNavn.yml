@@ -1,0 +1,23 @@
+Oio\Fjernprint\BilagNavn:
+    xml_namespaces:
+        memo: 'https://DigitalPost.dk/MeMo-1'
+        gln: 'https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/'
+        udd: 'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#'
+        rid: 'https://www.nets.eu/dk-da/l%C3%B8sninger/nemid/nemid-tjenesteudbyder/supplerende-tjenester/pid-rid-cpr-tjenester'
+        pnum: 'https://indberet.virk.dk/myndigheder/stat/ERST/P-enhedsloesningen'
+        form: 'http://www.form-online.dk/'
+        kle: 'http://kle-online.dk/'
+        dmv: 'https://motorregister.skat.dk/'
+        grd: 'https://data.gov.dk/model/core/'
+        sor: 'https://services.nsi.dk/en/Services/SOR'
+    xml_root_name: BilagNavn
+    xml_root_namespace: 'urn:oio:fjernprint:1.0.0'
+    properties:
+        __value:
+            expose: true
+            xml_value: true
+            access_type: public_method
+            accessor:
+                getter: value
+                setter: value
+            type: string

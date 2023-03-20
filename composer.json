@@ -69,7 +69,8 @@
             "KleOnlineDk\\":                                                                                        "lib/KleOnlineDk/",
             "WwwFormOnlineDk\\":                                                                                    "lib/WwwFormOnlineDk/",
             "WwwDstDk\\Da\\TilSalg\\Forskningsservice\\Dokumentation\\Hoejkvalitetsvariable\\Elevregister2\\Udd\\": "lib/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/",
-            "Digitaliseringskataloget\\": "lib/digitaliseringskataloget"
+            "Digitaliseringskataloget\\": "lib/digitaliseringskataloget",
+            "Oio\\":                                                                                                "lib/Oio/"
         }
     },
     "autoload-dev": {

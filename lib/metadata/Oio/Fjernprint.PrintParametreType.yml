@@ -1,0 +1,32 @@
+Oio\Fjernprint\PrintParametreType:
+    properties:
+        simplexDuplexKode:
+            expose: true
+            access_type: public_method
+            serialized_name: SimplexDuplexKode
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getSimplexDuplexKode
+                setter: setSimplexDuplexKode
+            type: string
+        farveSHKode:
+            expose: true
+            access_type: public_method
+            serialized_name: FarveSHKode
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getFarveSHKode
+                setter: setFarveSHKode
+            type: string
+        kuvertTypeKode:
+            expose: true
+            access_type: public_method
+            serialized_name: KuvertTypeKode
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getKuvertTypeKode
+                setter: setKuvertTypeKode
+            type: string

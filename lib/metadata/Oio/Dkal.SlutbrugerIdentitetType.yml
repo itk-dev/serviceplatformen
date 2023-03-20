@@ -1,0 +1,22 @@
+Oio\Dkal\SlutbrugerIdentitetType:
+    properties:
+        cPRnummerIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: CPRnummerIdentifikator
+            xml_element:
+                namespace: 'urn:oio:adir:dagpenge:2009.07.01'
+            accessor:
+                getter: getCPRnummerIdentifikator
+                setter: setCPRnummerIdentifikator
+            type: string
+        cVRnummerIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: CVRnummerIdentifikator
+            xml_element:
+                namespace: 'urn:oio:adir:dagpenge:2009.07.01'
+            accessor:
+                getter: getCVRnummerIdentifikator
+                setter: setCVRnummerIdentifikator
+            type: string
