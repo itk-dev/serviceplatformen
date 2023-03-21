@@ -400,7 +400,7 @@ HELP;
         return $message;
     }
 
-    public function log($level, $message, array $context = [])
+    public function log($level, \Stringable|string $message, array $context = []): void
     {
         $this->logger->log($level, $message, $context);
     }
