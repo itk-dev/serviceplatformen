@@ -161,8 +161,7 @@ class AzureKeyVaultCertificateLocator extends AbstractCertificateLocator impleme
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return parent::jsonSerialize() + [
                 'certificateName' => $this->certificateName,
