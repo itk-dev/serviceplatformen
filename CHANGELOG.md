@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Handled "Fjernprint" in
+  <https://digitaliseringskataloget.dk/integration/sf1601>.
 - Changed handling of `SoapClient` options in `AbstractService`.
 - Upgraded to php-http/guzzle7-adapter
 
