@@ -10,12 +10,12 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
+use ItkDev\Serviceplatformen\Service\SF1500\Model\Adresse;
 use ItkDev\Serviceplatformen\Service\SF1500\Model\Bruger;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ClassMap;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\_List;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Laes;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Soeg;
-use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\AdresseFlerRelationType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\AttributListeType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\EgenskabType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\FiltreretOejebliksbilledeType;
@@ -26,21 +26,10 @@ use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\ListOutputType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\RelationListeType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\SoegInputType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\SoegOutputType;
-use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\UuidLabelInputType;
 
-final class BrugerService extends SF1500 implements ServiceInterface
+final class BrugerService extends AbstractService
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function soeg(array $query, array $fields = []): array
-    {
-        $data = $this->doSoeg($query);
-
-        return null === $data->getIdListe()
-            ? []
-            : $this->list($data->getIdListe()->getUUIDIdentifikator(), $fields);
-    }
+    protected static $validFilters = ['brugernavn'];
 
     /**
      * {@inheritdoc}
@@ -49,10 +38,41 @@ final class BrugerService extends SF1500 implements ServiceInterface
     {
         $list = $this->doList($ids);
 
-        return array_map(
+        $items = array_map(
             fn ($oejebliksbillede) => $this->buildModel($oejebliksbillede),
             $list->getFiltreretOejebliksbillede()
         );
+
+        // Address type => Bruger field name
+        $fieldMap = [
+            'Email_bruger' => 'email',
+            'Mobiltelefon_bruger' => 'mobiltelefon',
+            'Lokation_bruger' => 'lokation',
+        ];
+
+        if (!empty($fields) && !empty($items)) {
+            foreach ($fields as $field) {
+                $adresseIds = array_values(array_filter(array_map(static fn(Bruger $bruger) => $bruger->getRelation('adresse', $field), $items)));
+
+                $adresser = $this->getService(AdresseService::class)->list($adresseIds);
+                // Index by id
+                $adresser = array_combine(
+                    array_map(static fn (Adresse $adresse) => $adresse->id, $adresser),
+                    $adresser
+                );
+
+                if (isset($fieldMap[$field])) {
+                    foreach ($items as $item) {
+                        $adresseId = $item->getRelation('adresse', $field);
+                        if (isset($adresser[$adresseId])) {
+                            $item->{$fieldMap[$field]} = $adresser[$adresseId]->adressetekst;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $items;
     }
 
     /**
@@ -91,7 +111,7 @@ final class BrugerService extends SF1500 implements ServiceInterface
         return $model;
     }
 
-    protected function doSoeg(array $query): SoegOutputType
+    protected function doSoeg(array $query): ?SoegOutputType
     {
         $attributListe = new AttributListeType();
         if (isset($query['brugernavn'])) {
@@ -108,7 +128,7 @@ final class BrugerService extends SF1500 implements ServiceInterface
             ->setAttributListe($attributListe)
             ->setRelationListe($relationListe);
 
-        return $this->clientSoeg()->soeg($request);
+        return $this->clientSoeg()->soeg($request) ?: null;
     }
 
     protected function doList(array $ids): ListOutputType

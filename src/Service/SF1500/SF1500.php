@@ -10,6 +10,7 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
+use ItkDev\GetOrganized\Service;
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
 use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
@@ -43,6 +44,7 @@ use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\SoegOutputTy
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\UnikIdType as OrganisationFunktionUnikIdType;
 use ItkDev\Serviceplatformen\SF1500\Person\ClassMap as PersonClassMap;
 use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Laes as PersonLaes;
+use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Soeg as PersonSoeg;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\LaesInputType as PersonLaesInputType;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\OptionsResolver\Options;
@@ -728,11 +730,25 @@ class SF1500
         return empty($times) ? null : min([...$times]);
     }
 
-  /**
-   * @template Client of SoapClientBase
-   * @param class-string<Client> $className
-   * @return Client
-   */
+    /**
+     * @template Service of ServiceInterface
+     * @param class-string<Client> $className
+     * @return Service
+     */
+    public function getService(string $className): ServiceInterface
+    {
+        if (!isset($this->services[$className])) {
+            $this->services[$className] = new $className($this->sf1514, $this->options);
+        }
+
+        return $this->services[$className];
+    }
+
+    /**
+     * @template Client of SoapClientBase
+     * @param class-string<Client> $className
+     * @return Client
+     */
     public function getClient(string $className, array $options = []): SoapClientBase
     {
         if (!isset($this->clients[$className])) {
@@ -773,6 +789,7 @@ class SF1500
                 OrganisationFunktionClassMap::get(),
               ];
             case PersonLaes::class:
+            case PersonSoeg::class:
                 return [
                 __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Person.wsdl',
                 PersonClassMap::get(),

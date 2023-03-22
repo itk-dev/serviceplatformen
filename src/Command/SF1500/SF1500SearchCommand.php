@@ -63,10 +63,10 @@ certificate:
     &name=organisation
     &secret=test
     &version=bbcbd812-0d7c-420b-9b93-7318e3769578
-    
+
     If using path option make sure the path is relative to project root to the certificate file, e.g.
     '/app/src/Command/SF1500/certificate.p12'
- 
+
 passphrase:
     the passphrase for p12 certificate, i.e.
     'XYZ'
@@ -109,7 +109,6 @@ HELP;
         foreach ($result as $item) {
             $output->writeln(json_encode($item, JSON_PRETTY_PRINT));
         }
-
 
         return static::SUCCESS;
     }
