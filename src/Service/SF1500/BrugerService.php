@@ -80,7 +80,6 @@ final class BrugerService extends SF1500 implements ServiceInterface
                 $model->brugertype = $egenskab->getBrugerTypeTekst();
             }
             foreach ($registrering->getRelationListe()->getAdresser() as $adresse) {
-                // TODO
                 $model->setRelation(
                     'adresse',
                     $adresse->getRolle()->getLabel(),
@@ -102,17 +101,7 @@ final class BrugerService extends SF1500 implements ServiceInterface
 
         $relationListe = new RelationListeType();
         if (isset($query['email'])) {
-            $relationListe->addToAdresser(
-                (new AdresseFlerRelationType(
-                    // Email_bruger
-                    (new UuidLabelInputType('5d13e891-162a-456b-abf2-fd9b864df96d')),
-                    // Bruger.Adresse.adresse
-                    (new UuidLabelInputType('71a08d28-3af7-4bb4-9964-bc2b76b93d64')),
-                    '4'
-                ))
-                //                    ->setReferenceID((new UnikIdType())
-                //                        ->setUUIDIdentifikator('5c5245a7-b719-439b-a25d-f35f7687d150')
-            );
+            // TODO We cannot search by email yet
         }
 
         $request = (new SoegInputType())
