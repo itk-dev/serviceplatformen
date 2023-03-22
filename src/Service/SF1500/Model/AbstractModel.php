@@ -36,11 +36,9 @@ abstract class AbstractModel implements \JsonSerializable
         return $this->data[$name] ?? null;
     }
 
-    public function __set($name, $value): self
+    public function __set($name, $value): void
     {
         $this->data[$name] = $value;
-
-        return $this;
     }
 
     public function offsetExists($offset): bool
@@ -63,8 +61,7 @@ abstract class AbstractModel implements \JsonSerializable
         throw new \RuntimeException(sprintf('%s is immutable', static::class));
     }
 
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ['data' => $this->data, 'relations' => $this->relations];
     }
@@ -83,7 +80,7 @@ abstract class AbstractModel implements \JsonSerializable
         $this->relations[$name][$type] = $value;
     }
 
-    public function getRelation(string $name, ?string $type)
+    public function getRelation(string $name, ?string $type): mixed
     {
         $value = $this->relations[$name] ?? null;
 

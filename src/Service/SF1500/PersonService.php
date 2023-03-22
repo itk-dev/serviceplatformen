@@ -26,19 +26,9 @@ use ItkDev\Serviceplatformen\SF1500\Person\StructType\RelationListeType;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\SoegInputType;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\SoegOutputType;
 
-class PersonService extends SF1500 implements ServiceInterface
+class PersonService extends AbstractService
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function soeg(array $query, array $fields = []): array
-    {
-        $data = $this->doSoeg($query);
-
-        return null === $data->getIdListe()
-            ? []
-            : $this->list($data->getIdListe()->getUUIDIdentifikator(), $fields);
-    }
+    protected static $validFilters = ['navntekst'];
 
     /**
      * {@inheritdoc}
@@ -49,7 +39,7 @@ class PersonService extends SF1500 implements ServiceInterface
 
         return array_map(
             fn ($oejebliksbillede) => $this->buildModel($oejebliksbillede),
-            $list->getFiltreretOejebliksbillede()
+            $list->getFiltreretOejebliksbillede() ?? []
         );
     }
 
@@ -72,20 +62,21 @@ class PersonService extends SF1500 implements ServiceInterface
     {
         $id = $oejebliksbillede->getObjektType()->getUUIDIdentifikator();
         $model = new Person(['id' => $id]);
+        foreach ($oejebliksbillede->getRegistrering() as $registrering) {
+            foreach ($registrering->getAttributListe()->getEgenskab() as $egenskab) {
+                $model->navn = $egenskab->getNavnTekst();
+            }
+        }
 
         return $model;
     }
 
-    protected function doSoeg(array $query): SoegOutputType
+    protected function doSoeg(array $query): ?SoegOutputType
     {
         $attributListe = new AttributListeType();
         if (isset($query['navntekst'])) {
             $attributListe->addToEgenskab((new EgenskabType())
                 ->setNavnTekst($query['navntekst']));
-        }
-        if (isset($query['CPR_NummerTekst'])) {
-            $attributListe->addToEgenskab((new EgenskabType())
-                ->setCPR_NummerTekst($query['CPR_NummerTekst']));
         }
 
         $relationListe = new RelationListeType();
@@ -94,7 +85,7 @@ class PersonService extends SF1500 implements ServiceInterface
             ->setAttributListe($attributListe)
             ->setRelationListe($relationListe);
 
-        return $this->clientSoeg()->soeg($request);
+        return $this->clientSoeg()->soeg($request) ?: null;
     }
 
     protected function doList(array $ids): ListOutputType

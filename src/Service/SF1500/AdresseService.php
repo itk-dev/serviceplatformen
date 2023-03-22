@@ -26,19 +26,9 @@ use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\RelationListeType;
 use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\SoegInputType;
 use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\SoegOutputType;
 
-final class AdresseService extends SF1500 implements ServiceInterface
+final class AdresseService extends AbstractService
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function soeg(array $query, array $fields = []): array
-    {
-        $data = $this->doSoeg($query);
-
-        return null === $data->getIdListe()
-            ? []
-            : $this->list($data->getIdListe()->getUUIDIdentifikator(), $fields);
-    }
+    protected static $validFilters = ['adressetekst'];
 
     /**
      * {@inheritdoc}
@@ -49,7 +39,7 @@ final class AdresseService extends SF1500 implements ServiceInterface
 
         return array_map(
             fn ($oejebliksbillede) => $this->buildModel($oejebliksbillede),
-            $list->getFiltreretOejebliksbillede()
+            $list->getFiltreretOejebliksbillede() ?: [],
         );
     }
 

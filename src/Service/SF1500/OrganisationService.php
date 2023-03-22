@@ -26,20 +26,8 @@ use ItkDev\Serviceplatformen\SF1500\Organisation\StructType\RelationListeType;
 use ItkDev\Serviceplatformen\SF1500\Organisation\StructType\SoegInputType;
 use ItkDev\Serviceplatformen\SF1500\Organisation\StructType\SoegOutputType;
 
-final class OrganisationService extends SF1500 implements ServiceInterface
+final class OrganisationService extends AbstractService
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function soeg(array $query, array $fields = []): array
-    {
-        $data = $this->doSoeg($query);
-
-        return null === $data->getIdListe()
-            ? []
-            : $this->list($data->getIdListe()->getUUIDIdentifikator(), $fields);
-    }
-
     /**
      * {@inheritdoc}
      */

@@ -17,7 +17,7 @@ namespace ItkDev\Serviceplatformen\Service\SF1500\Model;
  * @property string $navn
  * @property string $email
  * @property string $mobiltelefon
- * @property string $location
+ * @property string $lokation
  */
 final class Bruger extends AbstractModel
 {
