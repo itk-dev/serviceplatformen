@@ -248,7 +248,7 @@ docker run --volume ${PWD}:/app --workdir /app node:18 yarn coding-standards-che
 ### Code analysis
 
 ```sh
-docker run --interactive --tty --rm --volume ${PWD}:/app --env COMPOSER_MEMORY_LIMIT=-1 itkdev/php7.4-fpm:latest composer code-analysis
+docker run --interactive --tty --rm --volume ${PWD}:/app --env COMPOSER_MEMORY_LIMIT=-1 itkdev/php8.1-fpm:latest composer code-analysis
 ```
 
 ## Versioning
