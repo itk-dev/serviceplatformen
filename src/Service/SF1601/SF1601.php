@@ -81,7 +81,33 @@ class SF1601 extends AbstractRESTService
                     ? 'https://exttest.serviceplatformen.dk/service/KombiPostAfsend_1/kombi'
                     : 'https://prod.serviceplatformen.dk/service/KombiPostAfsend_1/kombi';
             },
+
+            // @see https://digitaliseringskataloget.dk/integration/sf1601
+            'post_forespoerg_svc_entity_id' => 'http://entityid.kombit.dk/service/postforespoerg/1',
+            'post_forespoerg_svc_endpoint' => static function (Options $options) {
+                return $options['test_mode']
+                    ? 'https://exttest.serviceplatformen.dk/service/PostForespoerg_1'
+                    : 'https://prod.serviceplatformen.dk/service/PostForespoerg_1';
+            },
         ]);
+    }
+
+    public function postForespoerg(string $transactionId, string $type, string $identifier, DateTimeInterface $transactionTid = null): ?bool
+    {
+        $entityId = $this->getOption('post_forespoerg_svc_entity_id');
+        $url = $this->getOption('post_forespoerg_svc_endpoint').'/'.$type;
+        $response = $this->call($entityId, 'GET', $url, [
+            'query' => [
+                // This almost matches the documented keys …
+                (8 === strlen($identifier) ? 'cprNumber' : 'cvrNumber') => $identifier,
+            ],
+            'transactionId' => $transactionId,
+            'transactionTid' => $transactionTid,
+        ]);
+
+        $data = $response->toArray();
+
+        return $data['result'] ?? null;
     }
 
     public function kombiPostAfsend(string $transactionId, string $type, ?Message $message, ?ForsendelseI $forsendelse = null, DateTimeInterface $transactionTid = null): ResponseInterface
@@ -107,7 +133,9 @@ class SF1601 extends AbstractRESTService
             break;
         }
 
-        $response = $this->call('POST', $this->getOption('svc_endpoint'), [
+        $entityId = $this->getOption('svc_entity_id');
+        $url = $this->getOption('svc_endpoint').'/'.$type;
+        $response = $this->call($entityId, 'POST', $url, [
                 'headers' => [
                     'content-type' => 'application/xml',
                     'accept' => 'application/xml',
