@@ -57,15 +57,16 @@ abstract class AbstractRESTService
     /**
      * Call a REST service endpoint.
      *
+     * @param string $entityId
      * @param string $method
      * @param string $url
      * @param array $options
      * @return ResponseInterface
      * @throws ServiceException
      */
-    protected function call(string $method, string $url, array $options): ResponseInterface
+    protected function call(string $entityId, string $method, string $url, array $options): ResponseInterface
     {
-        $samlToken = $this->getSAMLToken();
+        $samlToken = $this->getSAMLToken($entityId);
         $accessToken = $this->getAccessToken($samlToken);
 
         // @todo Can we just generate the transaction id?
@@ -141,18 +142,18 @@ abstract class AbstractRESTService
      *
      * @return string
      */
-    private function getSAMLToken(): string
+    private function getSAMLToken(string $entityId): string
     {
         $cache = $this->getCache();
         $cacheKey = $this->getCacheKey(__METHOD__, [
             'AnvenderKontekst' => ['Cvr' => $this->options['authority_cvr']],
-            'AppliesTo' => ['EndpointReference' => ['Address' => $this->options['svc_entity_id']]],
+            'AppliesTo' => ['EndpointReference' => ['Address' => $entityId]],
         ]);
 
         $expirationTimeOffset = $this->options['saml_token_expiration_time_offset'];
 
-        $token = $cache->get($cacheKey, function (ItemInterface $item) use ($expirationTimeOffset) {
-            $token = $this->fetchSAMLToken();
+        $token = $cache->get($cacheKey, function (ItemInterface $item) use ($entityId, $expirationTimeOffset) {
+            $token = $this->fetchSAMLToken($entityId);
 
             // Set cache expiration time a litte before actual token expiration time.
             $expirationTime = $this->getSAMLTokenExpirationTime($token)
@@ -166,7 +167,7 @@ abstract class AbstractRESTService
         if (null !== $token && $this->getSAMLTokenExpirationTime($token)->modify($expirationTimeOffset) <= new \DateTimeImmutable()) {
             // Remove expired token from cache and get a new token.
             $cache->delete($cacheKey);
-            return $this->getSAMLToken();
+            return $this->getSAMLToken($entityId);
         }
 
         return $token;
@@ -210,7 +211,7 @@ abstract class AbstractRESTService
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    private function fetchSAMLToken(): string
+    private function fetchSAMLToken(string $entityId): string
     {
         try {
             // Public certificate on a single line.
