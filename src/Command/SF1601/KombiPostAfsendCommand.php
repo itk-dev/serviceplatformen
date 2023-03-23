@@ -53,7 +53,7 @@ use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class KombipostafsendCommand extends Command implements LoggerAwareInterface
+class KombiPostAfsendCommand extends Command implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
     use LoggerTrait;
