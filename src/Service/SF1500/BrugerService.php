@@ -29,7 +29,7 @@ use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\SoegOutputType;
 
 final class BrugerService extends AbstractService
 {
-    protected static $validFilters = ['brugernavn'];
+    protected static $validFilters = ['brugernavn', 'is-manager'];
 
     /**
      * {@inheritdoc}
@@ -128,6 +128,12 @@ final class BrugerService extends AbstractService
             ->setAttributListe($attributListe)
             ->setRelationListe($relationListe);
 
+        if (isset($query['is-manager'])) {
+            $isManager = (bool)$query['is-manager'];
+
+            // TODO
+        }
+
         return $this->clientSoeg()->soeg($request) ?: null;
     }
 
@@ -167,21 +173,5 @@ final class BrugerService extends AbstractService
         assert($client instanceof Laes);
 
         return $client;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getClient(string $className, array $options = []): SoapClientBase
-    {
-        if (!isset($this->clients[$className])) {
-            $this->clients[$className] = (new $className([
-                    SoapClientBase::WSDL_URL => __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Bruger.wsdl',
-                    SoapClientBase::WSDL_CLASSMAP => ClassMap::get(),
-                ] + $options))
-                ->setSF1500($this);
-        }
-
-        return $this->clients[$className];
     }
 }
