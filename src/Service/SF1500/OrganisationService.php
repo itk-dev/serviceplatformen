@@ -10,6 +10,7 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
+use ItkDev\Serviceplatformen\Service\SF1500\Model\Bruger;
 use ItkDev\Serviceplatformen\Service\SF1500\Model\Organisation;
 use ItkDev\Serviceplatformen\SF1500\Organisation\ServiceType\_List;
 use ItkDev\Serviceplatformen\SF1500\Organisation\ServiceType\Laes;
@@ -70,7 +71,7 @@ final class OrganisationService extends AbstractService
             foreach ($registrering->getRelationListe()->getAdresser() as $adresse) {
                 // TODO
                 $model->setRelation(
-                    'adresse',
+                    Organisation::RELATION_ADRESSE,
                     $adresse->getRolle()->getLabel(),
                     $adresse->getReferenceID()->getUUIDIdentifikator()
                 );

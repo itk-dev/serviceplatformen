@@ -16,11 +16,7 @@ namespace ItkDev\Serviceplatformen\Service\SF1500\Model;
  */
 final class Adresse extends AbstractModel
 {
-    public function __get($name)
-    {
-        if ('email' === $name) {
-            return $this->relations['adresse']['Email_bruger'] ?? null;
-        }
-        return parent::__get($name);
-    }
+    public const EMAIL = 'Email_bruger';
+    public const MOBILTELEFON = 'Mobiltelefon_bruger';
+    public const LOKATION = 'Lokation_bruger';
 }
