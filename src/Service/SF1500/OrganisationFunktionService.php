@@ -40,7 +40,7 @@ final class OrganisationFunktionService extends AbstractService
         $list = $this->doList($ids);
 
         return array_map(
-            fn($oejebliksbillede) => $this->buildModel($oejebliksbillede),
+            fn ($oejebliksbillede) => $this->buildModel($oejebliksbillede),
             $list->getFiltreretOejebliksbillede() ?: [],
         );
     }

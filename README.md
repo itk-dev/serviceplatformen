@@ -71,13 +71,13 @@ composer install
 Unit tests:
 
 ```sh
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer2 tests/unit
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer tests/unit
 ```
 
 End to end tests:
 
 ```sh
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer2 tests/end-to-end
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer tests/end-to-end
 ```
 
 ### And coding style tests

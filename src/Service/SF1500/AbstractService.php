@@ -19,7 +19,7 @@ use ItkDev\Serviceplatformen\SF1500\Person\StructType\FiltreretOejebliksbilledeT
  */
 abstract class AbstractService extends SF1500 implements ServiceInterface
 {
-    static protected $validFilters = [];
+    protected static $validFilters = [];
 
     /**
      * {@inheritdoc}
@@ -49,7 +49,8 @@ abstract class AbstractService extends SF1500 implements ServiceInterface
         return $this->list($ids, $fields);
     }
 
-    protected function validateQuery(array $query) {
+    protected function validateQuery(array $query)
+    {
         if (empty($query) || empty(array_filter($query))) {
             throw new InvalidQueryException('Empty query');
         }
