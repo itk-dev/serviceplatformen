@@ -11,15 +11,14 @@
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
 use ItkDev\Serviceplatformen\Service\SF1500\Model\Person;
-use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Laes;
-use ItkDev\Serviceplatformen\SF1500\Person\StructType\LaesInputType;
-use ItkDev\Serviceplatformen\SF1500\Person\StructType\LaesOutputType;
-use ItkDev\Serviceplatformen\SF1500\Person\ClassMap;
 use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\_List;
+use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Laes;
 use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Soeg;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\AttributListeType;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\EgenskabType;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\FiltreretOejebliksbilledeType;
+use ItkDev\Serviceplatformen\SF1500\Person\StructType\LaesInputType;
+use ItkDev\Serviceplatformen\SF1500\Person\StructType\LaesOutputType;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\ListInputType;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\ListOutputType;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\RelationListeType;
@@ -30,36 +29,9 @@ class PersonService extends AbstractService
 {
     protected static $validFilters = ['navntekst'];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function list(array $ids, array $fields = []): array
+    protected function buildModel($oejebliksbillede): Person
     {
-        $list = $this->doList($ids);
-
-        return array_map(
-            fn ($oejebliksbillede) => $this->buildModel($oejebliksbillede),
-            $list->getFiltreretOejebliksbillede() ?? []
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function laes(string $id, array $fields = [])
-    {
-        $data = $this->doLaes($id);
-
-        $oejebliksbillede = $data->getFiltreretOejebliksbillede();
-        if (null === $oejebliksbillede) {
-            return null;
-        }
-
-        return $this->buildModel($oejebliksbillede);
-    }
-
-    private function buildModel(FiltreretOejebliksbilledeType $oejebliksbillede): Person
-    {
+        assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);
         $id = $oejebliksbillede->getObjektType()->getUUIDIdentifikator();
         $model = new Person(['id' => $id]);
         foreach ($oejebliksbillede->getRegistrering() as $registrering) {

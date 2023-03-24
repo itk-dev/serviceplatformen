@@ -64,6 +64,12 @@ class SF1500
      */
     protected array $clients = [];
 
+    /**
+     * Service instances indexed by class name.
+     * @var array
+     */
+    protected array $services = [];
+
     private SF1500XMLBuilder $xmlBuilder;
     private SF1514 $sf1514;
     protected array $options;
@@ -737,7 +743,7 @@ class SF1500
 
     /**
      * @template Service of ServiceInterface
-     * @param class-string<Client> $className
+     * @param class-string<Service> $className
      * @return Service
      */
     public function getService(string $className): ServiceInterface

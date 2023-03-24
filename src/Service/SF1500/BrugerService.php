@@ -55,6 +55,7 @@ final class BrugerService extends AbstractService
             foreach ($fields as $field) {
                 $adresseIds = array_values(array_filter(array_map(static fn (Bruger $bruger) => $bruger->getRelation('adresse', $field), $items)));
 
+                /** @var Adresse[] $adresser */
                 $adresser = $this->getService(AdresseService::class)->list($adresseIds);
                 // Index by id
                 $adresser = array_combine(
@@ -74,42 +75,6 @@ final class BrugerService extends AbstractService
         }
 
         return $items;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function laes(string $id, array $fields = []): ?Bruger
-    {
-        $data = $this->doLaes($id);
-
-        $oejebliksbillede = $data->getFiltreretOejebliksbillede();
-        if (null === $oejebliksbillede) {
-            return null;
-        }
-
-        return $this->buildModel($oejebliksbillede);
-    }
-
-    private function buildModel(FiltreretOejebliksbilledeType $oejebliksbillede): Bruger
-    {
-        $id = $oejebliksbillede->getObjektType()->getUUIDIdentifikator();
-        $model = new Bruger(['id' => $id]);
-        foreach ($oejebliksbillede->getRegistrering() as $registrering) {
-            foreach ($registrering->getAttributListe()->getEgenskab() as $egenskab) {
-                $model->brugernavn = $egenskab->getBrugerNavn();
-                $model->brugertype = $egenskab->getBrugerTypeTekst();
-            }
-            foreach (($registrering->getRelationListe()->getAdresser() ?? []) as $adresse) {
-                $model->setRelation(
-                    'adresse',
-                    $adresse->getRolle()->getLabel(),
-                    $adresse->getReferenceID()->getUUIDIdentifikator()
-                );
-            }
-        }
-
-        return $model;
     }
 
     protected function doSoeg(array $query): ?SoegOutputType
@@ -153,13 +118,14 @@ final class BrugerService extends AbstractService
     private function getManagerIds()
     {
         $service = $this->getService(OrganisationFunktionService::class);
-        $result = $service->soeg([
+        /** @var OrganisationFunktion[] $organisationFunktioner */
+        $organisationFunktioner = $service->soeg([
             'funktionstypeid' => $this->options['organisation-funktion-manager-id']
         ]);
 
         return array_values(array_filter(array_map(
             static fn (OrganisationFunktion $organisationFunktion) => $organisationFunktion->tilknyttedeBrugere[0] ?? null,
-            $result
+            $organisationFunktioner
         )));
     }
 
@@ -175,6 +141,28 @@ final class BrugerService extends AbstractService
         return $this->clientLaes()
             ->laes((new LaesInputType())
                 ->setUUIDIdentifikator($id));
+    }
+
+    protected function buildModel($oejebliksbillede): Bruger
+    {
+        assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);
+        $id = $oejebliksbillede->getObjektType()->getUUIDIdentifikator();
+        $model = new Bruger(['id' => $id]);
+        foreach ($oejebliksbillede->getRegistrering() as $registrering) {
+            foreach ($registrering->getAttributListe()->getEgenskab() as $egenskab) {
+                $model->brugernavn = $egenskab->getBrugerNavn();
+                $model->brugertype = $egenskab->getBrugerTypeTekst();
+            }
+            foreach (($registrering->getRelationListe()->getAdresser() ?? []) as $adresse) {
+                $model->setRelation(
+                    'adresse',
+                    $adresse->getRolle()->getLabel(),
+                    $adresse->getReferenceID()->getUUIDIdentifikator()
+                );
+            }
+        }
+
+        return $model;
     }
 
     private function clientSoeg(array $options = []): Soeg
