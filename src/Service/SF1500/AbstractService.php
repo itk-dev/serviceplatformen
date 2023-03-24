@@ -54,7 +54,7 @@ abstract class AbstractService extends SF1500 implements ServiceInterface
             throw new InvalidQueryException('Empty query');
         }
         $usedFilters = array_keys($query);
-        $invalidFilters = array_diff($usedFilters, static::$validFilters);
+        $invalidFilters = array_values(array_diff($usedFilters, static::$validFilters));
         if (!empty($invalidFilters)) {
             throw new InvalidQueryException(sprintf(
                 'Invalid filters: %s; Valid filters: %s.',

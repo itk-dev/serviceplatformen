@@ -17,11 +17,14 @@ use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ClassMap as AdresseClassMap;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Laes as AdresseLaes;
+use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\_List as AdresseList;
+use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Soeg as AdresseSoeg;
 use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\LaesInputType as AdresseLaesInputType;
 use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\LaesOutputType as AdresseLaesOutputType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ClassMap as BrugerClassMap;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Laes as BrugerLaes;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Soeg as BrugerSoeg;
+use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\_List as BrugerList;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesInputType as BrugerLaesInputType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesOutputType as BrugerLaesOutputType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\ClassMap as OrganisationEnhedClassMap;
@@ -30,6 +33,7 @@ use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\StructType\LaesInputType a
 use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\StructType\LaesOutputType as OrganisationEnhedLaesOutputType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ClassMap as OrganisationFunktionClassMap;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ServiceType\Laes as OrganisationFunktionLaes;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ServiceType\_List as OrganisationFunktionList;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ServiceType\Soeg as OrganisationFunktionSoeg;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\AttributListeType as OrganisationFunktionAttributListeType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\BrugerFlerRelationType as OrganisationFunktionBrugerFlerRelationType;
@@ -62,7 +66,7 @@ class SF1500
 
     private SF1500XMLBuilder $xmlBuilder;
     private SF1514 $sf1514;
-    private array $options;
+    protected array $options;
 
     public function __construct(SF1514 $sf1514, array $options)
     {
@@ -619,6 +623,7 @@ class SF1500
                 },
                 'soap_request_cache_expiration_time' => ['+1 hour'],
                 'soap_service_version' => '6',
+                'organisation-funktion-manager-id' => '46c73630-f7ad-4000-9624-c06131cde671',
             ])
             ->setInfo('saml_token_expiration_time_offset', 'Offset used when checking if SAML token is expired. By default the SAML token expires 8 hours after being issued.')
             ->setAllowedTypes('certificate_locator', CertificateLocatorInterface::class)
@@ -766,12 +771,15 @@ class SF1500
     protected function getSoapClientInfo(string $className): array
     {
         switch ($className) {
+            case AdresseSoeg::class:
+            case AdresseList::class:
             case AdresseLaes::class:
                 return [
                 __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Adresse.wsdl',
                 AdresseClassMap::get(),
               ];
             case BrugerSoeg::class:
+            case BrugerList::class:
             case BrugerLaes::class:
                 return [
                 __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Bruger.wsdl',
@@ -783,6 +791,7 @@ class SF1500
                 OrganisationEnhedClassMap::get(),
               ];
             case OrganisationFunktionSoeg::class:
+            case OrganisationFunktionList::class:
             case OrganisationFunktionLaes::class:
                 return [
                 __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/OrganisationFunktion.wsdl',
