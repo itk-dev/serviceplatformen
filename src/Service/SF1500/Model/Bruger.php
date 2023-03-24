@@ -21,11 +21,19 @@ namespace ItkDev\Serviceplatformen\Service\SF1500\Model;
  */
 final class Bruger extends AbstractModel
 {
+    public const RELATION_ADRESSE = 'adresse';
+
+    public const FIELD_EMAIL = 'email';
+    public const FIELD_MOBILTELEFON = 'mobiltelefon';
+    public const FIELD_LOKATION = 'lokation';
+
     public function __get($name)
     {
-        if ('email' === $name) {
-            return $this->relations['adresse']['Email_bruger'] ?? null;
-        }
-        return parent::__get($name);
+        return match ($name) {
+            self::FIELD_EMAIL => $this->relations[self::RELATION_ADRESSE][Adresse::EMAIL] ?? null,
+            self::FIELD_MOBILTELEFON => $this->relations[self::RELATION_ADRESSE][Adresse::MOBILTELEFON] ?? null,
+            self::FIELD_LOKATION => $this->relations[self::RELATION_ADRESSE][Adresse::LOKATION] ?? null,
+            default => parent::__get($name)
+        };
     }
 }

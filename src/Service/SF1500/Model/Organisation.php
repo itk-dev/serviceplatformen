@@ -16,4 +16,5 @@ namespace ItkDev\Serviceplatformen\Service\SF1500\Model;
  */
 final class Organisation extends AbstractModel
 {
+    public const RELATION_ADRESSE = 'adresse';
 }

@@ -46,14 +46,14 @@ final class BrugerService extends AbstractService
 
         // Address type => Bruger field name
         $fieldMap = [
-            'Email_bruger' => 'email',
-            'Mobiltelefon_bruger' => 'mobiltelefon',
-            'Lokation_bruger' => 'lokation',
+            Adresse::EMAIL => Bruger::FIELD_EMAIL,
+            Adresse::MOBILTELEFON => Bruger::FIELD_MOBILTELEFON,
+            Adresse::LOKATION => Bruger::FIELD_LOKATION,
         ];
 
         if (!empty($fields) && !empty($items)) {
             foreach ($fields as $field) {
-                $adresseIds = array_values(array_filter(array_map(static fn (Bruger $bruger) => $bruger->getRelation('adresse', $field), $items)));
+                $adresseIds = array_values(array_filter(array_map(static fn (Bruger $bruger) => $bruger->getRelation(Bruger::RELATION_ADRESSE, $field), $items)));
 
                 /** @var Adresse[] $adresser */
                 $adresser = $this->getService(AdresseService::class)->list($adresseIds);
@@ -65,7 +65,7 @@ final class BrugerService extends AbstractService
 
                 if (isset($fieldMap[$field])) {
                     foreach ($items as $item) {
-                        $adresseId = $item->getRelation('adresse', $field);
+                        $adresseId = $item->getRelation(Bruger::RELATION_ADRESSE, $field);
                         if (isset($adresser[$adresseId])) {
                             $item->{$fieldMap[$field]} = $adresser[$adresseId]->adressetekst;
                         }
@@ -155,7 +155,7 @@ final class BrugerService extends AbstractService
             }
             foreach (($registrering->getRelationListe()->getAdresser() ?? []) as $adresse) {
                 $model->setRelation(
-                    'adresse',
+                    Bruger::RELATION_ADRESSE,
                     $adresse->getRolle()->getLabel(),
                     $adresse->getReferenceID()->getUUIDIdentifikator()
                 );
