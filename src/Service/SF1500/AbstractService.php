@@ -49,6 +49,34 @@ abstract class AbstractService extends SF1500 implements ServiceInterface
         return $this->list($ids, $fields);
     }
 
+        /**
+     * {@inheritdoc}
+     */
+    public function list(array $ids, array $fields = []): array
+    {
+        $list = $this->doList($ids);
+
+        return array_map(
+            fn ($oejebliksbillede) => $this->buildModel($oejebliksbillede),
+            $list->getFiltreretOejebliksbillede() ?: []
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function laes(string $id, array $fields = []): mixed
+    {
+        $data = $this->doLaes($id);
+
+        $oejebliksbillede = $data->getFiltreretOejebliksbillede();
+        if (null === $oejebliksbillede) {
+            return null;
+        }
+
+        return $this->buildModel($oejebliksbillede);
+    }
+
     protected function validateQuery(array $query)
     {
         if (empty($query) || empty(array_filter($query))) {
@@ -66,4 +94,10 @@ abstract class AbstractService extends SF1500 implements ServiceInterface
     }
 
     abstract protected function doSoeg(array $query): mixed;
+
+    abstract protected function doList(array $ids): mixed;
+
+    abstract protected function doLaes(string $id): mixed;
+
+    abstract protected function buildModel($oejebliksbillede): mixed;
 }

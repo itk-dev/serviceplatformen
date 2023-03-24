@@ -11,7 +11,6 @@
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
 use ItkDev\Serviceplatformen\Service\SF1500\Model\Adresse;
-use ItkDev\Serviceplatformen\SF1500\Adresse\ClassMap;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\_List;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Laes;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Soeg;
@@ -30,46 +29,6 @@ final class AdresseService extends AbstractService
 {
     protected static $validFilters = ['adressetekst'];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function list(array $ids, array $fields = []): array
-    {
-        $list = $this->doList($ids);
-
-        return array_map(
-            fn ($oejebliksbillede) => $this->buildModel($oejebliksbillede),
-            $list->getFiltreretOejebliksbillede() ?: [],
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function laes(string $id, array $fields = [])
-    {
-        $data = $this->doLaes($id);
-
-        $oejebliksbillede = $data->getFiltreretOejebliksbillede();
-        if (null === $oejebliksbillede) {
-            return null;
-        }
-
-        return $this->buildModel($oejebliksbillede);
-    }
-
-    private function buildModel(FiltreretOejebliksbilledeType $oejebliksbillede): Adresse
-    {
-        $id = $oejebliksbillede->getObjektType()->getUUIDIdentifikator();
-        $model = new Adresse(['id' => $id]);
-        foreach ($oejebliksbillede->getRegistrering() as $registrering) {
-            foreach ($registrering->getAttributListe()->getEgenskab() as $egenskab) {
-                $model->adressetekst = $egenskab->getAdresseTekst();
-            }
-        }
-
-        return $model;
-    }
 
     protected function doSoeg(array $query): SoegOutputType
     {
@@ -101,6 +60,21 @@ final class AdresseService extends AbstractService
             ->laes((new LaesInputType())
                 ->setUUIDIdentifikator($id));
     }
+
+    protected function buildModel($oejebliksbillede): Adresse
+    {
+        assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);
+        $id = $oejebliksbillede->getObjektType()->getUUIDIdentifikator();
+        $model = new Adresse(['id' => $id]);
+        foreach ($oejebliksbillede->getRegistrering() as $registrering) {
+            foreach ($registrering->getAttributListe()->getEgenskab() as $egenskab) {
+                $model->adressetekst = $egenskab->getAdresseTekst();
+            }
+        }
+
+        return $model;
+    }
+
 
     private function clientSoeg(array $options = []): Soeg
     {

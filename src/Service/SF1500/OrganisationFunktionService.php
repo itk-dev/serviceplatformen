@@ -32,51 +32,6 @@ final class OrganisationFunktionService extends AbstractService
 {
     protected static $validFilters = ['funktionnavn', 'funktionstypeid'];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function list(array $ids, array $fields = []): array
-    {
-        $list = $this->doList($ids);
-
-        return array_map(
-            fn ($oejebliksbillede) => $this->buildModel($oejebliksbillede),
-            $list->getFiltreretOejebliksbillede() ?: [],
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function laes(string $id, array $fields = [])
-    {
-        $data = $this->doLaes($id);
-
-        $oejebliksbillede = $data->getFiltreretOejebliksbillede();
-        if (null === $oejebliksbillede) {
-            return null;
-        }
-
-        return $this->buildModel($oejebliksbillede);
-    }
-
-    private function buildModel(FiltreretOejebliksbilledeType $oejebliksbillede): OrganisationFunktion
-    {
-        $id = $oejebliksbillede->getObjektType()->getUUIDIdentifikator();
-        $model = new OrganisationFunktion(['id' => $id]);
-        foreach ($oejebliksbillede->getRegistrering() as $registrering) {
-            foreach ($registrering->getAttributListe()->getEgenskab() as $egenskab) {
-                $model->funktionnavn = $egenskab->getFunktionNavn();
-            }
-            $model->tilknyttedeBrugere = array_map(
-                static fn (BrugerFlerRelationType $relation) => $relation->getReferenceID()?->getUUIDIdentifikator(),
-                $registrering->getRelationListe()?->getTilknyttedeBrugere() ?? []
-            );
-        }
-
-        return $model;
-    }
-
     protected function doSoeg(array $query): SoegOutputType
     {
         $attributListe = new AttributListeType();
@@ -111,6 +66,24 @@ final class OrganisationFunktionService extends AbstractService
         return $this->clientLaes()
             ->laes((new LaesInputType())
                 ->setUUIDIdentifikator($id));
+    }
+
+    protected function buildModel($oejebliksbillede): OrganisationFunktion
+    {
+        assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);
+        $id = $oejebliksbillede->getObjektType()->getUUIDIdentifikator();
+        $model = new OrganisationFunktion(['id' => $id]);
+        foreach ($oejebliksbillede->getRegistrering() as $registrering) {
+            foreach ($registrering->getAttributListe()->getEgenskab() as $egenskab) {
+                $model->funktionnavn = $egenskab->getFunktionNavn();
+            }
+            $model->tilknyttedeBrugere = array_map(
+                static fn (BrugerFlerRelationType $relation) => $relation->getReferenceID()?->getUUIDIdentifikator(),
+                $registrering->getRelationListe()?->getTilknyttedeBrugere() ?? []
+            );
+        }
+
+        return $model;
     }
 
     private function clientSoeg(array $options = []): Soeg

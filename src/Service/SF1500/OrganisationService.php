@@ -11,7 +11,6 @@
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
 use ItkDev\Serviceplatformen\Service\SF1500\Model\Organisation;
-use ItkDev\Serviceplatformen\SF1500\Organisation\ClassMap;
 use ItkDev\Serviceplatformen\SF1500\Organisation\ServiceType\_List;
 use ItkDev\Serviceplatformen\SF1500\Organisation\ServiceType\Laes;
 use ItkDev\Serviceplatformen\SF1500\Organisation\ServiceType\Soeg;
@@ -28,55 +27,6 @@ use ItkDev\Serviceplatformen\SF1500\Organisation\StructType\SoegOutputType;
 
 final class OrganisationService extends AbstractService
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function list(array $ids, array $fields = []): array
-    {
-        $list = $this->doList($ids);
-
-        return array_map(
-            fn ($oejebliksbillede) => $this->buildModel($oejebliksbillede),
-            $list->getFiltreretOejebliksbillede()
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function laes(string $id, array $fields = []): ?Organisation
-    {
-        $data = $this->doLaes($id);
-
-        $oejebliksbillede = $data->getFiltreretOejebliksbillede();
-        if (null === $oejebliksbillede) {
-            return null;
-        }
-
-        return $this->buildModel($oejebliksbillede);
-    }
-
-    private function buildModel(FiltreretOejebliksbilledeType $oejebliksbillede): Organisation
-    {
-        $id = $oejebliksbillede->getObjektType()->getUUIDIdentifikator();
-        $model = new Organisation(['id' => $id]);
-        foreach ($oejebliksbillede->getRegistrering() as $registrering) {
-            foreach ($registrering->getAttributListe()->getEgenskab() as $egenskab) {
-                $model->organisationnavn = $egenskab->getOrganisationNavn();
-            }
-            foreach ($registrering->getRelationListe()->getAdresser() as $adresse) {
-                // TODO
-                $model->setRelation(
-                    'adresse',
-                    $adresse->getRolle()->getLabel(),
-                    $adresse->getReferenceID()->getUUIDIdentifikator()
-                );
-            }
-        }
-
-        return $model;
-    }
-
     protected function doSoeg(array $query): SoegOutputType
     {
         $attributListe = new AttributListeType();
@@ -108,6 +58,27 @@ final class OrganisationService extends AbstractService
                 ->setUUIDIdentifikator($id));
     }
 
+    protected function buildModel($oejebliksbillede): Organisation
+    {
+        assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);
+        $id = $oejebliksbillede->getObjektType()->getUUIDIdentifikator();
+        $model = new Organisation(['id' => $id]);
+        foreach ($oejebliksbillede->getRegistrering() as $registrering) {
+            foreach ($registrering->getAttributListe()->getEgenskab() as $egenskab) {
+                $model->organisationnavn = $egenskab->getOrganisationNavn();
+            }
+            foreach ($registrering->getRelationListe()->getAdresser() as $adresse) {
+                // TODO
+                $model->setRelation(
+                    'adresse',
+                    $adresse->getRolle()->getLabel(),
+                    $adresse->getReferenceID()->getUUIDIdentifikator()
+                );
+            }
+        }
+
+        return $model;
+    }
 
     private function clientSoeg(array $options = []): Soeg
     {

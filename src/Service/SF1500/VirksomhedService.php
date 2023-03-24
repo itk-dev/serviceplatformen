@@ -26,50 +26,11 @@ use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\RelationListeType;
 use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\SoegInputType;
 use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\SoegOutputType;
 
-final class VirksomhedService extends SF1500 implements ServiceInterface
+final class VirksomhedService extends AbstractService
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function soeg(array $query, array $fields = []): array
+    protected function buildModel($oejebliksbillede): Virksomhed
     {
-        $data = $this->doSoeg($query);
-
-        return null === $data->getIdListe()
-            ? []
-            : $this->list($data->getIdListe()->getUUIDIdentifikator(), $fields);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function list(array $ids, array $fields = []): array
-    {
-        $list = $this->doList($ids);
-
-        return array_map(
-            fn ($oejebliksbillede) => $this->buildModel($oejebliksbillede),
-            $list->getFiltreretOejebliksbillede()
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function laes(string $id, array $fields = []): ?Virksomhed
-    {
-        $data = $this->doLaes($id);
-
-        $oejebliksbillede = $data->getFiltreretOejebliksbillede();
-        if (null === $oejebliksbillede) {
-            return null;
-        }
-
-        return $this->buildModel($oejebliksbillede);
-    }
-
-    private function buildModel(FiltreretOejebliksbilledeType $oejebliksbillede): Virksomhed
-    {
+        assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);
         $id = $oejebliksbillede->getObjektType()->getUUIDIdentifikator();
         $model = new Virksomhed(['id' => $id]);
         foreach ($oejebliksbillede->getRegistrering() as $registrering) {
@@ -136,21 +97,5 @@ final class VirksomhedService extends SF1500 implements ServiceInterface
         assert($client instanceof Laes);
 
         return $client;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getClient(string $className, array $options = []): SoapClientBase
-    {
-        if (!isset($this->clients[$className])) {
-            $this->clients[$className] = (new $className([
-                    SoapClientBase::WSDL_URL => __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Virksomhed.wsdl',
-                    SoapClientBase::WSDL_CLASSMAP => ClassMap::get(),
-                ] + $options))
-                ->setSF1500($this);
-        }
-
-        return $this->clients[$className];
     }
 }
