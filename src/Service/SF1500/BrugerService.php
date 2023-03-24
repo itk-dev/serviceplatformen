@@ -12,13 +12,14 @@ namespace ItkDev\Serviceplatformen\Service\SF1500;
 
 use ItkDev\Serviceplatformen\Service\SF1500\Model\Adresse;
 use ItkDev\Serviceplatformen\Service\SF1500\Model\Bruger;
-use ItkDev\Serviceplatformen\SF1500\Bruger\ClassMap;
+use ItkDev\Serviceplatformen\Service\SF1500\Model\OrganisationFunktion;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\_List;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Laes;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Soeg;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\AttributListeType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\EgenskabType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\FiltreretOejebliksbilledeType;
+use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\IdListeType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesInputType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesOutputType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\ListInputType;
@@ -40,7 +41,7 @@ final class BrugerService extends AbstractService
 
         $items = array_map(
             fn ($oejebliksbillede) => $this->buildModel($oejebliksbillede),
-            $list->getFiltreretOejebliksbillede()
+            $list->getFiltreretOejebliksbillede() ?? []
         );
 
         // Address type => Bruger field name
@@ -52,7 +53,7 @@ final class BrugerService extends AbstractService
 
         if (!empty($fields) && !empty($items)) {
             foreach ($fields as $field) {
-                $adresseIds = array_values(array_filter(array_map(static fn(Bruger $bruger) => $bruger->getRelation('adresse', $field), $items)));
+                $adresseIds = array_values(array_filter(array_map(static fn (Bruger $bruger) => $bruger->getRelation('adresse', $field), $items)));
 
                 $adresser = $this->getService(AdresseService::class)->list($adresseIds);
                 // Index by id
@@ -99,7 +100,7 @@ final class BrugerService extends AbstractService
                 $model->brugernavn = $egenskab->getBrugerNavn();
                 $model->brugertype = $egenskab->getBrugerTypeTekst();
             }
-            foreach ($registrering->getRelationListe()->getAdresser() as $adresse) {
+            foreach (($registrering->getRelationListe()->getAdresser() ?? []) as $adresse) {
                 $model->setRelation(
                     'adresse',
                     $adresse->getRolle()->getLabel(),
@@ -128,13 +129,38 @@ final class BrugerService extends AbstractService
             ->setAttributListe($attributListe)
             ->setRelationListe($relationListe);
 
-        if (isset($query['is-manager'])) {
-            $isManager = (bool)$query['is-manager'];
+        $response = $this->clientSoeg()->soeg($request) ?: null;
 
-            // TODO
+        if (null !== $response && isset($query['is-manager'])) {
+            // Keep or throw away managers.
+            $managerIds = $this->getManagerIds();
+
+            $brugerIds = $response->getIdListe()->getUUIDIdentifikator();
+            $response->setIdListe(new IdListeType(
+                array_values(
+                    $query['is-manager']
+                        // Keep only managers.
+                        ? array_intersect($brugerIds, $managerIds)
+                        // Throw away managers.
+                        : array_diff($brugerIds, $managerIds)
+                )
+            ));
         }
 
-        return $this->clientSoeg()->soeg($request) ?: null;
+        return $response;
+    }
+
+    private function getManagerIds()
+    {
+        $service = $this->getService(OrganisationFunktionService::class);
+        $result = $service->soeg([
+            'funktionstypeid' => $this->options['organisation-funktion-manager-id']
+        ]);
+
+        return array_values(array_filter(array_map(
+            static fn (OrganisationFunktion $organisationFunktion) => $organisationFunktion->tilknyttedeBrugere[0] ?? null,
+            $result
+        )));
     }
 
     protected function doList(array $ids): ListOutputType
