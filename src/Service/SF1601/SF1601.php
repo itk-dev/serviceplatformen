@@ -99,7 +99,7 @@ class SF1601 extends AbstractRESTService
         $response = $this->call($entityId, 'GET', $url, [
             'query' => [
                 // This almost matches the documented keys …
-                (8 === strlen($identifier) ? 'cprNumber' : 'cvrNumber') => $identifier,
+                (8 === strlen($identifier) ? 'cvrNumber' : 'cprNumber') => $identifier,
             ],
             'transactionId' => $transactionId,
             'transactionTid' => $transactionTid,
