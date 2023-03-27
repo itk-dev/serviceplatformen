@@ -134,7 +134,7 @@ class SF1601 extends AbstractRESTService
         }
 
         $entityId = $this->getOption('svc_entity_id');
-        $url = $this->getOption('svc_endpoint').'/'.$type;
+        $url = $this->getOption('svc_endpoint');
         $response = $this->call($entityId, 'POST', $url, [
                 'headers' => [
                     'content-type' => 'application/xml',
