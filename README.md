@@ -28,7 +28,7 @@ docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:lates
 ## Test commands
 
 ```sh
-vendor/bin/serviceplatformen-sf1601-kombipostafsend --help
+docker run --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest vendor/bin/serviceplatformen-sf1601-kombipostafsend --help
 ```
 
 Use `bin/serviceplatformen-sf1601-kombipostafsend` (symlinked to
@@ -36,6 +36,14 @@ Use `bin/serviceplatformen-sf1601-kombipostafsend` (symlinked to
 
 ```sh
 docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest bin/serviceplatformen-sf1601-kombipostafsend
+```
+
+```sh
+docker run --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest vendor/bin/serviceplatformen-sf1601-postforespoerg --help
+```
+
+```sh
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest bin/serviceplatformen-sf1601-postforespoerg
 ```
 
 ## Getting Started
