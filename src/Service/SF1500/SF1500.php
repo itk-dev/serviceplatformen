@@ -658,7 +658,9 @@ class SF1500
     }
 
 
-    public const NS_SOAP_ENVELOPE = 'http://www.w3.org/2003/05/soap-envelope';
+    private const NS_SOAP_ENVELOPE = 'http://www.w3.org/2003/05/soap-envelope';
+    private const NS_SAGDOK = 'urn:oio:sagdok:3.0.0';
+    private const STATUS_KODE_OK = '20';
 
     public function formatSoapRequest(
         string $request,
@@ -706,10 +708,37 @@ class SF1500
 
         return $cache->get($cacheKey, function (ItemInterface $item) use ($callable, $expirationTime) {
             $response = $callable();
+
+            if ($this->preventCaching($response)) {
+                $expirationTime = new \DateTimeImmutable('-1 day');
+            }
+
             $item->expiresAt($expirationTime);
 
             return $response;
         });
+    }
+
+    private function preventCaching(string $response): bool
+    {
+        try {
+            $document = new \DOMDocument();
+            $document->loadXML($response);
+            // Prevent caching if we have a SOAP fault.
+            if ($document->getElementsByTagNameNS(self::NS_SOAP_ENVELOPE, 'Fault')->count() > 0) {
+                return true;
+            }
+
+            // Prevent caching if we get a "not OK" status code.
+            $statusKode = $document->getElementsByTagNameNS(self::NS_SAGDOK, 'StatusKode')->item(0);
+            if (null !== $statusKode && self::STATUS_KODE_OK !== $statusKode->nodeValue) {
+                return true;
+            }
+        } catch (\Throwable) {
+            // Ignore any exceptions.
+        }
+
+        return false;
     }
 
     private function getCache(): CacheInterface
