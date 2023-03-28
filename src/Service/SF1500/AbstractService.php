@@ -56,6 +56,10 @@ abstract class AbstractService extends SF1500 implements ServiceInterface
     {
         $list = $this->doList($ids);
 
+        if (empty($list)) {
+            return [];
+        }
+
         return array_map(
             fn ($oejebliksbillede) => $this->buildModel($oejebliksbillede),
             $list->getFiltreretOejebliksbillede() ?: []
