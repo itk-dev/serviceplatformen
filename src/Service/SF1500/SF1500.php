@@ -16,24 +16,26 @@ use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
 use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ClassMap as AdresseClassMap;
-use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Laes as AdresseLaes;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\_List as AdresseList;
+use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Laes as AdresseLaes;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Soeg as AdresseSoeg;
 use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\LaesInputType as AdresseLaesInputType;
 use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\LaesOutputType as AdresseLaesOutputType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ClassMap as BrugerClassMap;
+use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\_List as BrugerList;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Laes as BrugerLaes;
 use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Soeg as BrugerSoeg;
-use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\_List as BrugerList;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesInputType as BrugerLaesInputType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesOutputType as BrugerLaesOutputType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\ClassMap as OrganisationEnhedClassMap;
+use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\ServiceType\_List as OrganisationEnhedList;
 use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\ServiceType\Laes as OrganisationEnhedLaes;
+use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\ServiceType\Soeg as OrganisationEnhedSoeg;
 use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\StructType\LaesInputType as OrganisationEnhedLaesInputType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\StructType\LaesOutputType as OrganisationEnhedLaesOutputType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ClassMap as OrganisationFunktionClassMap;
-use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ServiceType\Laes as OrganisationFunktionLaes;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ServiceType\_List as OrganisationFunktionList;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ServiceType\Laes as OrganisationFunktionLaes;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ServiceType\Soeg as OrganisationFunktionSoeg;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\AttributListeType as OrganisationFunktionAttributListeType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\BrugerFlerRelationType as OrganisationFunktionBrugerFlerRelationType;
@@ -47,6 +49,7 @@ use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\SoegInputTyp
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\SoegOutputType as OrganisationFunktionSoegOutputType;
 use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\UnikIdType as OrganisationFunktionUnikIdType;
 use ItkDev\Serviceplatformen\SF1500\Person\ClassMap as PersonClassMap;
+use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\_List as PersonList;
 use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Laes as PersonLaes;
 use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Soeg as PersonSoeg;
 use ItkDev\Serviceplatformen\SF1500\Person\StructType\LaesInputType as PersonLaesInputType;
@@ -791,6 +794,8 @@ class SF1500
                 __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Bruger.wsdl',
                 BrugerClassMap::get(),
               ];
+            case OrganisationEnhedSoeg::class:
+            case OrganisationEnhedList::class:
             case OrganisationEnhedLaes::class:
                 return [
                 __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/OrganisationEnhed.wsdl',
@@ -803,8 +808,9 @@ class SF1500
                 __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/OrganisationFunktion.wsdl',
                 OrganisationFunktionClassMap::get(),
               ];
-            case PersonLaes::class:
             case PersonSoeg::class:
+            case PersonList::class:
+            case PersonLaes::class:
                 return [
                 __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Person.wsdl',
                 PersonClassMap::get(),

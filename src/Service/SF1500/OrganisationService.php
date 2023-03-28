@@ -28,7 +28,7 @@ use ItkDev\Serviceplatformen\SF1500\Organisation\StructType\SoegOutputType;
 
 final class OrganisationService extends AbstractService
 {
-    protected function doSoeg(array $query): SoegOutputType
+    protected function doSoeg(array $query): ?SoegOutputType
     {
         $attributListe = new AttributListeType();
         if (isset($query['organisationnavn'])) {
@@ -42,21 +42,19 @@ final class OrganisationService extends AbstractService
             ->setAttributListe($attributListe)
             ->setRelationListe($relationListe);
 
-        return $this->clientSoeg()->soeg($request);
+        return $this->clientSoeg()->soeg($request) ?: null;
     }
 
-    protected function doList(array $ids): ListOutputType
+    protected function doList(array $ids): ?ListOutputType
     {
         return $this->clientList()
-            ->_list_8((new ListInputType())
-                ->setUUIDIdentifikator($ids));
+            ->_list_8(new ListInputType($ids)) ?: null;
     }
 
-    protected function doLaes(string $id): LaesOutputType
+    protected function doLaes(string $id): ?LaesOutputType
     {
         return $this->clientLaes()
-            ->laes((new LaesInputType())
-                ->setUUIDIdentifikator($id));
+            ->laes(new LaesInputType($id));
     }
 
     protected function buildModel($oejebliksbillede): Organisation

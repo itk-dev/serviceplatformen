@@ -46,6 +46,10 @@ final class BrugerService extends AbstractService
     {
         $list = $this->doList($ids);
 
+        if (empty($list)) {
+            return [];
+        }
+
         $items = array_map(
             fn ($oejebliksbillede) => $this->buildModel($oejebliksbillede),
             $list->getFiltreretOejebliksbillede() ?? []
@@ -136,18 +140,16 @@ final class BrugerService extends AbstractService
         )));
     }
 
-    protected function doList(array $ids): ListOutputType
+    protected function doList(array $ids): ?ListOutputType
     {
         return $this->clientList()
-            ->_list_1((new ListInputType())
-                ->setUUIDIdentifikator($ids));
+            ->_list_1(new ListInputType($ids)) ?: null;
     }
 
-    protected function doLaes(string $id): LaesOutputType
+    protected function doLaes(string $id): ?LaesOutputType
     {
         return $this->clientLaes()
-            ->laes((new LaesInputType())
-                ->setUUIDIdentifikator($id));
+            ->laes(new LaesInputType($id)) ?: null;
     }
 
     protected function buildModel($oejebliksbillede): Bruger

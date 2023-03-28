@@ -43,7 +43,7 @@ final class VirksomhedService extends AbstractService
         return $model;
     }
 
-    protected function doSoeg(array $query): SoegOutputType
+    protected function doSoeg(array $query): ?SoegOutputType
     {
         $attributListe = new AttributListeType();
         if (isset($query['navntekst'])) {
@@ -57,21 +57,19 @@ final class VirksomhedService extends AbstractService
             ->setAttributListe($attributListe)
             ->setRelationListe($relationListe);
 
-        return $this->clientSoeg()->soeg($request);
+        return $this->clientSoeg()->soeg($request) ?: null;
     }
 
-    protected function doList(array $ids): ListOutputType
+    protected function doList(array $ids): ?ListOutputType
     {
         return $this->clientList()
-            ->_list_12((new ListInputType())
-                ->setUUIDIdentifikator($ids));
+            ->_list_12(new ListInputType($ids)) ?: null;
     }
 
-    protected function doLaes(string $id): LaesOutputType
+    protected function doLaes(string $id): ?LaesOutputType
     {
         return $this->clientLaes()
-            ->laes((new LaesInputType())
-                ->setUUIDIdentifikator($id));
+            ->laes(new LaesInputType($id)) ?: null;
     }
 
 

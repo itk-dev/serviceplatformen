@@ -38,7 +38,7 @@ final class OrganisationFunktionService extends AbstractService
         self::FILTER_FUNKTIONSTYPEID,
     ];
 
-    protected function doSoeg(array $query): SoegOutputType
+    protected function doSoeg(array $query): ?SoegOutputType
     {
         $attributListe = new AttributListeType();
         if (isset($query[self::FILTER_FUNKTIONNAVN])) {
@@ -57,21 +57,19 @@ final class OrganisationFunktionService extends AbstractService
             ->setAttributListe($attributListe)
             ->setRelationListe($relationListe);
 
-        return $this->clientSoeg()->soeg($request);
+        return $this->clientSoeg()->soeg($request) ?: null;
     }
 
-    protected function doList(array $ids): ListOutputType
+    protected function doList(array $ids): ?ListOutputType
     {
         return $this->clientList()
-            ->_list_10((new ListInputType())
-                ->setUUIDIdentifikator($ids));
+            ->_list_10(new ListInputType($ids)) ?: null;
     }
 
-    protected function doLaes(string $id): LaesOutputType
+    protected function doLaes(string $id): ?LaesOutputType
     {
         return $this->clientLaes()
-            ->laes((new LaesInputType())
-                ->setUUIDIdentifikator($id));
+            ->laes(new LaesInputType($id)) ?: null;
     }
 
     protected function buildModel($oejebliksbillede): OrganisationFunktion

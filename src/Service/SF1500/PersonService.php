@@ -64,18 +64,16 @@ class PersonService extends AbstractService
         return $this->clientSoeg()->soeg($request) ?: null;
     }
 
-    protected function doList(array $ids): ListOutputType
+    protected function doList(array $ids): ?ListOutputType
     {
         return $this->clientList()
-            ->_list_11((new ListInputType())
-                ->setUUIDIdentifikator($ids));
+            ->_list_11(new ListInputType($ids)) ?: null;
     }
 
-    protected function doLaes(string $id): LaesOutputType
+    protected function doLaes(string $id): ?LaesOutputType
     {
         return $this->clientLaes()
-            ->laes((new LaesInputType())
-                ->setUUIDIdentifikator($id));
+            ->laes(new LaesInputType($id)) ?: null;
     }
     private function clientSoeg(array $options = []): Soeg
     {
