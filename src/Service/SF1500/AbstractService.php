@@ -42,8 +42,9 @@ abstract class AbstractService extends SF1500 implements ServiceInterface
             return [];
         }
         $ids = $liste->getUUIDIdentifikator();
+
         if (empty($ids) || !is_array($ids)) {
-            $ids = [];
+            return [];
         }
 
         return $this->list($ids, $fields);
