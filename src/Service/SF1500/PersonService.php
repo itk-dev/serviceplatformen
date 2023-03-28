@@ -27,7 +27,11 @@ use ItkDev\Serviceplatformen\SF1500\Person\StructType\SoegOutputType;
 
 class PersonService extends AbstractService
 {
-    protected static $validFilters = ['navntekst'];
+    public const FILTER_NAVNTEKST = 'navntekst';
+
+    protected static $validFilters = [
+        self::FILTER_NAVNTEKST,
+    ];
 
     protected function buildModel($oejebliksbillede): Person
     {
@@ -46,9 +50,9 @@ class PersonService extends AbstractService
     protected function doSoeg(array $query): ?SoegOutputType
     {
         $attributListe = new AttributListeType();
-        if (isset($query['navntekst'])) {
+        if (isset($query[self::FILTER_NAVNTEKST])) {
             $attributListe->addToEgenskab((new EgenskabType())
-                ->setNavnTekst($query['navntekst']));
+                ->setNavnTekst($query[self::FILTER_NAVNTEKST]));
         }
 
         $relationListe = new RelationListeType();

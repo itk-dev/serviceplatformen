@@ -30,21 +30,27 @@ use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\UnikIdType;
 
 final class OrganisationFunktionService extends AbstractService
 {
-    protected static $validFilters = ['funktionnavn', 'funktionstypeid'];
+    public const FILTER_FUNKTIONNAVN = 'funktionnavn';
+    public const FILTER_FUNKTIONSTYPEID = 'funktionstypeid';
+
+    protected static $validFilters = [
+        self::FILTER_FUNKTIONNAVN,
+        self::FILTER_FUNKTIONSTYPEID,
+    ];
 
     protected function doSoeg(array $query): SoegOutputType
     {
         $attributListe = new AttributListeType();
-        if (isset($query['funktionnavn'])) {
+        if (isset($query[self::FILTER_FUNKTIONNAVN])) {
             $attributListe->addToEgenskab((new EgenskabType())
-                ->setFunktionNavn($query['funktionnavn']));
+                ->setFunktionNavn($query[self::FILTER_FUNKTIONNAVN]));
         }
 
         $relationListe = new RelationListeType();
 
-        if (isset($query['funktionstypeid'])) {
+        if (isset($query[self::FILTER_FUNKTIONSTYPEID])) {
             $relationListe->setFunktionstype((new KlasseRelationType)
-                ->setReferenceID(new UnikIdType($query['funktionstypeid'])));
+                ->setReferenceID(new UnikIdType($query[self::FILTER_FUNKTIONSTYPEID])));
         }
 
         $request = (new SoegInputType())

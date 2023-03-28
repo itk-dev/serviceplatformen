@@ -30,7 +30,14 @@ use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\SoegOutputType;
 
 final class BrugerService extends AbstractService
 {
-    protected static $validFilters = ['brugernavn', 'is-manager'];
+    public const FILTER_BRUGERNAVN = 'brugernavn';
+    public const FILTER_EMAIL = 'email';
+    public const FILTER_LEDER = 'leder';
+
+    protected static $validFilters = [
+        self::FILTER_BRUGERNAVN,
+        self::FILTER_LEDER,
+    ];
 
     /**
      * {@inheritdoc}
@@ -80,13 +87,13 @@ final class BrugerService extends AbstractService
     protected function doSoeg(array $query): ?SoegOutputType
     {
         $attributListe = new AttributListeType();
-        if (isset($query['brugernavn'])) {
+        if (isset($query[self::FILTER_BRUGERNAVN])) {
             $attributListe->addToEgenskab((new EgenskabType())
-                ->setBrugerNavn($query['brugernavn']));
+                ->setBrugerNavn($query[self::FILTER_BRUGERNAVN]));
         }
 
         $relationListe = new RelationListeType();
-        if (isset($query['email'])) {
+        if (isset($query[self::FILTER_EMAIL])) {
             // TODO We cannot search by email yet
         }
 
@@ -96,14 +103,14 @@ final class BrugerService extends AbstractService
 
         $response = $this->clientSoeg()->soeg($request) ?: null;
 
-        if (null !== $response && isset($query['is-manager'])) {
+        if (null !== $response && isset($query[self::FILTER_LEDER])) {
             // Keep or throw away managers.
             $managerIds = $this->getManagerIds();
 
             $brugerIds = $response->getIdListe()->getUUIDIdentifikator();
             $response->setIdListe(new IdListeType(
                 array_values(
-                    $query['is-manager']
+                    $query[self::FILTER_LEDER]
                         // Keep only managers.
                         ? array_intersect($brugerIds, $managerIds)
                         // Throw away managers.
@@ -120,7 +127,7 @@ final class BrugerService extends AbstractService
         $service = $this->getService(OrganisationFunktionService::class);
         /** @var OrganisationFunktion[] $organisationFunktioner */
         $organisationFunktioner = $service->soeg([
-            'funktionstypeid' => $this->options['organisation-funktion-manager-id']
+            OrganisationFunktionService::FILTER_FUNKTIONSTYPEID => $this->options['organisation-funktion-manager-id']
         ]);
 
         return array_values(array_filter(array_map(
