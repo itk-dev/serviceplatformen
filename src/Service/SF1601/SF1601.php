@@ -92,10 +92,10 @@ class SF1601 extends AbstractRESTService
         ]);
     }
 
-    public function postForespoerg(string $transactionId, string $type, string $identifier, DateTimeInterface $transactionTid = null): ?bool
+    public function postForespoerg(string $transactionId, string $type, string $identifier, DateTimeInterface $transactionTid = null): array
     {
         $entityId = $this->getOption('post_forespoerg_svc_entity_id');
-        $url = $this->getOption('post_forespoerg_svc_endpoint').'/'.$type;
+        $url = $this->getOption('post_forespoerg_svc_endpoint') . '/' . $type;
         $response = $this->call($entityId, 'GET', $url, [
             'query' => [
                 // This almost matches the documented keys …
@@ -105,9 +105,7 @@ class SF1601 extends AbstractRESTService
             'transactionTid' => $transactionTid,
         ]);
 
-        $data = $response->toArray();
-
-        return $data['result'] ?? null;
+        return $response->toArray();
     }
 
     public function kombiPostAfsend(string $transactionId, string $type, ?Message $message, ?ForsendelseI $forsendelse = null, DateTimeInterface $transactionTid = null): ResponseInterface
