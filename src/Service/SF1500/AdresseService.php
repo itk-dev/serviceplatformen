@@ -27,15 +27,18 @@ use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\SoegOutputType;
 
 final class AdresseService extends AbstractService
 {
-    protected static $validFilters = ['adressetekst'];
+    public const FILTER_ADRESSETEKST = 'adressetekst';
 
+    protected static $validFilters = [
+        self::FILTER_ADRESSETEKST,
+    ];
 
     protected function doSoeg(array $query): SoegOutputType
     {
         $attributListe = new AttributListeType();
-        if (isset($query['adressetekst'])) {
+        if (isset($query[self::FILTER_ADRESSETEKST])) {
             $attributListe->addToEgenskab((new EgenskabType())
-                ->setAdresseTekst($query['adressetekst']));
+                ->setAdresseTekst($query[self::FILTER_ADRESSETEKST]));
         }
 
         $relationListe = new RelationListeType();
