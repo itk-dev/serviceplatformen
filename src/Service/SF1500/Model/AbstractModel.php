@@ -10,6 +10,9 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1500\Model;
 
+/**
+ * @property string $id
+ */
 abstract class AbstractModel implements \JsonSerializable
 {
     protected array $data;
