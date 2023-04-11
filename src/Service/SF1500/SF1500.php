@@ -378,7 +378,11 @@ class SF1500
             $managerInfo = $this->getManagerBrugerAndFunktionsIdFromFunktionsId($id, $managerFunktionsTypeId);
 
             if (!empty($managerInfo)) {
-                $managers[] = $managerInfo;
+                // A user cannot be its own manager.
+                $managers[] = array_filter(
+                    $managerInfo,
+                    static fn (array $info) => $info['brugerId'] !== $userId
+                );
             }
         }
 
