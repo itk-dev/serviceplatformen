@@ -33,11 +33,20 @@ final class OrganisationFunktionService extends AbstractService
     public const FILTER_FUNKTIONNAVN = 'funktionnavn';
     public const FILTER_FUNKTIONSTYPEID = 'funktionstypeid';
 
-    protected static $validFilters = [
-        self::FILTER_FUNKTIONNAVN,
-        self::FILTER_FUNKTIONSTYPEID,
-    ];
+    /**
+     * {@inheritdoc}
+     */
+    public static function getValidFilters(): array
+    {
+        return [
+            self::FILTER_FUNKTIONNAVN,
+            self::FILTER_FUNKTIONSTYPEID,
+        ];
+    }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doSoeg(array $query): ?SoegOutputType
     {
         $attributListe = new AttributListeType();
@@ -54,24 +63,35 @@ final class OrganisationFunktionService extends AbstractService
         }
 
         $request = (new SoegInputType())
+            ->setMaksimalAntalKvantitet((int)($query['limit'] ?? self::DEFAULT_LIMIT))
+            ->setFoersteResultatReference((int)($query['offset'] ?? 0))
             ->setAttributListe($attributListe)
             ->setRelationListe($relationListe);
 
         return $this->clientSoeg()->soeg($request) ?: null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doList(array $ids): ?ListOutputType
     {
         return $this->clientList()
             ->_list_10(new ListInputType($ids)) ?: null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doLaes(string $id): ?LaesOutputType
     {
         return $this->clientLaes()
             ->laes(new LaesInputType($id)) ?: null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function buildModel($oejebliksbillede): OrganisationFunktion
     {
         assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);

@@ -29,10 +29,59 @@ class PersonService extends AbstractService
 {
     public const FILTER_NAVNTEKST = 'navntekst';
 
-    protected static $validFilters = [
-        self::FILTER_NAVNTEKST,
-    ];
+    /**
+     * {@inheritdoc}
+     */
+    public static function getValidFilters(): array
+    {
+        return [
+            self::FILTER_NAVNTEKST,
+        ];
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function doSoeg(array $query): ?SoegOutputType
+    {
+        $attributListe = new AttributListeType();
+        if (isset($query[self::FILTER_NAVNTEKST])) {
+            $attributListe->addToEgenskab((new EgenskabType())
+                ->setNavnTekst($query[self::FILTER_NAVNTEKST]));
+        }
+
+        $relationListe = new RelationListeType();
+
+        $request = (new SoegInputType())
+            ->setMaksimalAntalKvantitet((int)($query['limit'] ?? 50))
+            ->setFoersteResultatReference((int)($query['offset'] ?? 0))
+            ->setAttributListe($attributListe)
+            ->setRelationListe($relationListe);
+
+        return $this->clientSoeg()->soeg($request) ?: null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function doList(array $ids): ?ListOutputType
+    {
+        return $this->clientList()
+            ->_list_11(new ListInputType($ids)) ?: null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function doLaes(string $id): ?LaesOutputType
+    {
+        return $this->clientLaes()
+            ->laes(new LaesInputType($id)) ?: null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function buildModel($oejebliksbillede): Person
     {
         assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);
@@ -47,34 +96,6 @@ class PersonService extends AbstractService
         return $model;
     }
 
-    protected function doSoeg(array $query): ?SoegOutputType
-    {
-        $attributListe = new AttributListeType();
-        if (isset($query[self::FILTER_NAVNTEKST])) {
-            $attributListe->addToEgenskab((new EgenskabType())
-                ->setNavnTekst($query[self::FILTER_NAVNTEKST]));
-        }
-
-        $relationListe = new RelationListeType();
-
-        $request = (new SoegInputType())
-            ->setAttributListe($attributListe)
-            ->setRelationListe($relationListe);
-
-        return $this->clientSoeg()->soeg($request) ?: null;
-    }
-
-    protected function doList(array $ids): ?ListOutputType
-    {
-        return $this->clientList()
-            ->_list_11(new ListInputType($ids)) ?: null;
-    }
-
-    protected function doLaes(string $id): ?LaesOutputType
-    {
-        return $this->clientLaes()
-            ->laes(new LaesInputType($id)) ?: null;
-    }
     private function clientSoeg(array $options = []): Soeg
     {
         $client = $this->getClient(Soeg::class, $options);
