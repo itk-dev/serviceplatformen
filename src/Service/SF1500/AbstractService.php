@@ -19,7 +19,25 @@ use ItkDev\Serviceplatformen\SF1500\Person\StructType\FiltreretOejebliksbilledeT
  */
 abstract class AbstractService extends SF1500 implements ServiceInterface
 {
-    protected static $validFilters = [];
+    protected const DEFAULT_LIMIT = 50;
+
+    public const PARAMETER_LIMIT = 'limit';
+    public const PARAMETER_OFFSET = 'offset';
+
+    final public static function getPaginationParameters(): array
+    {
+        return [
+            self::PARAMETER_LIMIT,
+            self::PARAMETER_OFFSET,
+        ];
+    }
+
+    /**
+     * Get valid filters.
+     *
+     * @return string[]|array
+     */
+    abstract public static function getValidFilters(): array;
 
     /**
      * {@inheritdoc}
@@ -50,7 +68,7 @@ abstract class AbstractService extends SF1500 implements ServiceInterface
         return $this->list($ids, $fields);
     }
 
-        /**
+    /**
      * {@inheritdoc}
      */
     public function list(array $ids, array $fields = []): array
@@ -88,12 +106,13 @@ abstract class AbstractService extends SF1500 implements ServiceInterface
             throw new InvalidQueryException('Empty query');
         }
         $usedFilters = array_keys($query);
-        $invalidFilters = array_values(array_diff($usedFilters, static::$validFilters));
+        $validFilters = array_merge($this->getValidFilters(), self::getPaginationParameters());
+        $invalidFilters = array_values(array_diff($usedFilters, $validFilters));
         if (!empty($invalidFilters)) {
             throw new InvalidQueryException(sprintf(
                 'Invalid filters: %s; Valid filters: %s.',
                 json_encode($invalidFilters),
-                json_encode(static::$validFilters)
+                json_encode($validFilters)
             ));
         }
     }

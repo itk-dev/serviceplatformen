@@ -29,10 +29,19 @@ final class AdresseService extends AbstractService
 {
     public const FILTER_ADRESSETEKST = 'adressetekst';
 
-    protected static $validFilters = [
-        self::FILTER_ADRESSETEKST,
-    ];
+    /**
+     * {@inheritdoc}
+     */
+    public static function getValidFilters(): array
+    {
+        return [
+            self::FILTER_ADRESSETEKST,
+        ];
+    }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doSoeg(array $query): ?SoegOutputType
     {
         $attributListe = new AttributListeType();
@@ -44,24 +53,35 @@ final class AdresseService extends AbstractService
         $relationListe = new RelationListeType();
 
         $request = (new SoegInputType())
+            ->setMaksimalAntalKvantitet((int)($query['limit'] ?? self::DEFAULT_LIMIT))
+            ->setFoersteResultatReference((int)($query['offset'] ?? 0))
             ->setAttributListe($attributListe)
             ->setRelationListe($relationListe);
 
         return $this->clientSoeg()->soeg($request) ?: null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doList(array $ids): ?ListOutputType
     {
         return $this->clientList()
             ->_list(new ListInputType($ids)) ?: null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doLaes(string $id): ?LaesOutputType
     {
         return $this->clientLaes()
             ->laes(new LaesInputType($id)) ?: null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function buildModel($oejebliksbillede): Adresse
     {
         assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);

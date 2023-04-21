@@ -24,20 +24,30 @@ use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesInputType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesOutputType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\ListInputType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\ListOutputType;
+use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\PersonFlerRelationType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\RelationListeType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\SoegInputType;
 use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\SoegOutputType;
+use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\UnikIdType;
 
 final class BrugerService extends AbstractService
 {
     public const FILTER_BRUGERNAVN = 'brugernavn';
+    public const FILTER_PERSON_ID = 'person_id';
     public const FILTER_EMAIL = 'email';
     public const FILTER_LEDER = 'leder';
 
-    protected static $validFilters = [
-        self::FILTER_BRUGERNAVN,
-        self::FILTER_LEDER,
-    ];
+    /**
+     * {@inheritdoc}
+     */
+    public static function getValidFilters(): array
+    {
+        return [
+            self::FILTER_BRUGERNAVN,
+            self::FILTER_PERSON_ID,
+            self::FILTER_LEDER,
+        ];
+    }
 
     /**
      * {@inheritdoc}
@@ -88,6 +98,9 @@ final class BrugerService extends AbstractService
         return $items;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doSoeg(array $query): ?SoegOutputType
     {
         $attributListe = new AttributListeType();
@@ -100,8 +113,17 @@ final class BrugerService extends AbstractService
         if (isset($query[self::FILTER_EMAIL])) {
             // TODO We cannot search by email yet
         }
+        if (isset($query[self::FILTER_PERSON_ID])) {
+            $ids = (array)$query[self::FILTER_PERSON_ID];
+            foreach ($ids as $id) {
+                $relationListe->addToTilknyttedePersoner((new PersonFlerRelationType())
+                    ->setReferenceID(new UnikIdType($id)));
+            }
+        }
 
         $request = (new SoegInputType())
+            ->setMaksimalAntalKvantitet((int)($query['limit'] ?? self::DEFAULT_LIMIT))
+            ->setFoersteResultatReference((int)($query['offset'] ?? 0))
             ->setAttributListe($attributListe)
             ->setRelationListe($relationListe);
 
@@ -140,18 +162,27 @@ final class BrugerService extends AbstractService
         )));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doList(array $ids): ?ListOutputType
     {
         return $this->clientList()
             ->_list_1(new ListInputType($ids)) ?: null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doLaes(string $id): ?LaesOutputType
     {
         return $this->clientLaes()
             ->laes(new LaesInputType($id)) ?: null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function buildModel($oejebliksbillede): Bruger
     {
         assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);

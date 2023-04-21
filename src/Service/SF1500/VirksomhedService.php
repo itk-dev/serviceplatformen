@@ -28,6 +28,57 @@ use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\SoegOutputType;
 
 final class VirksomhedService extends AbstractService
 {
+    /**
+     * {@inheritdoc}
+     */
+    public static function getValidFilters(): array
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function doSoeg(array $query): ?SoegOutputType
+    {
+        $attributListe = new AttributListeType();
+        if (isset($query['navntekst'])) {
+            $attributListe->addToEgenskab((new EgenskabType())
+                ->setNavnTekst($query['navntekst']));
+        }
+
+        $relationListe = new RelationListeType();
+
+        $request = (new SoegInputType())
+            ->setMaksimalAntalKvantitet((int)($query['limit'] ?? self::DEFAULT_LIMIT))
+            ->setFoersteResultatReference((int)($query['offset'] ?? 0))
+            ->setAttributListe($attributListe)
+            ->setRelationListe($relationListe);
+
+        return $this->clientSoeg()->soeg($request) ?: null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function doList(array $ids): ?ListOutputType
+    {
+        return $this->clientList()
+            ->_list_12(new ListInputType($ids)) ?: null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function doLaes(string $id): ?LaesOutputType
+    {
+        return $this->clientLaes()
+            ->laes(new LaesInputType($id)) ?: null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function buildModel($oejebliksbillede): Virksomhed
     {
         assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);
@@ -42,36 +93,6 @@ final class VirksomhedService extends AbstractService
 
         return $model;
     }
-
-    protected function doSoeg(array $query): ?SoegOutputType
-    {
-        $attributListe = new AttributListeType();
-        if (isset($query['navntekst'])) {
-            $attributListe->addToEgenskab((new EgenskabType())
-                ->setNavnTekst($query['navntekst']));
-        }
-
-        $relationListe = new RelationListeType();
-
-        $request = (new SoegInputType())
-            ->setAttributListe($attributListe)
-            ->setRelationListe($relationListe);
-
-        return $this->clientSoeg()->soeg($request) ?: null;
-    }
-
-    protected function doList(array $ids): ?ListOutputType
-    {
-        return $this->clientList()
-            ->_list_12(new ListInputType($ids)) ?: null;
-    }
-
-    protected function doLaes(string $id): ?LaesOutputType
-    {
-        return $this->clientLaes()
-            ->laes(new LaesInputType($id)) ?: null;
-    }
-
 
     private function clientSoeg(array $options = []): Soeg
     {

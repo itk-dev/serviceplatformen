@@ -284,17 +284,19 @@ class SF1500
               ->getRelationListe()
               ->getAdresser();
 
-            foreach ($adresser as $adresse) {
-                if ('Postadresse' === $adresse->getRolle()->getLabel()) {
-                    $adresseId = $adresse->getReferenceID()->getUUIDIdentifikator();
-                    $adresse = $this->adresseLaes($adresseId);
+            if (is_array($adresser)) {
+                foreach ($adresser as $adresse) {
+                    if ('Postadresse' === $adresse->getRolle()->getLabel()) {
+                        $adresseId = $adresse->getReferenceID()->getUUIDIdentifikator();
+                        $adresse = $this->adresseLaes($adresseId);
 
-                    return $adresse
-                      ->getFiltreretOejebliksbillede()
-                      ->getRegistrering()[0]
-                      ->getAttributListe()
-                      ->getEgenskab()[0]
-                      ->getAdresseTekst();
+                        return $adresse
+                            ->getFiltreretOejebliksbillede()
+                            ->getRegistrering()[0]
+                            ->getAttributListe()
+                            ->getEgenskab()[0]
+                            ->getAdresseTekst();
+                    }
                 }
             }
 
