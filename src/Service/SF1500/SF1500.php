@@ -77,11 +77,18 @@ class SF1500
     private SF1514 $sf1514;
     protected array $options;
 
+    private static bool|null $shutdownFunctionRegistered = null;
+
     public function __construct(SF1514 $sf1514, array $options)
     {
         $this->sf1514 = $sf1514;
         $this->xmlBuilder = new SF1500XMLBuilder();
         $this->options = $this->resolveOptions($options);
+
+        if (!self::$shutdownFunctionRegistered) {
+            register_shutdown_function(self::shutdown(...));
+            self::$shutdownFunctionRegistered = true;
+        }
     }
 
     /**
@@ -689,19 +696,48 @@ class SF1500
         $this->xmlBuilder->buildSoapHeader($doc->getElementsByTagNameNS(self::NS_SOAP_ENVELOPE, 'Header')[0], $location, $action, $token);
 
         // HACK!
-        // @see https://bugs.php.net/bug.php?id=55294
-        $xsldoc = new \DOMDocument();
-        $xsldoc->load(__DIR__.'/resources/insert-token.xslt');
-
-        $tokenPath = __FILE__.'.token.xml';
-        file_put_contents($tokenPath, $token);
-        $xsl = new \XSLTProcessor();
-        $xsl->importStylesheet($xsldoc);
-        $xsl->setParameter('', 'token-path', $tokenPath);
-        $request = $xsl->transformToXml($doc);
-        unlink($tokenPath);
+        // @see self::getTokenXSLTProcessor().
+        $request = self::getTokenXSLTProcessor($token)->transformToXml($doc);
 
         return $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
+    }
+
+    private static array $tokenXSLTProcessors = [];
+
+    /**
+     *
+     * @see https://bugs.php.net/bug.php?id=55294
+     */
+    private static function getTokenXSLTProcessor(string $token): \XSLTProcessor
+    {
+        if (!isset(self::$tokenXSLTProcessors[$token])) {
+            $xsldoc = new \DOMDocument();
+            $xsldoc->load(__DIR__.'/resources/insert-token.xslt');
+
+            $tokenPath = tempnam(sys_get_temp_dir(), sha1($token).'.token.xml');
+            file_put_contents($tokenPath, $token);
+            $xsl = new \XSLTProcessor();
+            $xsl->importStylesheet($xsldoc);
+            $xsl->setParameter('', 'token-path', $tokenPath);
+
+            self::$tokenXSLTProcessors[$token] = [
+                'xsltprocessor' => $xsl,
+                'tokenpath' => $tokenPath,
+            ];
+        }
+
+        return self::$tokenXSLTProcessors[$token]['xsltprocessor'];
+    }
+
+    private static function shutdown()
+    {
+        foreach (self::$tokenXSLTProcessors as $processor) {
+            if ($path = ($processor['tokenpath'] ?? null)) {
+                if (file_exists($path)) {
+                    unlink($path);
+                }
+            }
+        }
     }
 
     public function cacheSoapRequest(array $cacheKeys, callable $callable)
