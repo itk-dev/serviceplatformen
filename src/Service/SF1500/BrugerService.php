@@ -189,10 +189,13 @@ final class BrugerService extends AbstractService
         $id = $oejebliksbillede->getObjektType()->getUUIDIdentifikator();
         $model = new Bruger(['id' => $id]);
         foreach ($oejebliksbillede->getRegistrering() as $registrering) {
+            // We assume that we have only a single item in the attribute list.
             foreach ($registrering->getAttributListe()->getEgenskab() as $egenskab) {
                 $model->brugernavn = $egenskab->getBrugerNavn();
                 $model->brugertype = $egenskab->getBrugerTypeTekst();
+                break;
             }
+            // Set an address relation for each labeled address.
             foreach (($registrering->getRelationListe()->getAdresser() ?? []) as $adresse) {
                 $model->setRelation(
                     Bruger::RELATION_ADRESSE,
