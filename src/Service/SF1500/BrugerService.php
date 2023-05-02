@@ -153,7 +153,9 @@ final class BrugerService extends AbstractService
         $service = $this->getService(OrganisationFunktionService::class);
         /** @var OrganisationFunktion[] $organisationFunktioner */
         $organisationFunktioner = $service->soeg([
-            OrganisationFunktionService::FILTER_FUNKTIONSTYPEID => $this->options['organisation-funktion-manager-id']
+            OrganisationFunktionService::FILTER_FUNKTIONSTYPEID => $this->options['organisation-funktion-manager-id'],
+            // The API returns at most 1000 items. We want them all.
+            AbstractService::PARAMETER_LIMIT => 1000,
         ]);
 
         return array_values(array_filter(array_map(
