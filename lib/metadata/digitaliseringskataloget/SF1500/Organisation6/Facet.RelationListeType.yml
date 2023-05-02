@@ -1,0 +1,46 @@
+Digitaliseringskataloget\SF1500\Organisation6\Facet\RelationListeType:
+    properties:
+        ansvarlig:
+            expose: true
+            access_type: public_method
+            serialized_name: Ansvarlig
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getAnsvarlig
+                setter: setAnsvarlig
+            type: Digitaliseringskataloget\Sagdok3_0_0\Ansvarlig
+        ejer:
+            expose: true
+            access_type: public_method
+            serialized_name: Ejer
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getEjer
+                setter: setEjer
+            type: Digitaliseringskataloget\Sagdok3_0_0\Ejer
+        facetTilhoerer:
+            expose: true
+            access_type: public_method
+            serialized_name: FacetTilhoerer
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getFacetTilhoerer
+                setter: setFacetTilhoerer
+            type: Digitaliseringskataloget\Sagdok3_0_0\FacetTilhoerer
+        redaktoerer:
+            expose: true
+            access_type: public_method
+            serialized_name: Redaktoerer
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getRedaktoerer
+                setter: setRedaktoerer
+            xml_list:
+                inline: true
+                entry_name: Redaktoerer
+                namespace: 'urn:oio:sagdok:3.0.0'
+            type: array<Digitaliseringskataloget\Sagdok3_0_0\Redaktoerer>

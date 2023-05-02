@@ -1,0 +1,16 @@
+Digitaliseringskataloget\SF1500\Organisation6\Organisationfunktion\OrganisationFunktionType:
+    properties:
+        registrering:
+            expose: true
+            access_type: public_method
+            serialized_name: Registrering
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationfunktion/6/'
+            accessor:
+                getter: getRegistrering
+                setter: setRegistrering
+            xml_list:
+                inline: true
+                entry_name: Registrering
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationfunktion/6/'
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Organisationfunktion\Registrering>

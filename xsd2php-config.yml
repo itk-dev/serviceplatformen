@@ -12,6 +12,28 @@ xsd2php:
     'http://www.form-online.dk/':                                                                              'WwwFormOnlineDk'
     'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#': 'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd'
 
+    # https://digitaliseringskataloget.dk/integration/sf1500
+    "http://stoettesystemerne.dk/klassifikation/facet/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Facet"
+    "http://stoettesystemerne.dk/klassifikation/klasse/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Klasse"
+    "http://stoettesystemerne.dk/klassifikation/klassifikation/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Klassifikation"
+    "http://stoettesystemerne.dk/klassifikation/klassifikationsystem/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Klassifikationsystem"
+    "http://stoettesystemerne.dk/organisation/6/": "Digitaliseringskataloget\\SF1500\\Organisation6"
+    "http://stoettesystemerne.dk/organisation/adresse/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Adresse"
+    "http://stoettesystemerne.dk/organisation/bruger/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Bruger"
+    "http://stoettesystemerne.dk/organisation/interessefaellesskab/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Interessefaellesskab"
+    "http://stoettesystemerne.dk/organisation/itsystem/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Itsystem"
+    "http://stoettesystemerne.dk/organisation/myndighed/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Myndighed"
+    "http://stoettesystemerne.dk/organisation/organisation/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Organisation"
+    "http://stoettesystemerne.dk/organisation/organisationadministration/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Organisationadministration"
+    "http://stoettesystemerne.dk/organisation/organisationenhed/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Organisationenhed"
+    "http://stoettesystemerne.dk/organisation/organisationfunktion/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Organisationfunktion"
+    "http://stoettesystemerne.dk/organisation/organisationsystem/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Organisationsystem"
+    "http://stoettesystemerne.dk/organisation/person/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Person"
+    "http://stoettesystemerne.dk/organisation/virksomhed/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Virksomhed"
+    "urn:oio:sagdok:3.0.0": "Digitaliseringskataloget\\Sagdok3_0_0"
+    "urn:oio:sts:6": "Digitaliseringskataloget\\Sts6"
+    "urn:oio:sts:part:6": "Digitaliseringskataloget\\Sts6\\Part"
+
   destinations_php:
     # These must also be set in autoload.psr-4 in composer.json.
     'DigitalPost\MeMo':                                                                            'lib/DigitalPost/MeMo/'
@@ -24,6 +46,11 @@ xsd2php:
     'WwwFormOnlineDk':                                                                             'lib/WwwFormOnlineDk/'
     'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd': 'lib/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/'
 
+    # https://digitaliseringskataloget.dk/integration/sf1500
+    "Digitaliseringskataloget\\Sts6": "lib/digitaliseringskataloget/Sts6"
+    "Digitaliseringskataloget\\Sagdok3_0_0": "lib/digitaliseringskataloget/Sagdok3_0_0"
+    "Digitaliseringskataloget\\SF1500\\Organisation6": "lib/digitaliseringskataloget/SF1500/Organisation6"
+
   destinations_jms:
     'DigitalPost\MeMo':                                                                            'lib/metadata/DigitalPost/MeMo/'
     'DataGovDk\Model\DataTypes':                                                                   'lib/metadata/DataGovDk/Model/DataTypes/'
@@ -34,6 +61,11 @@ xsd2php:
     'KleOnlineDk':                                                                                 'lib/metadata/KleOnlineDk/'
     'WwwFormOnlineDk':                                                                             'lib/metadata/WwwFormOnlineDk/'
     'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd': 'lib/metadata/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/'
+
+    # https://digitaliseringskataloget.dk/integration/sf1500
+    "Digitaliseringskataloget\\Sts6": "lib/metadata/digitaliseringskataloget/Sts6"
+    "Digitaliseringskataloget\\Sagdok3_0_0": "lib/metadata/digitaliseringskataloget/Sagdok3_0_0"
+    "Digitaliseringskataloget\\SF1500\\Organisation6": "lib/metadata/digitaliseringskataloget/SF1500/Organisation6"
 
   xml_namespaces:
     # prefix: namespace

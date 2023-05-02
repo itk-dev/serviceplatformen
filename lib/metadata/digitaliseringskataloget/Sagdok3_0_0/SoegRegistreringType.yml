@@ -1,0 +1,42 @@
+Digitaliseringskataloget\Sagdok3_0_0\SoegRegistreringType:
+    properties:
+        fraTidspunkt:
+            expose: true
+            access_type: public_method
+            serialized_name: FraTidspunkt
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getFraTidspunkt
+                setter: setFraTidspunkt
+            type: Digitaliseringskataloget\Sagdok3_0_0\FraTidspunkt
+        tilTidspunkt:
+            expose: true
+            access_type: public_method
+            serialized_name: TilTidspunkt
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTilTidspunkt
+                setter: setTilTidspunkt
+            type: Digitaliseringskataloget\Sagdok3_0_0\TilTidspunkt
+        livscyklusKode:
+            expose: true
+            access_type: public_method
+            serialized_name: LivscyklusKode
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getLivscyklusKode
+                setter: setLivscyklusKode
+            type: string
+        brugerRef:
+            expose: true
+            access_type: public_method
+            serialized_name: BrugerRef
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getBrugerRef
+                setter: setBrugerRef
+            type: Digitaliseringskataloget\Sagdok3_0_0\BrugerRef

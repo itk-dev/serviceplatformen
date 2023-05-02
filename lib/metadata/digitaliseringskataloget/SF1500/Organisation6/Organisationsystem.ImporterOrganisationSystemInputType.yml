@@ -1,0 +1,27 @@
+Digitaliseringskataloget\SF1500\Organisation6\Organisationsystem\ImporterOrganisationSystemInputType:
+    properties:
+        organisation:
+            expose: true
+            access_type: public_method
+            serialized_name: Organisation
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisation/6/'
+            accessor:
+                getter: getOrganisation
+                setter: setOrganisation
+            type: Digitaliseringskataloget\SF1500\Organisation6\Organisation\Organisation
+        organisationEnhederInput:
+            expose: true
+            access_type: public_method
+            serialized_name: OrganisationEnhederInput
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationsystem/6/'
+            accessor:
+                getter: getOrganisationEnhederInput
+                setter: setOrganisationEnhederInput
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Organisationenhed\OrganisationEnhed>
+            xml_list:
+                inline: false
+                entry_name: OrganisationEnhed
+                skip_when_empty: false
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationenhed/6/'

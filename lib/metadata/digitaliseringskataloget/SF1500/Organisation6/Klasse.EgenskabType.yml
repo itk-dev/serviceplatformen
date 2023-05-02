@@ -1,0 +1,96 @@
+Digitaliseringskataloget\SF1500\Organisation6\Klasse\EgenskabType:
+    properties:
+        virkning:
+            expose: true
+            access_type: public_method
+            serialized_name: Virkning
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getVirkning
+                setter: setVirkning
+            type: Digitaliseringskataloget\Sagdok3_0_0\Virkning
+        brugervendtNoegleTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: BrugervendtNoegleTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getBrugervendtNoegleTekst
+                setter: setBrugervendtNoegleTekst
+            type: string
+        beskrivelseTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: BeskrivelseTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getBeskrivelseTekst
+                setter: setBeskrivelseTekst
+            type: string
+        eksempelTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: EksempelTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getEksempelTekst
+                setter: setEksempelTekst
+            type: string
+        omfangTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: OmfangTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getOmfangTekst
+                setter: setOmfangTekst
+            type: string
+        titelTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: TitelTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTitelTekst
+                setter: setTitelTekst
+            type: string
+        retskildeTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: RetskildeTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getRetskildeTekst
+                setter: setRetskildeTekst
+            type: string
+        aendringsnotatTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: AendringsnotatTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getAendringsnotatTekst
+                setter: setAendringsnotatTekst
+            type: string
+        soegeord:
+            expose: true
+            access_type: public_method
+            serialized_name: Soegeord
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klasse/6/'
+            accessor:
+                getter: getSoegeord
+                setter: setSoegeord
+            xml_list:
+                inline: true
+                entry_name: Soegeord
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klasse/6/'
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Klasse\Soegeord>

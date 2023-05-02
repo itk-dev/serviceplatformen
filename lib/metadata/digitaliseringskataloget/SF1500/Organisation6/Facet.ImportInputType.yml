@@ -1,0 +1,12 @@
+Digitaliseringskataloget\SF1500\Organisation6\Facet\ImportInputType:
+    properties:
+        facet:
+            expose: true
+            access_type: public_method
+            serialized_name: Facet
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/facet/6/'
+            accessor:
+                getter: getFacet
+                setter: setFacet
+            type: Digitaliseringskataloget\SF1500\Organisation6\Facet\Facet

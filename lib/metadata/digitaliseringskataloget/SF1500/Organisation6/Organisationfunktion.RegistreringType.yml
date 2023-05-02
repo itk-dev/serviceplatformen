@@ -1,0 +1,32 @@
+Digitaliseringskataloget\SF1500\Organisation6\Organisationfunktion\RegistreringType:
+    properties:
+        attributListe:
+            expose: true
+            access_type: public_method
+            serialized_name: AttributListe
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationfunktion/6/'
+            accessor:
+                getter: getAttributListe
+                setter: setAttributListe
+            type: Digitaliseringskataloget\SF1500\Organisation6\Organisationfunktion\AttributListe
+        tilstandListe:
+            expose: true
+            access_type: public_method
+            serialized_name: TilstandListe
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationfunktion/6/'
+            accessor:
+                getter: getTilstandListe
+                setter: setTilstandListe
+            type: Digitaliseringskataloget\SF1500\Organisation6\Organisationfunktion\TilstandListe
+        relationListe:
+            expose: true
+            access_type: public_method
+            serialized_name: RelationListe
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationfunktion/6/'
+            accessor:
+                getter: getRelationListe
+                setter: setRelationListe
+            type: Digitaliseringskataloget\SF1500\Organisation6\Organisationfunktion\RelationListe

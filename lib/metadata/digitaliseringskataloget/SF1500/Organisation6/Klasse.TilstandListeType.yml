@@ -1,0 +1,16 @@
+Digitaliseringskataloget\SF1500\Organisation6\Klasse\TilstandListeType:
+    properties:
+        publiceretStatus:
+            expose: true
+            access_type: public_method
+            serialized_name: PubliceretStatus
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klasse/6/'
+            accessor:
+                getter: getPubliceretStatus
+                setter: setPubliceretStatus
+            xml_list:
+                inline: true
+                entry_name: PubliceretStatus
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klasse/6/'
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Klasse\PubliceretStatus>

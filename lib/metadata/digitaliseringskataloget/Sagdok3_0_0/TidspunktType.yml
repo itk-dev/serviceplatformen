@@ -1,0 +1,22 @@
+Digitaliseringskataloget\Sagdok3_0_0\TidspunktType:
+    properties:
+        tidsstempelDatoTid:
+            expose: true
+            access_type: public_method
+            serialized_name: TidsstempelDatoTid
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTidsstempelDatoTid
+                setter: setTidsstempelDatoTid
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime
+        graenseIndikator:
+            expose: true
+            access_type: public_method
+            serialized_name: GraenseIndikator
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getGraenseIndikator
+                setter: setGraenseIndikator
+            type: bool

@@ -1,0 +1,47 @@
+Digitaliseringskataloget\SF1500\Organisation6\Klassifikationsystem\FremsoegObjekthierarkiOutputType:
+    properties:
+        klassifikationer:
+            expose: true
+            access_type: public_method
+            serialized_name: Klassifikationer
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klassifikationsystem/6/'
+            accessor:
+                getter: getKlassifikationer
+                setter: setKlassifikationer
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Klassifikation\FiltreretOejebliksbilledeType>
+            xml_list:
+                inline: false
+                entry_name: FiltreretOejebliksbillede
+                skip_when_empty: false
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klassifikationsystem/6/'
+        facetter:
+            expose: true
+            access_type: public_method
+            serialized_name: Facetter
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klassifikationsystem/6/'
+            accessor:
+                getter: getFacetter
+                setter: setFacetter
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Facet\FiltreretOejebliksbilledeType>
+            xml_list:
+                inline: false
+                entry_name: FiltreretOejebliksbillede
+                skip_when_empty: false
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klassifikationsystem/6/'
+        klasser:
+            expose: true
+            access_type: public_method
+            serialized_name: Klasser
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klassifikationsystem/6/'
+            accessor:
+                getter: getKlasser
+                setter: setKlasser
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Klasse\FiltreretOejebliksbilledeType>
+            xml_list:
+                inline: false
+                entry_name: FiltreretOejebliksbillede
+                skip_when_empty: false
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klassifikationsystem/6/'

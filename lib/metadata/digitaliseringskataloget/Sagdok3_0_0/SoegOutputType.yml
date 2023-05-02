@@ -1,0 +1,27 @@
+Digitaliseringskataloget\Sagdok3_0_0\SoegOutputType:
+    properties:
+        standardRetur:
+            expose: true
+            access_type: public_method
+            serialized_name: StandardRetur
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getStandardRetur
+                setter: setStandardRetur
+            type: Digitaliseringskataloget\Sagdok3_0_0\StandardRetur
+        idListe:
+            expose: true
+            access_type: public_method
+            serialized_name: IdListe
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getIdListe
+                setter: setIdListe
+            type: array<string>
+            xml_list:
+                inline: false
+                entry_name: UUIDIdentifikator
+                skip_when_empty: true
+                namespace: 'urn:oio:sagdok:3.0.0'

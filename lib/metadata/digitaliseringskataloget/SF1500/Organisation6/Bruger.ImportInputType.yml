@@ -1,0 +1,12 @@
+Digitaliseringskataloget\SF1500\Organisation6\Bruger\ImportInputType:
+    properties:
+        bruger:
+            expose: true
+            access_type: public_method
+            serialized_name: Bruger
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/bruger/6/'
+            accessor:
+                getter: getBruger
+                setter: setBruger
+            type: Digitaliseringskataloget\SF1500\Organisation6\Bruger\Bruger

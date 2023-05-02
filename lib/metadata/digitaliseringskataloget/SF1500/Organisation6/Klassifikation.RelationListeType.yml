@@ -1,0 +1,22 @@
+Digitaliseringskataloget\SF1500\Organisation6\Klassifikation\RelationListeType:
+    properties:
+        ansvarlig:
+            expose: true
+            access_type: public_method
+            serialized_name: Ansvarlig
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getAnsvarlig
+                setter: setAnsvarlig
+            type: Digitaliseringskataloget\Sagdok3_0_0\Ansvarlig
+        ejer:
+            expose: true
+            access_type: public_method
+            serialized_name: Ejer
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getEjer
+                setter: setEjer
+            type: Digitaliseringskataloget\Sagdok3_0_0\Ejer
