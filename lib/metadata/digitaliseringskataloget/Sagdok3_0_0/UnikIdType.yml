@@ -1,0 +1,22 @@
+Digitaliseringskataloget\Sagdok3_0_0\UnikIdType:
+    properties:
+        uUIDIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: UUIDIdentifikator
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getUUIDIdentifikator
+                setter: setUUIDIdentifikator
+            type: string
+        uRNIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: URNIdentifikator
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getURNIdentifikator
+                setter: setURNIdentifikator
+            type: string

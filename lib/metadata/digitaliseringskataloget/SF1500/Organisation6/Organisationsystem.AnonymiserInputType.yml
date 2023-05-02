@@ -1,0 +1,22 @@
+Digitaliseringskataloget\SF1500\Organisation6\Organisationsystem\AnonymiserInputType:
+    properties:
+        personUUID:
+            expose: true
+            access_type: public_method
+            serialized_name: PersonUUID
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationsystem/6/'
+            accessor:
+                getter: getPersonUUID
+                setter: setPersonUUID
+            type: string
+        personCPR:
+            expose: true
+            access_type: public_method
+            serialized_name: PersonCPR
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationsystem/6/'
+            accessor:
+                getter: getPersonCPR
+                setter: setPersonCPR
+            type: string

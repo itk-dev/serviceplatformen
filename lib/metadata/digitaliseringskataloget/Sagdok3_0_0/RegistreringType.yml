@@ -1,0 +1,42 @@
+Digitaliseringskataloget\Sagdok3_0_0\RegistreringType:
+    properties:
+        noteTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: NoteTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getNoteTekst
+                setter: setNoteTekst
+            type: string
+        tidspunkt:
+            expose: true
+            access_type: public_method
+            serialized_name: Tidspunkt
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTidspunkt
+                setter: setTidspunkt
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime
+        livscyklusKode:
+            expose: true
+            access_type: public_method
+            serialized_name: LivscyklusKode
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getLivscyklusKode
+                setter: setLivscyklusKode
+            type: string
+        brugerRef:
+            expose: true
+            access_type: public_method
+            serialized_name: BrugerRef
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getBrugerRef
+                setter: setBrugerRef
+            type: Digitaliseringskataloget\Sagdok3_0_0\BrugerRef

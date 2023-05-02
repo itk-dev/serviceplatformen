@@ -1,0 +1,22 @@
+Digitaliseringskataloget\SF1500\Organisation6\Adresse\RegistreringBeskedType:
+    properties:
+        objektID:
+            expose: true
+            access_type: public_method
+            serialized_name: ObjektID
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/adresse/6/'
+            accessor:
+                getter: getObjektID
+                setter: setObjektID
+            type: Digitaliseringskataloget\Sagdok3_0_0\UnikIdType
+        registrering:
+            expose: true
+            access_type: public_method
+            serialized_name: Registrering
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/adresse/6/'
+            accessor:
+                getter: getRegistrering
+                setter: setRegistrering
+            type: Digitaliseringskataloget\SF1500\Organisation6\Adresse\Registrering

@@ -1,0 +1,22 @@
+Digitaliseringskataloget\SF1500\Organisation6\Klasse\PubliceretStatusType:
+    properties:
+        virkning:
+            expose: true
+            access_type: public_method
+            serialized_name: Virkning
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getVirkning
+                setter: setVirkning
+            type: Digitaliseringskataloget\Sagdok3_0_0\Virkning
+        erPubliceretIndikator:
+            expose: true
+            access_type: public_method
+            serialized_name: ErPubliceretIndikator
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getErPubliceretIndikator
+                setter: setErPubliceretIndikator
+            type: bool

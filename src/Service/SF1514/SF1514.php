@@ -84,12 +84,12 @@ class SF1514
             return $token;
         });
 
-        if (null === $token) {
-            throw new SAMLTokenException('Could not fetch SAML token.');
+        if (empty($token) || !is_string($token)) {
+            throw new SAMLTokenException('Cannot not fetch SAML token.');
         }
 
         // Check SAML token expiration time (with offset) to make sure that it is still valid.
-        if (null !== $token && $this->getSAMLTokenExpirationTime($token)->modify($expirationTimeOffset) <= new \DateTimeImmutable()) {
+        if ($this->getSAMLTokenExpirationTime($token)->modify($expirationTimeOffset) <= new \DateTimeImmutable()) {
             // Remove expired token from cache and get a new token.
             $cache->delete($cacheKey);
             return $this->getSAMLToken();
@@ -98,7 +98,7 @@ class SF1514
         return $token;
     }
 
-    private function getCache()
+    private function getCache(): CacheInterface
     {
         return $this->options['cache'];
     }

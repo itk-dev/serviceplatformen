@@ -1,0 +1,12 @@
+Digitaliseringskataloget\SF1500\Organisation6\Organisation\ImportInputType:
+    properties:
+        organisation:
+            expose: true
+            access_type: public_method
+            serialized_name: Organisation
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisation/6/'
+            accessor:
+                getter: getOrganisation
+                setter: setOrganisation
+            type: Digitaliseringskataloget\SF1500\Organisation6\Organisation\Organisation

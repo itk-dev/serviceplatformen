@@ -1,0 +1,92 @@
+Digitaliseringskataloget\SF1500\Organisation6\Facet\EgenskabType:
+    properties:
+        virkning:
+            expose: true
+            access_type: public_method
+            serialized_name: Virkning
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getVirkning
+                setter: setVirkning
+            type: Digitaliseringskataloget\Sagdok3_0_0\Virkning
+        brugervendtNoegleTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: BrugervendtNoegleTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getBrugervendtNoegleTekst
+                setter: setBrugervendtNoegleTekst
+            type: string
+        titelTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: TitelTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getTitelTekst
+                setter: setTitelTekst
+            type: string
+        beskrivelseTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: BeskrivelseTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getBeskrivelseTekst
+                setter: setBeskrivelseTekst
+            type: string
+        opbygningTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: OpbygningTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getOpbygningTekst
+                setter: setOpbygningTekst
+            type: string
+        ophavsretTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: OphavsretTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getOphavsretTekst
+                setter: setOphavsretTekst
+            type: string
+        planIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: PlanIdentifikator
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getPlanIdentifikator
+                setter: setPlanIdentifikator
+            type: string
+        supplementTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: SupplementTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getSupplementTekst
+                setter: setSupplementTekst
+            type: string
+        retskildeTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: RetskildeTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getRetskildeTekst
+                setter: setRetskildeTekst
+            type: string

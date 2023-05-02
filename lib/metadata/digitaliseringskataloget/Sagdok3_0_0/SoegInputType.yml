@@ -1,0 +1,42 @@
+Digitaliseringskataloget\Sagdok3_0_0\SoegInputType:
+    properties:
+        foersteResultatReference:
+            expose: true
+            access_type: public_method
+            serialized_name: FoersteResultatReference
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getFoersteResultatReference
+                setter: setFoersteResultatReference
+            type: int
+        maksimalAntalKvantitet:
+            expose: true
+            access_type: public_method
+            serialized_name: MaksimalAntalKvantitet
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getMaksimalAntalKvantitet
+                setter: setMaksimalAntalKvantitet
+            type: int
+        soegRegistrering:
+            expose: true
+            access_type: public_method
+            serialized_name: SoegRegistrering
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getSoegRegistrering
+                setter: setSoegRegistrering
+            type: Digitaliseringskataloget\Sagdok3_0_0\SoegRegistrering
+        soegVirkning:
+            expose: true
+            access_type: public_method
+            serialized_name: SoegVirkning
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getSoegVirkning
+                setter: setSoegVirkning
+            type: Digitaliseringskataloget\Sagdok3_0_0\SoegVirkning

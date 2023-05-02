@@ -12,3 +12,9 @@ parameters:
         - '#expects DigitalPost\\MeMo\\(.+)(\|null)?, DigitalPost\\MeMo\\\1\\\1AType given.#'
         - '#expects DataGovDk\\Model\\Core\\(.+)(\|null)?, DataGovDk\\Model\\Core\\\1\\\1AType given.#'
         - '#expects array<DigitalPost\\MeMo\\(.+)>(\|null)?, array<int, DigitalPost\\MeMo\\\1\\\1AType> given.#'
+
+        # These errors may be related to classes that don't add anything to their base class (e.g. `class BrugerFlerRelationType extends FlerRelationType {}`)
+        - '#expects ItkDev\\Serviceplatformen\\SF1500\\Bruger\\StructType\\PersonFlerRelationType, ItkDev\\Serviceplatformen\\SF1500\\Bruger\\StructType\\FlerRelationType given.#'
+        - '#expects ItkDev\\Serviceplatformen\\SF1500\\OrganisationFunktion\\StructType\\BrugerFlerRelationType, ItkDev\\Serviceplatformen\\SF1500\\OrganisationFunktion\\StructType\\FlerRelationType given.#'
+        - '#expects ItkDev\\Serviceplatformen\\SF1500\\OrganisationFunktion\\StructType\\KlasseRelationType\|null, ItkDev\\Serviceplatformen\\SF1500\\OrganisationFunktion\\StructType\\RelationType given.#'
+        - '#expects ItkDev\\Serviceplatformen\\SF1500\\OrganisationFunktion\\StructType\\OrganisationEnhedFlerRelationType, ItkDev\\Serviceplatformen\\SF1500\\OrganisationFunktion\\StructType\\FlerRelationType given.#'

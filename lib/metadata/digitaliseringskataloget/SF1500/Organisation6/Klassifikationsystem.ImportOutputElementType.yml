@@ -1,0 +1,22 @@
+Digitaliseringskataloget\SF1500\Organisation6\Klassifikationsystem\ImportOutputElementType:
+    properties:
+        uUIDIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: UUIDIdentifikator
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getUUIDIdentifikator
+                setter: setUUIDIdentifikator
+            type: string
+        objektType:
+            expose: true
+            access_type: public_method
+            serialized_name: ObjektType
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/klassifikation/klassifikationsystem/6/'
+            accessor:
+                getter: getObjektType
+                setter: setObjektType
+            type: string

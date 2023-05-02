@@ -1,0 +1,16 @@
+Digitaliseringskataloget\SF1500\Organisation6\Organisationsystem\OrganisationEnhederInputType:
+    properties:
+        organisationEnhed:
+            expose: true
+            access_type: public_method
+            serialized_name: OrganisationEnhed
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationenhed/6/'
+            accessor:
+                getter: getOrganisationEnhed
+                setter: setOrganisationEnhed
+            xml_list:
+                inline: true
+                entry_name: OrganisationEnhed
+                namespace: 'http://stoettesystemerne.dk/organisation/organisationenhed/6/'
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Organisationenhed\OrganisationEnhed>

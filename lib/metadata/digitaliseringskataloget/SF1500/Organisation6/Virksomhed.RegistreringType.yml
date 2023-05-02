@@ -1,0 +1,37 @@
+Digitaliseringskataloget\SF1500\Organisation6\Virksomhed\RegistreringType:
+    properties:
+        attributListe:
+            expose: true
+            access_type: public_method
+            serialized_name: AttributListe
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/virksomhed/6/'
+            accessor:
+                getter: getAttributListe
+                setter: setAttributListe
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Virksomhed\Egenskab>
+            xml_list:
+                inline: false
+                entry_name: Egenskab
+                skip_when_empty: false
+                namespace: 'http://stoettesystemerne.dk/organisation/virksomhed/6/'
+        tilstandListe:
+            expose: true
+            access_type: public_method
+            serialized_name: TilstandListe
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/virksomhed/6/'
+            accessor:
+                getter: getTilstandListe
+                setter: setTilstandListe
+            type: Digitaliseringskataloget\SF1500\Organisation6\Virksomhed\TilstandListe
+        relationListe:
+            expose: true
+            access_type: public_method
+            serialized_name: RelationListe
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/virksomhed/6/'
+            accessor:
+                getter: getRelationListe
+                setter: setRelationListe
+            type: Digitaliseringskataloget\SF1500\Organisation6\Virksomhed\RelationListe

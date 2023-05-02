@@ -10,34 +10,85 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
+use ItkDev\GetOrganized\Service;
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
 use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
-use ItkDev\Serviceplatformen\Service\SoapClient;
+use ItkDev\Serviceplatformen\SF1500\Adresse\ClassMap as AdresseClassMap;
+use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\_List as AdresseList;
+use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Laes as AdresseLaes;
+use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Soeg as AdresseSoeg;
+use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\LaesInputType as AdresseLaesInputType;
+use ItkDev\Serviceplatformen\SF1500\Adresse\StructType\LaesOutputType as AdresseLaesOutputType;
+use ItkDev\Serviceplatformen\SF1500\Bruger\ClassMap as BrugerClassMap;
+use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\_List as BrugerList;
+use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Laes as BrugerLaes;
+use ItkDev\Serviceplatformen\SF1500\Bruger\ServiceType\Soeg as BrugerSoeg;
+use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesInputType as BrugerLaesInputType;
+use ItkDev\Serviceplatformen\SF1500\Bruger\StructType\LaesOutputType as BrugerLaesOutputType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\ClassMap as OrganisationEnhedClassMap;
+use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\ServiceType\_List as OrganisationEnhedList;
+use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\ServiceType\Laes as OrganisationEnhedLaes;
+use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\ServiceType\Soeg as OrganisationEnhedSoeg;
+use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\StructType\LaesInputType as OrganisationEnhedLaesInputType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationEnhed\StructType\LaesOutputType as OrganisationEnhedLaesOutputType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ClassMap as OrganisationFunktionClassMap;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ServiceType\_List as OrganisationFunktionList;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ServiceType\Laes as OrganisationFunktionLaes;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\ServiceType\Soeg as OrganisationFunktionSoeg;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\AttributListeType as OrganisationFunktionAttributListeType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\BrugerFlerRelationType as OrganisationFunktionBrugerFlerRelationType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\EgenskabType as OrganisationFunktionEgenskabType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\KlasseRelationType as OrganisationFunktionKlasseRelationType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\LaesInputType as OrganisationFunktionLaesInputType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\LaesOutputType as OrganisationFunktionLaesOutputType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\OrganisationEnhedFlerRelationType as OrganisationFunktionOrganisationEnhedFlerRelationType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\RelationListeType as OrganisationFunktionRelationListeType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\SoegInputType as OrganisationFunktionSoegInputType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\SoegOutputType as OrganisationFunktionSoegOutputType;
+use ItkDev\Serviceplatformen\SF1500\OrganisationFunktion\StructType\UnikIdType as OrganisationFunktionUnikIdType;
+use ItkDev\Serviceplatformen\SF1500\Person\ClassMap as PersonClassMap;
+use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\_List as PersonList;
+use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Laes as PersonLaes;
+use ItkDev\Serviceplatformen\SF1500\Person\ServiceType\Soeg as PersonSoeg;
+use ItkDev\Serviceplatformen\SF1500\Person\StructType\LaesInputType as PersonLaesInputType;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class SF1500
 {
-    private SoapClient $client;
-    private PropertyAccessor $propertyAccessor;
+    /**
+     * Client instances indexed by class name.
+     * @var array
+     */
+    protected array $clients = [];
+
+    /**
+     * Service instances indexed by class name.
+     * @var array
+     */
+    protected array $services = [];
+
     private SF1500XMLBuilder $xmlBuilder;
     private SF1514 $sf1514;
-    private array $options;
+    protected array $options;
 
-    public function __construct(SoapClient $client, SF1514 $sf1514, SF1500XMLBuilder $xmlBuilder, PropertyAccessor $propertyAccessor, array $options)
+    private static bool|null $shutdownFunctionRegistered = null;
+
+    public function __construct(SF1514 $sf1514, array $options)
     {
-        $this->client = $client;
         $this->sf1514 = $sf1514;
-        $this->xmlBuilder = $xmlBuilder;
-        $this->propertyAccessor = $propertyAccessor;
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
+        $this->xmlBuilder = new SF1500XMLBuilder();
+        $this->options = $this->resolveOptions($options);
+
+        if (!self::$shutdownFunctionRegistered) {
+            register_shutdown_function(self::shutdown(...));
+            self::$shutdownFunctionRegistered = true;
+        }
     }
 
     /**
@@ -45,44 +96,55 @@ class SF1500
      */
     public function getPersonName(string $brugerId): string
     {
-        $data = $this->brugerLaes($brugerId);
+        try {
+            $response = $this->brugerLaes($brugerId);
 
-        $personIdKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3RelationListe',
-            'ns2TilknyttedePersoner',
-            'ns2ReferenceID',
-            'ns2UUIDIdentifikator',
-        ];
-
-        $personId = $this->getValue($data, $personIdKeys);
-
-        if (null === $personId) {
-            throw new SF1500Exception('Cannot find person id.');
+            $personId = $response
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getRelationListe()->getTilknyttedePersoner()[0]
+              ->getReferenceID()
+              ->getUUIDIdentifikator();
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception(sprintf('Cannot find person id for bruger id %s', $brugerId), $throwable->getCode(), $throwable);
         }
 
-        $data = $this->personLaes($personId);
+        try {
+            $personLaesClient = $this->getClient(PersonLaes::class);
+            $response = $personLaesClient->laes(new PersonLaesInputType($personId));
 
-        $navnTekstKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3AttributListe',
-            'ns3Egenskab',
-            'ns3NavnTekst',
-        ];
-
-        return $this->getValue($data, $navnTekstKeys, '');
+            return $response
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getAttributListe()
+              ->getEgenskab()[0]
+              ->getNavnTekst();
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception(sprintf('Cannot find person name for person id %s', $personId), $throwable->getCode(), $throwable);
+        }
     }
 
-    /**
-     * Fetches person phone from SF1500.
-     */
+  /**
+   * Fetches person az ident from SF1500.
+   */
+    public function getPersonAZIdent(string $brugerId): string
+    {
+        $response = $this->brugerLaes($brugerId);
+
+        return $response
+        ->getFiltreretOejebliksbillede()
+        ->getRegistrering()[0]
+        ->getAttributListe()
+        ->getEgenskab()[0]
+        ->getBrugerNavn();
+    }
+
+  /**
+   * Fetches person phone from SF1500.
+   */
     public function getPersonPhone(string $brugerId): string
     {
-        return $this->getBrugerAdresseAttribut('Mobiltelefon_bruger', $brugerId);
+        return $this->getBrugerAdresse('Mobiltelefon_bruger', $brugerId);
     }
 
     /**
@@ -90,7 +152,7 @@ class SF1500
      */
     public function getPersonLocation(string $brugerId): string
     {
-        return $this->getBrugerAdresseAttribut('Lokation_bruger', $brugerId);
+        return $this->getBrugerAdresse('Lokation_bruger', $brugerId);
     }
 
     /**
@@ -98,7 +160,7 @@ class SF1500
      */
     public function getPersonEmail(string $brugerId): string
     {
-        return $this->getBrugerAdresseAttribut('Email_bruger', $brugerId);
+        return $this->getBrugerAdresse('Email_bruger', $brugerId);
     }
 
     /**
@@ -114,16 +176,10 @@ class SF1500
      */
     public function soegOrganisationFunktioner(?string $brugerId, ?string $funktionsNavn, ?string $organisationId, ?string $funktionsTypeId): array
     {
-        $data = $this->organisationFunktionSoeg($brugerId, $funktionsNavn, $organisationId, $funktionsTypeId);
+        $response = $this->organisationFunktionSoeg($brugerId, $funktionsNavn, $organisationId, $funktionsTypeId);
+        $idListe = $response->getIdListe();
 
-        $idListeKeys = [
-            'ns3SoegOutput',
-            'ns2IdListe',
-            'ns2UUIDIdentifikator',
-        ];
-
-        // If only one result is found convert it into array with one entry.
-        return (array)$this->getValue($data, $idListeKeys, []);
+        return null === $idListe ? [] : ($idListe->getUUIDIdentifikator() ?? []);
     }
 
     /**
@@ -131,40 +187,30 @@ class SF1500
      */
     public function getOrganisationEnhed(string $funktionsId, bool $returnOrganisationID = false): string
     {
-        $data = $this->organisationFunktionLaes($funktionsId);
-
-        $tilknyttedeEnhederKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3RelationListe',
-            'ns2TilknyttedeEnheder',
-            'ns2ReferenceID',
-            'ns2UUIDIdentifikator',
-        ];
-
-        $orgEnhedId = $this->getValue($data, $tilknyttedeEnhederKeys);
-
-        if (null === $orgEnhedId) {
-            throw new SF1500Exception('Cannot find organisation enheds id.');
+        try {
+            $response = $this->organisationFunktionLaes($funktionsId);
+            $orgEnhedId = $response
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getRelationListe()
+              ->getTilknyttedeEnheder()[0]
+              ->getReferenceID()
+              ->getUUIDIdentifikator();
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception(sprintf('Cannot find organisation enheds id for funktionsid %s', $funktionsId), $throwable->getCode(), $throwable);
         }
 
         if ($returnOrganisationID) {
             return $orgEnhedId;
         }
 
-        $data = $this->organisationEnhedLaes($orgEnhedId);
-
-        $enhedsNavnKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3AttributListe',
-            'ns3Egenskab',
-            'ns2EnhedNavn',
-        ];
-
-        return $this->getValue($data, $enhedsNavnKeys, '');
+        return $this
+          ->organisationEnhedLaes($orgEnhedId)
+          ->getFiltreretOejebliksbillede()
+          ->getRegistrering()[0]
+          ->getAttributListe()
+          ->getEgenskab()[0]
+          ->getEnhedNavn();
     }
 
     /**
@@ -172,18 +218,13 @@ class SF1500
      */
     public function getFunktionsNavn(string $funktionsId): string
     {
-        $data = $this->organisationFunktionLaes($funktionsId);
-
-        $funktionsNavnKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3AttributListe',
-            'ns3Egenskab',
-            'ns2FunktionNavn',
-        ];
-
-        return $this->getValue($data, $funktionsNavnKeys, '');
+        $response = $this->organisationFunktionLaes($funktionsId);
+        return $response
+          ->getFiltreretOejebliksbillede()
+          ->getRegistrering()[0]
+          ->getAttributListe()
+          ->getEgenskab()[0]
+          ->getFunktionNavn();
     }
 
     /**
@@ -191,63 +232,37 @@ class SF1500
      */
     public function getOrganisationEnhedNiveauTo(string $funktionsId): string
     {
-        $orgEnhedId = $this->getOrganisationEnhed($funktionsId, true);
+        try {
+            $orgEnhedId = $this->getOrganisationEnhed($funktionsId, true);
 
-        if (empty($orgEnhedId)) {
-            return '';
+            if (empty($orgEnhedId)) {
+                return '';
+            }
+
+            // Niveau 1.
+            $response = $this->organisationEnhedLaes($orgEnhedId);
+            $orgEnhedId = $response
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getRelationListe()
+              ->getOverordnet()
+              ->getReferenceID()
+              ->getUUIDIdentifikator();
+
+            if (null === $orgEnhedId) {
+                throw new SF1500Exception('Cannot find organisation enheds id');
+            }
+
+            $response = $this->organisationEnhedLaes($orgEnhedId);
+            return $response
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getAttributListe()
+              ->getEgenskab()[0]
+              ->getEnhedNavn();
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception('Cannot find organisation enheds id', $throwable->getCode(), $throwable);
         }
-
-        // Level 1.
-        $data = $this->organisationEnhedLaes($orgEnhedId);
-
-        $overordnetKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3RelationListe',
-            'ns2Overordnet',
-            'ns2ReferenceID',
-            'ns2UUIDIdentifikator',
-        ];
-
-        // Level 2.
-        $orgEnhedId = $this->getValue($data, $overordnetKeys);
-
-        if (null === $orgEnhedId) {
-            throw new SF1500Exception('Cannot find organisation enheds id.');
-        }
-
-        $data = $this->organisationEnhedLaes($orgEnhedId);
-
-        $enhedsNavnKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3AttributListe',
-            'ns3Egenskab',
-            'ns2EnhedNavn',
-        ];
-
-        return $this->getValue($data, $enhedsNavnKeys, '');
-    }
-
-    /**
-     * Fetches person az ident from SF1500.
-     */
-    public function getPersonAZIdent(string $brugerId): string
-    {
-        $data = $this->brugerLaes($brugerId);
-
-        $brugerNavnKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3AttributListe',
-            'ns3Egenskab',
-            'ns2BrugerNavn',
-        ];
-
-        return $this->getValue($data, $brugerNavnKeys, '');
     }
 
     /**
@@ -261,56 +276,34 @@ class SF1500
             return '';
         }
 
-        $data = $this->organisationEnhedLaes($orgEnhedId);
+        try {
+            $response = $this->organisationEnhedLaes($orgEnhedId);
+            $adresser = $response
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getRelationListe()
+              ->getAdresser();
 
-        $adresseKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3RelationListe',
-            'ns2Adresser',
-        ];
+            if (is_array($adresser)) {
+                foreach ($adresser as $adresse) {
+                    if ('Postadresse' === $adresse->getRolle()->getLabel()) {
+                        $adresseId = $adresse->getReferenceID()->getUUIDIdentifikator();
+                        $adresse = $this->adresseLaes($adresseId);
 
-        $adresser = $this->getValue($data, $adresseKeys);
-
-        if (!is_array($adresser)) {
-            throw new SF1500Exception('Cannot find organisation address.');
-        }
-
-        $adresseTekstKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3AttributListe',
-            'ns3Egenskab',
-            'ns4AdresseTekst',
-        ];
-
-        $adresseRolleLabelKeys = [
-            'ns2Rolle',
-            'ns2Label',
-        ];
-
-        $adresseReferenceUuidKeys = [
-            'ns2ReferenceID',
-            'ns2UUIDIdentifikator',
-        ];
-
-        foreach ($adresser as $adresse) {
-            if ('Postadresse' === $this->getValue($adresse, $adresseRolleLabelKeys)) {
-                $adresseId = $this->getValue($adresse, $adresseReferenceUuidKeys);
-
-                if (null === $adresseId) {
-                    continue;
+                        return $adresse
+                            ->getFiltreretOejebliksbillede()
+                            ->getRegistrering()[0]
+                            ->getAttributListe()
+                            ->getEgenskab()[0]
+                            ->getAdresseTekst();
+                    }
                 }
-
-                $data = $this->adresseLaes($adresseId);
-
-                return $this->getValue($data, $adresseTekstKeys, '');
             }
-        }
 
-        return '';
+            return '';
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception(sprintf('Cannot find organisation address for funktionsid %s', $funktionsId), $throwable->getCode(), $throwable);
+        }
     }
 
     /**
@@ -324,22 +317,15 @@ class SF1500
             return '';
         }
 
-        $data = $this->organisationEnhedLaes($orgEnhedId);
-
-
-        $enhedsNavnKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3AttributListe',
-            'ns3Egenskab',
-            'ns2EnhedNavn',
-        ];
-
-        $enhedNavn = $this->getValue($data, $enhedsNavnKeys);
+        $response = $this->organisationEnhedLaes($orgEnhedId);
+        $enhedNavn = $response
+          ->getFiltreretOejebliksbillede()
+          ->getRegistrering()[0]
+          ->getAttributListe()
+          ->getEgenskab()[0]
+          ->getEnhedNavn();
 
         $data = $this->getEnhedNavnOgOverordnetOrganisationsId($orgEnhedId);
-
         while ($orgEnhedId = $data['overordnet_id']) {
             $enhedNavn = $data['enhedNavn'];
             $data = $this->getEnhedNavnOgOverordnetOrganisationsId($orgEnhedId);
@@ -353,30 +339,32 @@ class SF1500
      */
     public function getEnhedNavnOgOverordnetOrganisationsId($organisationEnhedsId): array
     {
-        $data = $this->organisationEnhedLaes($organisationEnhedsId);
+        $overordnetId = null;
+        $enhedNavn = null;
 
-        $overordnetKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3RelationListe',
-            'ns2Overordnet',
-            'ns2ReferenceID',
-            'ns2UUIDIdentifikator',
-        ];
+        try {
+            $data = $this->organisationEnhedLaes($organisationEnhedsId);
+            $registrering = $data
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0];
 
-        $enhedsNavnKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3AttributListe',
-            'ns3Egenskab',
-            'ns2EnhedNavn',
-        ];
+            $overordnetId = $registrering
+              ->getRelationListe()
+              ->getOverordnet()
+              ->getReferenceID()
+              ->getUUIDIdentifikator();
+
+            $enhedNavn = $registrering
+              ->getAttributListe()
+              ->getEgenskab()[0]
+              ->getEnhedNavn();
+        } catch (\Throwable $throwable) {
+            // Ignore any errors.
+        }
 
         return [
-            'overordnet_id' => $this->getValue($data, $overordnetKeys),
-            'enhedNavn' => $this->getValue($data, $enhedsNavnKeys),
+          'overordnet_id' => $overordnetId,
+          'enhedNavn' => $enhedNavn,
         ];
     }
 
@@ -399,7 +387,11 @@ class SF1500
             $managerInfo = $this->getManagerBrugerAndFunktionsIdFromFunktionsId($id, $managerFunktionsTypeId);
 
             if (!empty($managerInfo)) {
-                $managers[] = $managerInfo;
+                // A user cannot be its own manager.
+                $managers[] = array_filter(
+                    $managerInfo,
+                    static fn (array $info) => $info['brugerId'] !== $userId
+                );
             }
         }
 
@@ -463,64 +455,34 @@ class SF1500
 
     public function getOrganisationFunktionsTypeFromOrganisationFunktion($id): string
     {
-        $data = $this->laesOrganisationFunktion($id);
-
-        $enhedsNavnKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3RelationListe',
-            'ns2Funktionstype',
-            'ns2ReferenceID',
-            'ns2UUIDIdentifikator',
-        ];
-
-        $organisationFunktionsTypeId = $this->getValue($data, $enhedsNavnKeys);
-
-        if (null === $organisationFunktionsTypeId) {
-            throw new SF1500Exception(sprintf('Cannot find organisation funktions type for organisation funktion id %s', $id));
+        try {
+            return $this
+              ->organisationFunktionLaes($id)
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getRelationListe()
+              ->getFunktionstype()
+              ->getReferenceID()
+              ->getUUIDIdentifikator();
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception(sprintf('Cannot find organisation funktions type for organisation funktion id %s', $id), $throwable->getCode(), $throwable);
         }
-
-        return $organisationFunktionsTypeId;
-    }
-
-
-    public function getPersonLaes($personId): array
-    {
-        return $this->personLaes($personId);
-    }
-
-    public function getPersonSoeg($name): array
-    {
-        return $this->personSoeg($name);
-    }
-
-    public function laesOrganisationFunktion($id): array
-    {
-        return $this->organisationFunktionLaes($id);
     }
 
     public function getBrugerIdFromOrganisationFunktion($organisationFunktionsId): string
     {
-        $data = $this->organisationFunktionLaes($organisationFunktionsId);
-
-        $enhedsNavnKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3RelationListe',
-            'ns2TilknyttedeBrugere',
-            'ns2ReferenceID',
-            'ns2UUIDIdentifikator',
-        ];
-
-        $enhedsNavn = $this->getValue($data, $enhedsNavnKeys);
-
-        if (null === $enhedsNavn) {
-            throw new SF1500Exception(sprintf('Cannot read bruger id from organisation funktion %s', $organisationFunktionsId));
+        try {
+            return $this
+              ->organisationFunktionLaes($organisationFunktionsId)
+              ->getFiltreretOejebliksbillede()
+              ->getRegistrering()[0]
+              ->getRelationListe()
+              ->getTilknyttedeBrugere()[0]
+              ->getReferenceID()
+              ->getUUIDIdentifikator();
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception(sprintf('Cannot read bruger id from organisation funktion %s', $organisationFunktionsId), $throwable->getCode(), $throwable);
         }
-
-        return $this->getValue($data, $enhedsNavnKeys);
     }
 
     /**
@@ -551,292 +513,114 @@ class SF1500
     }
 
     /**
-     * Creates XML request.
-     */
-    private function createXMLRequest(string $header, string $body): string
-    {
-        return <<<XML
-    <s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing" xmlns:u="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">$header$body</s:Envelope>
-    XML;
-    }
-
-    /**
-     * Converts XML response to array.
-     */
-    private function responseXMLToArray(string $response): array
-    {
-        // Handle xml namespaces.
-        $response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $response);
-        $xml = simplexml_load_string($response);
-        $body = $xml->xpath('//soapBody')[0];
-        return json_decode(json_encode((array) $body), true);
-    }
-
-    /**
      * Performs bruger laes action.
      */
-    private function brugerLaes($brugerId): array
+    private function brugerLaes($brugerId): BrugerLaesOutputType
     {
-        $endpoint = $this->generateServiceEndpoint('/organisation/bruger/6/');
-        $action = 'http://kombit.dk/sts/organisation/bruger/laes';
-
-
-        $header = $this->buildHeaderXML($endpoint, $action);
-        $body = $this->xmlBuilder->buildBodyBrugerLaesXML($brugerId);
-        $request = $this->createXMLRequest($header, $body);
-
-        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-
-        $cacheKeyOptions = [
-            __METHOD__,
-            $brugerId,
-        ];
-
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
-
-        return $this->responseXMLToArray($response);
+        $brugerLaesClient = $this->getClient(BrugerLaes::class);
+        return $brugerLaesClient->laes(new BrugerLaesInputType($brugerId));
     }
 
     /**
      * Performs adresse laes action.
      */
-    private function adresseLaes($adresseID): array
+    private function adresseLaes($adresseId): AdresseLaesOutputType
     {
-        $endpoint = $this->generateServiceEndpoint('/organisation/adresse/6/');
-        $action = 'http://kombit.dk/sts/organisation/adresse/laes';
-
-        $header = $this->buildHeaderXML($endpoint, $action);
-        $body = $this->xmlBuilder->buildBodyAdresseLaesXML($adresseID);
-        $request = $this->createXMLRequest($header, $body);
-
-        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-
-        $cacheKeyOptions = [
-            __METHOD__,
-            $adresseID,
-        ];
-
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
-
-        return $this->responseXMLToArray($response);
+        return $this->getClient(AdresseLaes::class)
+          ->laes(new AdresseLaesInputType($adresseId));
     }
 
     /**
      * Performs organisation enhed laes action.
      */
-    private function organisationEnhedLaes($orgEnhedId): array
+    private function organisationEnhedLaes($orgEnhedId): ?OrganisationEnhedLaesOutputType
     {
-        $endpoint = $this->generateServiceEndpoint('/organisation/organisationenhed/6/');
-        $action = 'http://kombit.dk/sts/organisation/organisationenhed/laes';
-
-        $body = $this->xmlBuilder->buildBodyOrganisationEnhedLaesXML($orgEnhedId);
-        $header = $this->buildHeaderXML($endpoint, $action);
-        $request = $this->createXMLRequest($header, $body);
-
-        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-
-        $cacheKeyOptions = [
-            __METHOD__,
-            $orgEnhedId,
-        ];
-
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
-
-        return $this->responseXMLToArray($response);
+        return $this->getClient(OrganisationEnhedLaes::class)
+          ->laes(new OrganisationEnhedLaesInputType($orgEnhedId)) ?: null;
     }
 
     /**
      * Performs organisation funktion laes action.
      */
-    private function organisationFunktionLaes($orgFunktionId): array
+    private function organisationFunktionLaes(string $orgFunktionId): ?OrganisationFunktionLaesOutputType
     {
-        $endpoint = $this->generateServiceEndpoint('/organisation/organisationfunktion/6/');
-        $action = 'http://kombit.dk/sts/organisation/organisationfunktion/laes';
-
-        $body = $this->xmlBuilder->buildBodyOrganisationFunktionLaesXML($orgFunktionId);
-        $header = $this->buildHeaderXML($endpoint, $action);
-        $request = $this->createXMLRequest($header, $body);
-
-        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-
-        $cacheKeyOptions = [
-            __METHOD__,
-            $orgFunktionId,
-        ];
-
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
-
-        return $this->responseXMLToArray($response);
+        return $this
+          ->getClient(OrganisationFunktionLaes::class)
+          ->laes(new OrganisationFunktionLaesInputType($orgFunktionId)) ?: null;
     }
 
     /**
      * Performs organisation funktion soeg action.
      */
-    private function organisationFunktionSoeg(?string $brugerId, ?string $funktionsNavn, ?string $organisationsId, ?string $funktionsTypeId): array
+    private function organisationFunktionSoeg(?string $brugerId, ?string $funktionsNavn, ?string $organisationsId, ?string $funktionsTypeId): ?OrganisationFunktionSoegOutputType
     {
-        $endpoint = $this->generateServiceEndpoint('/organisation/organisationfunktion/6/');
-        $action = 'http://kombit.dk/sts/organisation/organisationfunktion/soeg';
+        $attributListe = new OrganisationFunktionAttributListeType();
+        if (null !== $funktionsNavn) {
+            $attributListe->addToEgenskab((new OrganisationFunktionEgenskabType())
+              ->setFunktionNavn($funktionsNavn));
+        }
 
-        $body = $this->xmlBuilder->buildBodyOrganisationFunktionSoegXML($brugerId, $funktionsNavn, $organisationsId, $funktionsTypeId);
-        $header = $this->buildHeaderXML($endpoint, $action);
-        $request = $this->createXMLRequest($header, $body);
+        $relationsListe = new OrganisationFunktionRelationListeType();
+        if (null !== $brugerId) {
+            $relationsListe->addToTilknyttedeBrugere((new OrganisationFunktionBrugerFlerRelationType)
+                ->setReferenceID(new OrganisationFunktionUnikIdType($brugerId)));
+        }
+        if (null !== $organisationsId) {
+            // TODO: Why is organisationsId an enhed?!
+            $relationsListe->addToTilknyttedeEnheder((new OrganisationFunktionOrganisationEnhedFlerRelationType())
+              ->setReferenceID(new OrganisationFunktionUnikIdType($organisationsId)));
+        }
+        if (null !== $funktionsTypeId) {
+            $relationsListe->setFunktionstype((new OrganisationFunktionKlasseRelationType)
+                ->setReferenceID(new OrganisationFunktionUnikIdType($funktionsTypeId)));
+        }
 
-        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
+        $request = (new OrganisationFunktionSoegInputType())
+          ->setAttributListe($attributListe)
+          ->setRelationListe($relationsListe);
 
-        $cacheKeyOptions = [
-            __METHOD__,
-            $brugerId,
-            $funktionsNavn,
-            $organisationsId,
-            $funktionsTypeId,
-        ];
-
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
-
-        return $this->responseXMLToArray($response);
-    }
-
-    /**
-     * Performs person laes action.
-     */
-    private function personLaes($personId): array
-    {
-        $endpoint = $this->generateServiceEndpoint('/organisation/person/6/');
-        $action = 'http://kombit.dk/sts/organisation/person/laes';
-
-        $header = $this->buildHeaderXML($endpoint, $action);
-        $body = $this->xmlBuilder->buildBodyPersonLaesXML($personId);
-        $request = $this->createXMLRequest($header, $body);
-
-        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-
-        $cacheKeyOptions = [
-            __METHOD__,
-            $personId,
-        ];
-
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
-
-        return $this->responseXMLToArray($response);
-    }
-
-    /**
-     * Performs person soeg action.
-     */
-    private function personSoeg($name): array
-    {
-        $endpoint = $this->generateServiceEndpoint('/organisation/person/6/');
-        $action = 'http://kombit.dk/sts/organisation/person/soeg';
-
-        $header = $this->buildHeaderXML($endpoint, $action);
-        $body = $this->xmlBuilder->buildBodyPersonSoegXML($name);
-        $request = $this->createXMLRequest($header, $body);
-
-        $requestSigned = $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
-
-        $cacheKeyOptions = [
-            __METHOD__,
-            $name,
-        ];
-
-        $response = $this->client->doSoap($endpoint, $requestSigned, $action, false, $cacheKeyOptions);
-
-        return $this->responseXMLToArray($response);
+        return $this
+          ->getClient(OrganisationFunktionSoeg::class)
+          ->soeg($request) ?: null;
     }
 
     /**
      * Fetches bruger adresse attribut.
      */
-    private function getBrugerAdresseAttribut(string $attribute, string $brugerId): string
+    private function getBrugerAdresse(string $rolle, string $brugerId): string
     {
-        $data = $this->brugerLaes($brugerId);
+        try {
+            $brugerLaesClient = $this->getClient(BrugerLaes::class);
+            $response = $brugerLaesClient->laes(new BrugerLaesInputType($brugerId));
 
-        $adresseKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3RelationListe',
-            'ns2Adresser',
-        ];
+            $adresser = $response
+                ->getFiltreretOejebliksbillede()
+                ->getRegistrering()[0]
+                ->getRelationListe()
+                ->getAdresser();
 
-        $adresser = $this->getValue($data, $adresseKeys);
+            foreach ($adresser as $adresse) {
+                if ($rolle === $adresse->getRolle()->getLabel()) {
+                    $adresse = $this->adresseLaes($adresse->getReferenceID()->getUUIDIdentifikator());
 
-        if (!is_array($adresser)) {
-            throw new SF1500Exception('Cannot find organisation address.');
-        }
-
-        $adresseTekstKeys = [
-            'ns3LaesOutput',
-            'ns3FiltreretOejebliksbillede',
-            'ns3Registrering',
-            'ns3AttributListe',
-            'ns3Egenskab',
-            'ns4AdresseTekst',
-        ];
-
-        $adresseRolleLabelKeys = [
-            'ns2Rolle',
-            'ns2Label',
-        ];
-
-        $adresseReferenceUuidKeys = [
-            'ns2ReferenceID',
-            'ns2UUIDIdentifikator',
-        ];
-
-        foreach ($adresser as $adresse) {
-            if ($this->getValue($adresse, $adresseRolleLabelKeys) === $attribute) {
-                $adresseId = $this->getValue($adresse, $adresseReferenceUuidKeys);
-
-                if (null === $adresseId) {
-                    continue;
+                    return $adresse
+                      ->getFiltreretOejebliksbillede()
+                      ->getRegistrering()[0]
+                      ->getAttributListe()
+                      ->getEgenskab()[0]
+                      ->getAdresseTekst();
                 }
-
-                $data = $this->adresseLaes($adresseId);
-
-                return $this->getValue($data, $adresseTekstKeys, '');
             }
+
+            return '';
+        } catch (\Throwable $throwable) {
+            throw new SF1500Exception(sprintf('Cannot find adresse %s for bruger id %s', $rolle, $brugerId), $throwable->getCode(), $throwable);
         }
-
-        return '';
     }
 
-    /**
-     * Method for building header XML.
-     */
-    private function buildHeaderXML(string $endpoint, string $action): string
+    private function resolveOptions(array $options): array
     {
-        $token = $this->getSAMLToken();
-        
-        return $this->xmlBuilder->buildHeaderXML($endpoint, $action, $token);
-    }
-
-    /**
-     * Computes full service endpoint.
-     */
-    private function generateServiceEndpoint(string $serviceEndpointPath): string
-    {
-        return $this->options['service_endpoint_domain'].$serviceEndpointPath;
-    }
-
-    /**
-     * Gets value from data according to keys.
-     */
-    private function getValue($data, array $keys, $defaultValue = null)
-    {
-        // @see https://symfony.com/doc/current/components/property_access.html#reading-from-arrays
-        $propertyPath = '[' . implode('][', $keys) . ']';
-
-        if ($this->propertyAccessor->isReadable($data, $propertyPath)) {
-            return $this->propertyAccessor->getValue($data, $propertyPath) ?: $defaultValue;
-        }
-
-        return $defaultValue;
-    }
-
-    private function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver
+        return (new OptionsResolver())
             ->setRequired([
                 'certificate_locator',
                 'authority_cvr',
@@ -859,10 +643,251 @@ class SF1500
                         ? 'https://organisation.eksterntest-stoettesystemerne.dk'
                         : 'https://organisation.stoettesystemerne.dk';
                 },
+                'soap_request_cache_expiration_time' => ['+1 hour'],
+                'soap_service_version' => '6',
+                'organisation-funktion-manager-id' => '46c73630-f7ad-4000-9624-c06131cde671',
             ])
             ->setInfo('saml_token_expiration_time_offset', 'Offset used when checking if SAML token is expired. By default the SAML token expires 8 hours after being issued.')
             ->setAllowedTypes('certificate_locator', CertificateLocatorInterface::class)
             ->setAllowedTypes('cache', CacheInterface::class)
+            ->setAllowedTypes('soap_request_cache_expiration_time', 'string[]')
+            ->setAllowedTypes('soap_service_version', 'string')
+            ->resolve($options)
         ;
+    }
+
+    public function getSoapLocation(string $location): string
+    {
+        $domain = $this->options['service_endpoint_domain'];
+
+        $path = preg_replace('@^.*(?=/organisation/)@', '', $location);
+
+        // Work around typo in WSDL document (remove superfluous 's').
+        $path = preg_replace('@/organisationsenhed$@', '/organisationenhed', $path);
+
+        $soapLocation = $domain.$path.'/'.$this->options['soap_service_version'].'/';
+
+        return $soapLocation;
+    }
+
+
+    private const NS_SOAP_ENVELOPE = 'http://www.w3.org/2003/05/soap-envelope';
+    private const NS_SAGDOK = 'urn:oio:sagdok:3.0.0';
+    private const STATUS_KODE_OK = '20';
+
+    public function formatSoapRequest(
+        string $request,
+        string $location,
+        string $action,
+        int $version,
+        bool $oneWay = false
+    ): string {
+        $doc = new \DOMDocument();
+        $doc->loadXML($request);
+
+        // Set an id.
+        /** @var \DOMElement $body */
+        $body = $doc->getElementsByTagNameNS(self::NS_SOAP_ENVELOPE, 'Body')[0];
+        $body->setAttributeNS(
+            'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd',
+            'u:Id',
+            '_1'
+        );
+
+        $token = $this->getSAMLToken();
+        $this->xmlBuilder->buildSoapHeader($doc->getElementsByTagNameNS(self::NS_SOAP_ENVELOPE, 'Header')[0], $location, $action, $token);
+
+        // HACK!
+        // @see self::getTokenXSLTProcessor().
+        $request = self::getTokenXSLTProcessor($token)->transformToXml($doc);
+
+        return $this->xmlBuilder->buildSignedRequest($request, $this->getPrivateKey());
+    }
+
+    private static array $tokenXSLTProcessors = [];
+
+    /**
+     *
+     * @see https://bugs.php.net/bug.php?id=55294
+     */
+    private static function getTokenXSLTProcessor(string $token): \XSLTProcessor
+    {
+        if (!isset(self::$tokenXSLTProcessors[$token])) {
+            $xsldoc = new \DOMDocument();
+            $xsldoc->load(__DIR__.'/resources/insert-token.xslt');
+
+            $tokenPath = tempnam(sys_get_temp_dir(), sha1($token).'.token.xml');
+            file_put_contents($tokenPath, $token);
+            $xsl = new \XSLTProcessor();
+            $xsl->importStylesheet($xsldoc);
+            $xsl->setParameter('', 'token-path', $tokenPath);
+
+            self::$tokenXSLTProcessors[$token] = [
+                'xsltprocessor' => $xsl,
+                'tokenpath' => $tokenPath,
+            ];
+        }
+
+        return self::$tokenXSLTProcessors[$token]['xsltprocessor'];
+    }
+
+    private static function shutdown()
+    {
+        foreach (self::$tokenXSLTProcessors as $processor) {
+            if ($path = ($processor['tokenpath'] ?? null)) {
+                if (file_exists($path)) {
+                    unlink($path);
+                }
+            }
+        }
+    }
+
+    public function cacheSoapRequest(array $cacheKeys, callable $callable)
+    {
+        $cache = $this->getCache();
+        $cacheKey = $this->getSoapRequestCacheKey(__METHOD__, $cacheKeys);
+        $expirationTime = $this->getSoapRequestCacheExpirationDateTime();
+
+        return $cache->get($cacheKey, function (ItemInterface $item) use ($callable, $expirationTime) {
+            $response = $callable();
+
+            if ($this->preventCaching($response)) {
+                $expirationTime = new \DateTimeImmutable('-1 day');
+            }
+
+            $item->expiresAt($expirationTime);
+
+            return $response;
+        });
+    }
+
+    private function preventCaching(string $response): bool
+    {
+        try {
+            $document = new \DOMDocument();
+            $document->loadXML($response);
+            // Prevent caching if we have a SOAP fault.
+            if ($document->getElementsByTagNameNS(self::NS_SOAP_ENVELOPE, 'Fault')->count() > 0) {
+                return true;
+            }
+
+            // Prevent caching if we get a "not OK" status code.
+            $statusKode = $document->getElementsByTagNameNS(self::NS_SAGDOK, 'StatusKode')->item(0);
+            if (null !== $statusKode && self::STATUS_KODE_OK !== $statusKode->nodeValue) {
+                return true;
+            }
+        } catch (\Throwable) {
+            // Ignore any exceptions.
+        }
+
+        return false;
+    }
+
+    private function getCache(): CacheInterface
+    {
+        return $this->options['cache'];
+    }
+
+    private function getSoapRequestCacheKey(string $key, array $payload): string
+    {
+        return preg_replace(
+            '#[{}()/\\\\@:]+#',
+            '_',
+            $key . '|' . sha1(json_encode($payload+$this->options))
+        );
+    }
+
+    public function getSoapRequestCacheExpirationDateTime(): ?\DateTimeImmutable
+    {
+        $now = new \DateTimeImmutable('now');
+        $times = [];
+        foreach ($this->options['soap_request_cache_expiration_time'] as $spec) {
+            try {
+                $time = $now->modify($spec);
+                if ($time > $now) {
+                    $times[] = $time;
+                }
+            } catch (\Exception $exception) {
+                // Ignore any exceptions.
+            }
+        }
+
+        return empty($times) ? null : min([...$times]);
+    }
+
+    /**
+     * @template Service of ServiceInterface
+     * @param class-string<Service> $className
+     * @return Service
+     */
+    public function getService(string $className): ServiceInterface
+    {
+        if (!isset($this->services[$className])) {
+            $this->services[$className] = new $className($this->sf1514, $this->options);
+        }
+
+        return $this->services[$className];
+    }
+
+    /**
+     * @template Client of SoapClientBase
+     * @param class-string<Client> $className
+     * @return Client
+     */
+    public function getClient(string $className, array $options = []): SoapClientBase
+    {
+        if (!isset($this->clients[$className])) {
+            [$wsdlUrl, $classMap] = $this->getSoapClientInfo($className);
+            $this->clients[$className] = (new $className([
+              SoapClientBase::WSDL_URL => $wsdlUrl,
+              SoapClientBase::WSDL_CLASSMAP => $classMap,
+            ] + $options))
+              ->setSF1500($this);
+        }
+
+        return $this->clients[$className];
+    }
+
+    protected function getSoapClientInfo(string $className): array
+    {
+        switch ($className) {
+            case AdresseSoeg::class:
+            case AdresseList::class:
+            case AdresseLaes::class:
+                return [
+                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Adresse.wsdl',
+                AdresseClassMap::get(),
+              ];
+            case BrugerSoeg::class:
+            case BrugerList::class:
+            case BrugerLaes::class:
+                return [
+                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Bruger.wsdl',
+                BrugerClassMap::get(),
+              ];
+            case OrganisationEnhedSoeg::class:
+            case OrganisationEnhedList::class:
+            case OrganisationEnhedLaes::class:
+                return [
+                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/OrganisationEnhed.wsdl',
+                OrganisationEnhedClassMap::get(),
+              ];
+            case OrganisationFunktionSoeg::class:
+            case OrganisationFunktionList::class:
+            case OrganisationFunktionLaes::class:
+                return [
+                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/OrganisationFunktion.wsdl',
+                OrganisationFunktionClassMap::get(),
+              ];
+            case PersonSoeg::class:
+            case PersonList::class:
+            case PersonLaes::class:
+                return [
+                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Person.wsdl',
+                PersonClassMap::get(),
+              ];
+        }
+
+        throw new \InvalidArgumentException(sprintf('Invalid class name: %s', $className));
     }
 }

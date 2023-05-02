@@ -1,0 +1,16 @@
+Digitaliseringskataloget\SF1500\Organisation6\Myndighed\AttributListeType:
+    properties:
+        egenskab:
+            expose: true
+            access_type: public_method
+            serialized_name: Egenskab
+            xml_element:
+                namespace: 'http://stoettesystemerne.dk/organisation/myndighed/6/'
+            accessor:
+                getter: getEgenskab
+                setter: setEgenskab
+            xml_list:
+                inline: true
+                entry_name: Egenskab
+                namespace: 'http://stoettesystemerne.dk/organisation/myndighed/6/'
+            type: array<Digitaliseringskataloget\SF1500\Organisation6\Myndighed\Egenskab>

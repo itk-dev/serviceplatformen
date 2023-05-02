@@ -1,0 +1,42 @@
+Digitaliseringskataloget\SF1500\Organisation6\Bruger\EgenskabType:
+    properties:
+        virkning:
+            expose: true
+            access_type: public_method
+            serialized_name: Virkning
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getVirkning
+                setter: setVirkning
+            type: Digitaliseringskataloget\Sagdok3_0_0\Virkning
+        brugervendtNoegleTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: BrugervendtNoegleTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getBrugervendtNoegleTekst
+                setter: setBrugervendtNoegleTekst
+            type: string
+        brugerNavn:
+            expose: true
+            access_type: public_method
+            serialized_name: BrugerNavn
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getBrugerNavn
+                setter: setBrugerNavn
+            type: string
+        brugerTypeTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: BrugerTypeTekst
+            xml_element:
+                namespace: 'urn:oio:sagdok:3.0.0'
+            accessor:
+                getter: getBrugerTypeTekst
+                setter: setBrugerTypeTekst
+            type: string
