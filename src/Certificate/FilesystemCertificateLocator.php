@@ -89,8 +89,7 @@ class FilesystemCertificateLocator extends AbstractCertificateLocator implements
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return parent::jsonSerialize() + [
                 'pathToCertificate' => $this->pathToCertificate,
