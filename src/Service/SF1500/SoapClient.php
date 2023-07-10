@@ -26,10 +26,10 @@ class SoapClient extends \SoapClient
         parent::__construct($wsdl, $options);
     }
 
-      /**
-       * TODO: Update signature cf. https://www.php.net/manual/en/soapclient.dorequest.php.
-       */
-      #[\ReturnTypeWillChange]
+    /**
+     * TODO: Update signature cf. https://www.php.net/manual/en/soapclient.dorequest.php.
+     */
+    #[\ReturnTypeWillChange]
     public function __doRequest($request, $location, $action, $version, $oneWay = null)
     {
         $this->lastRequest = $request;

@@ -1,0 +1,12 @@
+Oio\Fjernprint\ForsendelseAfsenderType:
+    properties:
+        afsenderAdresse:
+            expose: true
+            access_type: public_method
+            serialized_name: AfsenderAdresse
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getAfsenderAdresse
+                setter: setAfsenderAdresse
+            type: Oio\Fjernprint\AfsenderAdresse

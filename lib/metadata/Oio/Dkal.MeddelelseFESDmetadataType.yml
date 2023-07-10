@@ -1,0 +1,42 @@
+Oio\Dkal\MeddelelseFESDmetadataType:
+    properties:
+        fESDdokumentIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: FESDdokumentIdentifikator
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getFESDdokumentIdentifikator
+                setter: setFESDdokumentIdentifikator
+            type: string
+        fESDaktoerIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: FESDaktoerIdentifikator
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getFESDaktoerIdentifikator
+                setter: setFESDaktoerIdentifikator
+            type: string
+        fESDsagIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: FESDsagIdentifikator
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getFESDsagIdentifikator
+                setter: setFESDsagIdentifikator
+            type: string
+        fESDsagsklassifikationIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: FESDsagsklassifikationIdentifikator
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getFESDsagsklassifikationIdentifikator
+                setter: setFESDsagsklassifikationIdentifikator
+            type: string

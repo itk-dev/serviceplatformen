@@ -1,0 +1,92 @@
+Oio\Fjernprint\KanalUafhaengigeParametreIType:
+    properties:
+        enhedTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: EnhedTekst
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getEnhedTekst
+                setter: setEnhedTekst
+            type: string
+        brugerNavn:
+            expose: true
+            access_type: public_method
+            serialized_name: BrugerNavn
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getBrugerNavn
+                setter: setBrugerNavn
+            type: string
+        konteringsGruppeTekst:
+            expose: true
+            access_type: public_method
+            serialized_name: KonteringsGruppeTekst
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getKonteringsGruppeTekst
+                setter: setKonteringsGruppeTekst
+            type: string
+        forsendelseAfsender:
+            expose: true
+            access_type: public_method
+            serialized_name: ForsendelseAfsender
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getForsendelseAfsender
+                setter: setForsendelseAfsender
+            type: Oio\Fjernprint\ForsendelseAfsender
+        paatrykAfsenderAdresseIndikator:
+            expose: true
+            access_type: public_method
+            serialized_name: PaatrykAfsenderAdresseIndikator
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getPaatrykAfsenderAdresseIndikator
+                setter: setPaatrykAfsenderAdresseIndikator
+            type: bool
+        paatrykModtagerAdresseIndikator:
+            expose: true
+            access_type: public_method
+            serialized_name: PaatrykModtagerAdresseIndikator
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getPaatrykModtagerAdresseIndikator
+                setter: setPaatrykModtagerAdresseIndikator
+            type: bool
+        paatrykBrevdatoIndikator:
+            expose: true
+            access_type: public_method
+            serialized_name: PaatrykBrevdatoIndikator
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getPaatrykBrevdatoIndikator
+                setter: setPaatrykBrevdatoIndikator
+            type: bool
+        kanalKode:
+            expose: true
+            access_type: public_method
+            serialized_name: KanalKode
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getKanalKode
+                setter: setKanalKode
+            type: string
+        hasteBrevIndikator:
+            expose: true
+            access_type: public_method
+            serialized_name: HasteBrevIndikator
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getHasteBrevIndikator
+                setter: setHasteBrevIndikator
+            type: bool

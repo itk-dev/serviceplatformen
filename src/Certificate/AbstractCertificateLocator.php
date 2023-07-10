@@ -45,8 +45,7 @@ abstract class AbstractCertificateLocator implements CertificateLocatorInterface
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             'passphrase' => $this->hideSecret($this->passphrase),

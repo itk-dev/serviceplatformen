@@ -12,7 +12,7 @@ namespace ItkDev\Serviceplatformen\DigitalPost;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 use Http\Factory\Guzzle\RequestFactory;
 use ItkDev\AzureKeyVault\Authorisation\VaultToken;
 use ItkDev\AzureKeyVault\KeyVault\VaultSecret;
