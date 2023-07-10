@@ -103,6 +103,8 @@ abstract class AbstractRESTService
     {
         if (null === $this->client) {
             $this->client = new CurlHttpClient([
+                // Force HTTP 1.1 to prevent "HTTP/2 stream 1 was reset" error.
+                'http_version' => 1.1,
             ]);
         }
 
