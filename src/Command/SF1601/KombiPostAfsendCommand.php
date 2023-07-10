@@ -27,7 +27,7 @@ use DigitalPost\MeMo\Reservation;
 use DigitalPost\MeMo\Sender;
 use DOMDocument;
 use GuzzleHttp\Client;
-use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 use Http\Factory\Guzzle\RequestFactory;
 use ItkDev\AzureKeyVault\Authorisation\VaultToken;
 use ItkDev\AzureKeyVault\KeyVault\VaultSecret;
@@ -53,7 +53,7 @@ use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class KombipostafsendCommand extends Command implements LoggerAwareInterface
+class KombiPostAfsendCommand extends Command implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
     use LoggerTrait;
@@ -400,7 +400,7 @@ HELP;
         return $message;
     }
 
-    public function log($level, $message, array $context = [])
+    public function log($level, \Stringable|string $message, array $context = []): void
     {
         $this->logger->log($level, $message, $context);
     }

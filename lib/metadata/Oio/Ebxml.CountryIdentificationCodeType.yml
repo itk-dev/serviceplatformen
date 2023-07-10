@@ -1,0 +1,19 @@
+Oio\Ebxml\CountryIdentificationCodeType:
+    properties:
+        __value:
+            expose: true
+            xml_value: true
+            access_type: public_method
+            accessor:
+                getter: value
+                setter: value
+            type: string
+        scheme:
+            expose: true
+            access_type: public_method
+            serialized_name: scheme
+            accessor:
+                getter: getScheme
+                setter: setScheme
+            xml_attribute: true
+            type: string

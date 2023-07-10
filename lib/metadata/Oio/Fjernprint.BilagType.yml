@@ -1,0 +1,72 @@
+Oio\Fjernprint\BilagType:
+    properties:
+        bilagNavn:
+            expose: true
+            access_type: public_method
+            serialized_name: BilagNavn
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getBilagNavn
+                setter: setBilagNavn
+            type: string
+        filformatNavn:
+            expose: true
+            access_type: public_method
+            serialized_name: FilformatNavn
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getFilformatNavn
+                setter: setFilformatNavn
+            type: string
+        bilagSorteringsIndeksIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: BilagSorteringsIndeksIdentifikator
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getBilagSorteringsIndeksIdentifikator
+                setter: setBilagSorteringsIndeksIdentifikator
+            type: int
+        bilagIdentifikator:
+            expose: true
+            access_type: public_method
+            serialized_name: BilagIdentifikator
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getBilagIdentifikator
+                setter: setBilagIdentifikator
+            type: string
+        vedhaeftningIndholdData:
+            expose: true
+            access_type: public_method
+            serialized_name: VedhaeftningIndholdData
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getVedhaeftningIndholdData
+                setter: setVedhaeftningIndholdData
+            type: GoetasWebservices\Xsd\XsdToPhp\Jms\Base64Encoded
+        vedhaeftningIndholdURLreference:
+            expose: true
+            access_type: public_method
+            serialized_name: VedhaeftningIndholdURLreference
+            xml_element:
+                namespace: 'urn:oio:dkal:1.0.0'
+            accessor:
+                getter: getVedhaeftningIndholdURLreference
+                setter: setVedhaeftningIndholdURLreference
+            type: string
+        vedhaeftSomIndholdDataIndikator:
+            expose: true
+            access_type: public_method
+            serialized_name: VedhaeftSomIndholdDataIndikator
+            xml_element:
+                namespace: 'urn:oio:fjernprint:1.0.0'
+            accessor:
+                getter: getVedhaeftSomIndholdDataIndikator
+                setter: setVedhaeftSomIndholdDataIndikator
+            type: bool

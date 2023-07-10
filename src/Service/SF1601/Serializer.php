@@ -36,6 +36,8 @@ class Serializer
         'KleOnlineDk' =>                                                                                 'lib/metadata/KleOnlineDk',
         'WwwFormOnlineDk' =>                                                                             'lib/metadata/WwwFormOnlineDk',
         'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd' => 'lib/metadata/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd',
+
+        'Oio' =>                                                                                         'lib/metadata/Oio',
     ];
 
     private SerializerInterface $serializer;

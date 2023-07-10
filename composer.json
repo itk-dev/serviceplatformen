@@ -19,18 +19,18 @@
     ],
     "require": {
         "php": "^8.1",
-        "composer-runtime-api": "^2.2",
         "ext-curl": "*",
         "ext-dom": "*",
         "ext-json": "*",
         "ext-openssl": "*",
         "ext-simplexml": "*",
         "ext-soap": "*",
+        "composer-runtime-api": "^2.2",
         "goetas-webservices/xsd2php-runtime": "^0.2.16",
         "http-interop/http-factory-guzzle": "^1.2",
         "itk-dev/azure-key-vault-php": "^1.0",
         "jms/serializer": "^3.18",
-        "php-http/guzzle6-adapter": "^2.0",
+        "php-http/guzzle7-adapter": "^1.0",
         "symfony/cache": "^5.4 || ^6.0",
         "symfony/http-client": "^5.4 || ^6.0",
         "symfony/options-resolver": "^5.4 || ^6.0",
@@ -69,7 +69,8 @@
             "KleOnlineDk\\":                                                                                        "lib/KleOnlineDk/",
             "WwwFormOnlineDk\\":                                                                                    "lib/WwwFormOnlineDk/",
             "WwwDstDk\\Da\\TilSalg\\Forskningsservice\\Dokumentation\\Hoejkvalitetsvariable\\Elevregister2\\Udd\\": "lib/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/",
-            "Digitaliseringskataloget\\": "lib/digitaliseringskataloget"
+            "Digitaliseringskataloget\\":                                                                           "lib/digitaliseringskataloget",
+            "Oio\\":                                                                                                "lib/Oio/"
         }
     },
     "autoload-dev": {
