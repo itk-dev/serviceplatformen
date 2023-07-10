@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Forced HTTP 1.1
 - Handled "Fjernprint" in
   <https://digitaliseringskataloget.dk/integration/sf1601>.
 - Changed handling of `SoapClient` options in `AbstractService`.
