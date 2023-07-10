@@ -124,9 +124,9 @@ class SF1500
         }
     }
 
-  /**
-   * Fetches person az ident from SF1500.
-   */
+    /**
+     * Fetches person az ident from SF1500.
+     */
     public function getPersonAZIdent(string $brugerId): string
     {
         $response = $this->brugerLaes($brugerId);
@@ -139,9 +139,9 @@ class SF1500
         ->getBrugerNavn();
     }
 
-  /**
-   * Fetches person phone from SF1500.
-   */
+    /**
+     * Fetches person phone from SF1500.
+     */
     public function getPersonPhone(string $brugerId): string
     {
         return $this->getBrugerAdresse('Mobiltelefon_bruger', $brugerId);
