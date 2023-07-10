@@ -12,7 +12,6 @@ xsd2php:
     'http://www.form-online.dk/':                                                                              'WwwFormOnlineDk'
     'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#': 'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd'
 
-
     'http://rep.oio.dk/cpr.dk/xml/schemas/core/2005/03/18/':                                                   'Oio\Cpr'
     'http://rep.oio.dk/cpr.dk/xml/schemas/core/2005/05/19/':                                                   'Oio\Cpr'
     'http://rep.oio.dk/cvr.dk/xml/schemas/2005/03/22/':                                                        'Oio\Cvr'
@@ -75,7 +74,6 @@ xsd2php:
     'WwwFormOnlineDk':                                                                             'lib/WwwFormOnlineDk/'
     'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd': 'lib/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/'
 
-
     'Oio':                                                                                         'lib/Oio'
 
     # https://digitaliseringskataloget.dk/integration/sf1500
@@ -96,7 +94,6 @@ xsd2php:
     'KleOnlineDk':                                                                                 'lib/metadata/KleOnlineDk/'
     'WwwFormOnlineDk':                                                                             'lib/metadata/WwwFormOnlineDk/'
     'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd': 'lib/metadata/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/'
-
 
     'Oio':                                                                                         'lib/metadata/Oio'
 
