@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [PR-29](https://github.com/itk-dev/serviceplatformen/pull/29)
+  SAML token fix
+
 ## [1.5.0] - 2023-07-10
 
 ### Changed

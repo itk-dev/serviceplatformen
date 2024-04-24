@@ -227,7 +227,7 @@ abstract class AbstractRESTService
                 'KeyType' => 'http://docs.oasis-open.org/ws-sx/ws-trust/200512/PublicKey',
                 'AnvenderKontekst' => ['Cvr' => $this->options['authority_cvr']],
                 'UseKey' => $useKey,
-                'AppliesTo' => ['EndpointReference' => ['Address' => $this->options['svc_entity_id']]],
+                'AppliesTo' => ['EndpointReference' => ['Address' => $entityId]],
                 'OnBehalfOf' => null
             ];
 
