@@ -238,19 +238,13 @@ reviewer to merge it for you.
 
 ```sh
 docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer install
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer coding-standards-apply
 docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer coding-standards-check
 ```
 
-Apply coding standards:
-
 ```sh
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer install
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer coding-standards-apply
-```
-
-```sh
-docker run --volume ${PWD}:/app --workdir /app node:18 yarn install
-docker run --volume ${PWD}:/app --workdir /app node:18 yarn coding-standards-check
+docker run --rm --volume ${PWD}:/md peterdavehello/markdownlint markdownlint --ignore vendor --ignore LICENSE.md '**/*.md' --fix
+docker run --rm --volume ${PWD}:/md peterdavehello/markdownlint markdownlint --ignore vendor --ignore LICENSE.md '**/*.md'
 ```
 
 ### Code analysis
