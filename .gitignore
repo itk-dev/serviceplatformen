@@ -10,5 +10,3 @@ generated-classes/tutorial.php
 /.php-cs-fixer.cache
 /phpcs.xml
 ###< squizlabs/php_codesniffer ###
-node_modules
-yarn.lock

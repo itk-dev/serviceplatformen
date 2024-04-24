@@ -113,7 +113,7 @@ abstract class AbstractRESTService
 
     private function request(string $method, string $url, array $options): ResponseInterface
     {
-        // Write certicates to temporary files.
+        // Write certificates to temporary files.
         $certificateFilename = tempnam(sys_get_temp_dir(), 'cert');
         file_put_contents($certificateFilename, $this->getCertificate());
 
@@ -227,7 +227,7 @@ abstract class AbstractRESTService
                 'KeyType' => 'http://docs.oasis-open.org/ws-sx/ws-trust/200512/PublicKey',
                 'AnvenderKontekst' => ['Cvr' => $this->options['authority_cvr']],
                 'UseKey' => $useKey,
-                'AppliesTo' => ['EndpointReference' => ['Address' => $this->options['svc_entity_id']]],
+                'AppliesTo' => ['EndpointReference' => ['Address' => $entityId]],
                 'OnBehalfOf' => null
             ];
 
@@ -257,7 +257,7 @@ abstract class AbstractRESTService
         $token = $cache->get($cacheKey, function (ItemInterface $item) use ($samlToken) {
             $token = $this->fetchAccessToken($samlToken);
 
-            // Set cache expiration time a litte before actual token expiration time.
+            // Set cache expiration time a little before actual token expiration time.
             $expiresAfter = max(0, $token['expires_in'] - $this->options['access_token_expires_after_offset']);
             $item->expiresAfter($expiresAfter);
 
