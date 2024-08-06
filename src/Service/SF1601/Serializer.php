@@ -73,10 +73,23 @@ class Serializer
         return Uuid::v4()->toRfc4122();
     }
 
+    /**
+     * Helper function to load XML into a DOM document.
+     *
+     * We need to be able to handle very long node values (base64 encoded PDF files).
+     */
+    public static function loadXML(string $xml, ?\DOMDocument $document = null): \DOMDocument
+    {
+        $document ??= new DOMDocument();
+
+        $document->loadXML($xml, LIBXML_PARSEHUGE);
+
+        return $document;
+    }
+
     private function normalizeXml(string $xml): string
     {
-        $document = new DOMDocument();
-        $document->loadXML($xml);
+        $document = static::loadXML($xml);
 
         return $document->saveXML();
     }

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [PR-31](https://github.com/itk-dev/serviceplatformen/pull/31)
+  Added XML load helper function
+
 ## [1.5.1] - 2024-04-24
 
 - [PR-29](https://github.com/itk-dev/serviceplatformen/pull/29)

@@ -15,6 +15,7 @@ use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
 use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
+use ItkDev\Serviceplatformen\Service\SF1601\Serializer;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ClassMap as AdresseClassMap;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\_List as AdresseList;
 use ItkDev\Serviceplatformen\SF1500\Adresse\ServiceType\Laes as AdresseLaes;
@@ -682,8 +683,7 @@ class SF1500
         int $version,
         bool $oneWay = false
     ): string {
-        $doc = new \DOMDocument();
-        $doc->loadXML($request);
+        $doc = Serializer::loadXML($request);
 
         // Set an id.
         /** @var \DOMElement $body */
@@ -764,8 +764,7 @@ class SF1500
     private function preventCaching(string $response): bool
     {
         try {
-            $document = new \DOMDocument();
-            $document->loadXML($response);
+            $document = Serializer::loadXML($response);
             // Prevent caching if we have a SOAP fault.
             if ($document->getElementsByTagNameNS(self::NS_SOAP_ENVELOPE, 'Fault')->count() > 0) {
                 return true;

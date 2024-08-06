@@ -163,8 +163,7 @@ class SF1601 extends AbstractRESTService
         }
 
         // Build kombi document.
-        $document = new DOMDocument();
-        $document->loadXML('<kombi_request><KombiValgKode/></kombi_request>');
+        $document = Serializer::loadXML('<kombi_request><KombiValgKode/></kombi_request>');
         // Set KombiValgKode.
         $document->documentElement->firstChild->appendChild(new DOMText($type));
 
@@ -193,8 +192,7 @@ class SF1601 extends AbstractRESTService
             }
 
             // Serialize message and import and append it to kombi_request element.
-            $messageDocument = new DOMDocument();
-            $messageDocument->loadXML((new Serializer())->serialize($message));
+            $messageDocument = Serializer::loadXML((new Serializer())->serialize($message));
 
             $document->documentElement->appendChild($document->importNode($messageDocument->documentElement, true));
         }
@@ -202,8 +200,7 @@ class SF1601 extends AbstractRESTService
         if (null !== $forsendelse) {
             $forsendelseSamling = $document->createElementNS('urn:oio:fjernprint:1.0.0', 'ForsendelseISamling');
 
-            $forsendelseDocument = new DOMDocument();
-            $forsendelseDocument->loadXML((new Serializer())->serialize($forsendelse));
+            $forsendelseDocument = Serializer::loadXML((new Serializer())->serialize($forsendelse));
             $forsendelseSamling->appendChild($document->importNode($forsendelseDocument->documentElement, true));
 
             $document->documentElement->appendChild($forsendelseSamling);

@@ -10,6 +10,8 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
+use ItkDev\Serviceplatformen\Service\SF1601\Serializer;
+
 /**
  * Helper class for SF1500 Organisation.
  */
@@ -86,8 +88,7 @@ class SF1500XMLBuilder
         $timestampElement->appendChild($expiresElement);
         $securityElement->appendChild($timestampElement);
 
-        $tokenDocument = new \DOMDocument();
-        $tokenDocument->loadXML($tokenXml);
+        $tokenDocument = Serializer::loadXML($tokenXml);
         $tokenElement = $document->importNode($tokenDocument->documentElement, true);
         $tokenUuid = $this->getElementId($tokenElement);
 
@@ -145,7 +146,7 @@ class SF1500XMLBuilder
         $documentRequest = new \DOMDocument('1.0', 'utf-8');
         $documentRequest->preserveWhiteSpace = false;
         $documentRequest->formatOutput = false;
-        $documentRequest->loadXML($requestSimple);
+        Serializer::loadXML($requestSimple, $documentRequest);
 
         $signatureElement = $documentRequest->getElementsByTagName('Signature')[1];
         $signedInfoElement = $signatureElement->getElementsByTagName('SignedInfo')[0];
