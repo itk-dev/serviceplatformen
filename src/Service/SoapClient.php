@@ -100,13 +100,9 @@ class SoapClient
         $now = new \DateTimeImmutable('now');
         $times = [];
         foreach ($this->options['cache_expiration_time'] as $spec) {
-            try {
-                $time = $now->modify($spec);
-                if ($time > $now) {
-                    $times[] = $time;
-                }
-            } catch (\Exception $exception) {
-                // Ignore any exceptions.
+            $time = $now->modify($spec);
+            if ($time > $now) {
+                $times[] = $time;
             }
         }
 
