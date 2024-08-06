@@ -167,9 +167,8 @@ HELP;
         $meMoMessage = $service->getLastKombiMeMoMessage();
         $io->writeln($meMoMessage->ownerDocument->saveXML($meMoMessage));
 
-        $dom = new DOMDocument();
+        $dom = Serializer::loadXML($response->getContent());
         $dom->formatOutput = true;
-        $dom->loadXML($response->getContent());
 
         $headers = [];
         $length = max(...array_map(static fn (string $name) => strlen($name), array_keys($response->getHeaders())));

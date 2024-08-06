@@ -13,6 +13,7 @@ namespace ItkDev\Serviceplatformen\Service\SF1514;
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
 use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
+use ItkDev\Serviceplatformen\Service\SF1601\Serializer;
 use ItkDev\Serviceplatformen\Service\SoapClient;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\OptionsResolver\Options;
@@ -338,8 +339,7 @@ class SF1514
      */
     public function parseRequestSecurityTokenResponse($result)
     {
-        $dom = new \DOMDocument();
-        $dom->loadXML($result);
+        $dom = Serializer::loadXML($result);
         $doc = $dom->documentElement;
         $xpath = new \DOMXpath($dom);
         $xpath->registerNamespace('s', 'http://www.w3.org/2003/05/soap-envelope');
