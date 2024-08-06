@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.2] - 2024-08-06
+
 - [PR-31](https://github.com/itk-dev/serviceplatformen/pull/31)
   Added XML load helper function
 
@@ -101,7 +103,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Functionality for making calls to the PersonBaseDataExtended service.
 - Possibility to use certificates stored in Azure Key Vault.
 
-[Unreleased]: https://github.com/itk-dev/serviceplatformen/compare/1.5.1...HEAD
+[Unreleased]: https://github.com/itk-dev/serviceplatformen/compare/1.5.2...HEAD
+[1.5.2]: https://github.com/itk-dev/serviceplatformen/compare/1.5.1...1.5.2
 [1.5.1]: https://github.com/itk-dev/serviceplatformen/compare/1.5.0...1.5.1
 [1.5.0]: https://github.com/itk-dev/serviceplatformen/compare/1.4.0...1.5.0
 [1.4.0]: https://github.com/itk-dev/serviceplatformen/compare/1.3.0...1.4.0
