@@ -70,11 +70,9 @@ class AbstractSF1500Command extends Command
 
         $sf1514 = new SF1514($soapClient, $serviceOptions);
 
-        $sf1500XMLBuilder = new SF1500XMLBuilder();
-
         unset($serviceOptions['sts_applies_to']);
 
-        return new $className($soapClient, $sf1514, $sf1500XMLBuilder, new PropertyAccessor(), $serviceOptions);
+        return new $className($sf1514, $serviceOptions);
     }
 
     protected function getAdresseService(array $options): AdresseService

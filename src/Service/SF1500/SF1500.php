@@ -10,7 +10,6 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
-use ItkDev\GetOrganized\Service;
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
 use ItkDev\Serviceplatformen\Service\Exception\SF1500Exception;
