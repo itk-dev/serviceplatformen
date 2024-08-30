@@ -750,7 +750,7 @@ class SF1500
         return $cache->get($cacheKey, function (ItemInterface $item) use ($callable, $expirationTime) {
             $response = $callable();
 
-            if ($this->preventCaching($response)) {
+            if (!is_string($response) || $this->preventCaching($response)) {
                 $expirationTime = new \DateTimeImmutable('-1 day');
             }
 
