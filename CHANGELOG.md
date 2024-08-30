@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [PR-36](https://github.com/itk-dev/serviceplatformen/pull/36)
+  Cleanup
 - [PR-33](https://github.com/itk-dev/serviceplatformen/pull/33)
   Fixed SF1500 Command
 

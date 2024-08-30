@@ -17,7 +17,7 @@ We use
 generate PHP classes for talking to SOAP services. To update
 [resources](./resources) and [generated classes](./generated-classes), run
 
-```sh
+``` shell
 docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer install
 # Update WSDL resources.
 docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest bin/generate resources
@@ -27,22 +27,22 @@ docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:lates
 
 ## Test commands
 
-```sh
+``` shell
 docker run --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest vendor/bin/serviceplatformen-sf1601-kombipostafsend --help
 ```
 
 Use `bin/serviceplatformen-sf1601-kombipostafsend` (symlinked to
 `bin/SF1601/kombipostafsend`) during development of this library. i.e.
 
-```sh
+``` shell
 docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest bin/serviceplatformen-sf1601-kombipostafsend
 ```
 
-```sh
+``` shell
 docker run --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest vendor/bin/serviceplatformen-sf1601-postforespoerg --help
 ```
 
-```sh
+``` shell
 docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest bin/serviceplatformen-sf1601-postforespoerg
 ```
 
@@ -62,13 +62,13 @@ how to deploy the project on a live system.
 
 Clone the repository:
 
-```sh
+``` shell
 git clone https://github.com/itk-dev/serviceplatformen
 ```
 
 Install the dependencies:
 
-```sh
+``` shell
 cd serviceplatformen
 
 composer install
@@ -78,13 +78,13 @@ composer install
 
 Unit tests:
 
-```sh
+``` shell
 docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer tests/unit
 ```
 
 End to end tests:
 
-```sh
+``` shell
 docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer tests/end-to-end
 ```
 
@@ -92,13 +92,13 @@ docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:lates
 
 PHP_CodeSniffer
 
-```sh
+``` shell
 composer coding-standards-check/phpcs
 ```
 
 PHP-CS-Fixer
 
-```sh
+``` shell
 composer coding-standards-check/php-cs-fixer
 ```
 
@@ -106,13 +106,13 @@ composer coding-standards-check/php-cs-fixer
 
 Phan
 
-```sh
+``` shell
 composer static-code-analysis/phan
 ```
 
 ## Deployment
 
-```sh
+``` shell
 composer require itk-dev/serviceplatformen
 ```
 
@@ -236,20 +236,20 @@ reviewer to merge it for you.
 
 ### Coding standards
 
-```sh
+``` shell
 docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer install
 docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer coding-standards-apply
 docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer coding-standards-check
 ```
 
-```sh
+``` shell
 docker run --rm --volume ${PWD}:/md peterdavehello/markdownlint markdownlint --ignore vendor --ignore LICENSE.md '**/*.md' --fix
 docker run --rm --volume ${PWD}:/md peterdavehello/markdownlint markdownlint --ignore vendor --ignore LICENSE.md '**/*.md'
 ```
 
 ### Code analysis
 
-```sh
+``` shell
 docker run --interactive --tty --rm --volume ${PWD}:/app --env COMPOSER_MEMORY_LIMIT=-1 itkdev/php8.1-fpm:latest composer code-analysis
 ```
 
