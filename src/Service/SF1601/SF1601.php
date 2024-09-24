@@ -16,6 +16,7 @@ use DOMDocument;
 use DOMElement;
 use DOMText;
 use ItkDev\Serviceplatformen\Service\AbstractRESTService;
+use ItkDev\Serviceplatformen\Service\Exception\InvalidArgumentException;
 use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
 use ItkDev\Serviceplatformen\Service\SF1601\Exception\InvalidMemoException;
 use Oio\Fjernprint\ForsendelseI;
@@ -36,6 +37,14 @@ class SF1601 extends AbstractRESTService
         self::TYPE_DIGITAL_POST,
         self::TYPE_FYSISK_POST,
         self::TYPE_NEM_SMS,
+    ];
+
+    public const FORESPOERG_TYPE_DIGITAL_POST = 'digitalpost';
+    public const FORESPOERG_TYPE_NEM_SMS = 'nemsms';
+
+    public const FORESPOERG_TYPES = [
+        self::FORESPOERG_TYPE_DIGITAL_POST,
+        self::FORESPOERG_TYPE_NEM_SMS,
     ];
 
     // Where the hell are these documented?!
@@ -94,6 +103,9 @@ class SF1601 extends AbstractRESTService
 
     public function postForespoerg(string $transactionId, string $type, string $identifier, DateTimeInterface $transactionTid = null): array
     {
+        if (!in_array($type, self::FORESPOERG_TYPES)) {
+            throw new InvalidArgumentException(sprintf('Invalid type: %s', $type));
+        }
         $entityId = $this->getOption('post_forespoerg_svc_entity_id');
         $url = $this->getOption('post_forespoerg_svc_endpoint') . '/' . $type;
         $response = $this->call($entityId, 'GET', $url, [
