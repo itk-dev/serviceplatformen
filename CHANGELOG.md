@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2024-10-10
+
 - [PR-37](https://github.com/itk-dev/serviceplatformen/pull/37)
   Added postForespoerg types
 - [PR-36](https://github.com/itk-dev/serviceplatformen/pull/36)
@@ -110,7 +112,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Functionality for making calls to the PersonBaseDataExtended service.
 - Possibility to use certificates stored in Azure Key Vault.
 
-[Unreleased]: https://github.com/itk-dev/serviceplatformen/compare/1.5.2...HEAD
+[Unreleased]: https://github.com/itk-dev/serviceplatformen/compare/1.6.0...HEAD
+[1.6.0]: https://github.com/itk-dev/serviceplatformen/compare/1.5.2...1.6.0
 [1.5.2]: https://github.com/itk-dev/serviceplatformen/compare/1.5.1...1.5.2
 [1.5.1]: https://github.com/itk-dev/serviceplatformen/compare/1.5.0...1.5.1
 [1.5.0]: https://github.com/itk-dev/serviceplatformen/compare/1.4.0...1.5.0
