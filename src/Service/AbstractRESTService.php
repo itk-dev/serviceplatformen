@@ -321,8 +321,8 @@ abstract class AbstractRESTService
                 'certificate_passphrase' => '',
                 'saml_token_svc' => static function (Options $options) {
                     return $options['test_mode']
-                        ? 'https://adgangsstyring.eksterntest-stoettesystemerne.dk/runtime/api/rest/wstrust/v1/issue'
-                        : 'https://adgangsstyring.stoettesystemerne.dk/runtime/api/rest/wstrust/v1/issue';
+                        ? 'https://n2adgangsstyring.eksterntest-stoettesystemerne.dk/runtime/api/rest/wstrust/v1/issue'
+                        : 'https://n2adgangsstyring.stoettesystemerne.dk/runtime/api/rest/wstrust/v1/issue';
                 },
                 'saml_token_expiration_time_offset' => '-15 minutes',
                 'access_token_svc' => static function (Options $options) {
