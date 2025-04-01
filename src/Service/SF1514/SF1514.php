@@ -393,8 +393,8 @@ class SF1514
                 'certificate_passphrase' => '',
                 'saml_token_svc' => static function (Options $options) {
                     return $options['test_mode']
-                        ? 'https://adgangsstyring.eksterntest-stoettesystemerne.dk/runtime/services/kombittrust/14/certificatemixed'
-                        : 'https://adgangsstyring.stoettesystemerne.dk/runtime/services/kombittrust/14/certificatemixed';
+                        ? 'https://n2adgangsstyring.eksterntest-stoettesystemerne.dk/runtime/services/kombittrust/14/certificatemixed'
+                        : 'https://n2adgangsstyring.stoettesystemerne.dk/runtime/services/kombittrust/14/certificatemixed';
                 },
                 'saml_token_expiration_time_offset' => '-15 minutes',
             ])
