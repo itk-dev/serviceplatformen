@@ -39,6 +39,9 @@ class SF1601 extends AbstractRESTService
         self::TYPE_NEM_SMS,
     ];
 
+    public const MEMO_1_1 = 1.1;
+    public const MEMO_1_2 = 1.2;
+
     public const FORESPOERG_TYPE_DIGITAL_POST = 'digitalpost';
     public const FORESPOERG_TYPE_NEM_SMS = 'nemsms';
 
@@ -182,9 +185,10 @@ class SF1601 extends AbstractRESTService
         if (null !== $message) {
             // Set default values on some required attributes.
             if (empty($message->getMemoVersion())) {
-                $message->setMemoVersion(1.1);
+                $message->setMemoVersion(self::MEMO_1_1);
             }
-            if (empty($message->getMemoSchVersion())) {
+            // memoSchVersion is required for MeMo 1.1 only (cf. https://digitaliser.dk/Media/638608781984779669/MeMo%20Versionshistorik%20v1.2.pdf)
+            if (empty($message->getMemoSchVersion()) && self::MEMO_1_1 === $message->getMemoVersion()) {
                 $message->setMemoSchVersion('1.1.0');
             }
 

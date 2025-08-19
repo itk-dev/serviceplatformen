@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [PR-41](https://github.com/itk-dev/serviceplatformen/pull/41)
+  Added support for MeMo 1.2
+
 ## [1.6.1] - 2025-03-30
 
 - [PR-39](https://github.com/itk-dev/serviceplatformen/pull/39)
