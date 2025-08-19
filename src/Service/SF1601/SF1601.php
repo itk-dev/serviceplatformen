@@ -224,4 +224,25 @@ class SF1601 extends AbstractRESTService
 
         return $document;
     }
+
+    /**
+     * Sanitize MeMo filename (cf. https://digitaliser.dk/digital-post/nyhedsarkiv/2024/nov/oeget-validering-i-digital-post)
+     *
+     * Non-empty sequences of invalid characters are replaced with a single character.
+     */
+    public static function sanitizeFilename(string $filename, string $replacer = '-'): string
+    {
+        // < > : " / \ | ? * CR LF CRLF U+00A0 U+2000 U+2001 U+2002 U+2003 U+2004 U+2005 U+2006 U+2007 U+2008 U+2009 U+200A U+2028 U+205F U+2060 U+3000
+        $pattern = '@[<>:"/\\\\|?*\x{000D}\x{000A}\x{00A0}\x{2000}\x{2001}\x{2002}\x{2003}\x{2004}\x{2005}\x{2006}\x{2007}\x{2008}\x{2009}\x{200A}\x{2028}\x{205F}\x{2060}\x{3000}]+@u';
+
+        if (mb_strlen($replacer) !== 1) {
+            throw new \InvalidArgumentException(sprintf('Replacer must have length 1 (is %d)', mb_strlen($replacer)));
+        }
+
+        if (preg_match($pattern, $replacer, $matches)) {
+            throw new \InvalidArgumentException(sprintf('Replacer %s contains invalid character %s', var_export($replacer, true), var_export($matches[0], true)));
+        }
+
+        return preg_replace($pattern, $replacer, $filename);
+    }
 }
