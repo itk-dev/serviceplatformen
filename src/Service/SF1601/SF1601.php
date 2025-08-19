@@ -185,7 +185,7 @@ class SF1601 extends AbstractRESTService
         if (null !== $message) {
             // Set default values on some required attributes.
             if (empty($message->getMemoVersion())) {
-                $message->setMemoVersion(self::MEMO_1_1);
+                $message->setMemoVersion($this->getDefaultMeMoVersion());
             }
             // memoSchVersion is required for MeMo 1.1 only (cf. https://digitaliser.dk/Media/638608781984779669/MeMo%20Versionshistorik%20v1.2.pdf)
             if (empty($message->getMemoSchVersion()) && self::MEMO_1_1 === $message->getMemoVersion()) {
@@ -223,6 +223,16 @@ class SF1601 extends AbstractRESTService
         }
 
         return $document;
+    }
+
+    private function getDefaultMeMoVersion(): float
+    {
+        $value = floatval(getenv('SERVICEPLATFORMEN_MEMO_DEFAULT_VERSION'));
+
+        return match ($value) {
+            self::MEMO_1_1 => self::MEMO_1_1,
+            default => self::MEMO_1_2,
+        };
     }
 
     /**
