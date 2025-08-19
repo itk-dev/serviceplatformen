@@ -17,7 +17,7 @@ namespace ItkDev\Serviceplatformen\Service\Exception;
  */
 class SoapException extends ServiceException
 {
-    public function __construct(readonly private \SoapFault $soapFault, readonly private ?string $request, readonly private ?string $response)
+    public function __construct(private readonly \SoapFault $soapFault, private readonly ?string $request, private readonly ?string $response)
     {
         parent::__construct($this->soapFault->getMessage(), $this->soapFault->getCode(), $this->soapFault);
     }
