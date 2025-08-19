@@ -11,7 +11,6 @@
 namespace ItkDev\Serviceplatformen\Command\SF1601;
 
 use DataGovDk\Model\Core\Address;
-use DateTime;
 use DigitalPost\MeMo\Action;
 use DigitalPost\MeMo\AdditionalDocument;
 use DigitalPost\MeMo\AttentionData;
@@ -25,7 +24,6 @@ use DigitalPost\MeMo\MessageHeader;
 use DigitalPost\MeMo\Recipient;
 use DigitalPost\MeMo\Reservation;
 use DigitalPost\MeMo\Sender;
-use DOMDocument;
 use GuzzleHttp\Client;
 use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 use Http\Factory\Guzzle\RequestFactory;
@@ -206,8 +204,8 @@ HELP;
             ->setLabel($options['label']);
         if (SF1601::ACTION_AFTALE === $options['action']) {
             $reservation = (new Reservation())
-                ->setStartDateTime(new DateTime('+2 days'))
-                ->setEndDateTime(new DateTime('+2 days 1 hour'))
+                ->setStartDateTime(new \DateTime('+2 days'))
+                ->setEndDateTime(new \DateTime('+2 days 1 hour'))
                 ->setLocation('Meeting room 1')
                 ->setAbstract('Abstract')
                 ->setDescription('Description')
@@ -351,7 +349,7 @@ HELP;
         $message->setMessageHeader($messageHeader);
 
         $body = (new MessageBody())
-            ->setCreatedDateTime(new DateTime());
+            ->setCreatedDateTime(new \DateTime());
 
         if (isset($options['file'])) {
             $mimeTypes = new MimeTypes();
