@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2025-08-20
+
 - [PR-41](https://github.com/itk-dev/serviceplatformen/pull/41)
-  Added support for MeMo 1.2
 
 ## [1.6.1] - 2025-03-30
 
@@ -120,7 +121,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Functionality for making calls to the PersonBaseDataExtended service.
 - Possibility to use certificates stored in Azure Key Vault.
 
-[Unreleased]: https://github.com/itk-dev/serviceplatformen/compare/1.6.1...HEAD
+[Unreleased]: https://github.com/itk-dev/serviceplatformen/compare/1.7.0...HEAD
+[1.7.0]: https://github.com/itk-dev/serviceplatformen/compare/1.6.1...1.7.0
 [1.6.1]: https://github.com/itk-dev/serviceplatformen/compare/1.6.0...1.6.1
 [1.6.0]: https://github.com/itk-dev/serviceplatformen/compare/1.5.2...1.6.0
 [1.5.2]: https://github.com/itk-dev/serviceplatformen/compare/1.5.1...1.5.2
