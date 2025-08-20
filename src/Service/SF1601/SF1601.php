@@ -207,6 +207,11 @@ class SF1601 extends AbstractRESTService
                 throw new InvalidMemoException('MeMo message header must have a sender with a label');
             }
 
+            $this->validateActions($message->getMessageBody()->getMainDocument()->getAction());
+            foreach ($message->getMessageBody()->getAdditionalDocument() as $document) {
+                $this->validateActions($document->getAction());
+            }
+
             // Serialize message and import and append it to kombi_request element.
             $messageDocument = Serializer::loadXML((new Serializer())->serialize($message));
 
@@ -254,5 +259,27 @@ class SF1601 extends AbstractRESTService
         }
 
         return preg_replace($pattern, $replacer, $filename);
+    }
+
+    /**
+     * Validate MeMo actions.
+     *
+     * @param \DigitalPost\MeMo\Action[] $actions
+     */
+    private function validateActions(array $actions)
+    {
+        foreach ($actions as $action) {
+            /** @phpstan-ignore nullsafe.neverNull (Action::getEntryPoint can actually return null) */
+            $url = $action->getEntryPoint()?->getUrl();
+            // URL must be absolute and use https (cf. https://digitaliser.dk/digital-post/nyhedsarkiv/2024/nov/oeget-validering-i-digital-post)
+            if ($url && 'https' !== parse_url($url, PHP_URL_SCHEME)) {
+                throw new \RuntimeException(sprintf(
+                    'URL %s for action "%s" (%s) must be absolute and use the https scheme, i.e. start with "https://".',
+                    $url,
+                    $action->getLabel(),
+                    $action->getActionCode()
+                ));
+            }
+        }
     }
 }
