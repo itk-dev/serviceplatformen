@@ -39,6 +39,9 @@ class SF1601 extends AbstractRESTService
         self::TYPE_NEM_SMS,
     ];
 
+    public const MEMO_1_1 = 1.1;
+    public const MEMO_1_2 = 1.2;
+
     public const FORESPOERG_TYPE_DIGITAL_POST = 'digitalpost';
     public const FORESPOERG_TYPE_NEM_SMS = 'nemsms';
 
@@ -182,9 +185,10 @@ class SF1601 extends AbstractRESTService
         if (null !== $message) {
             // Set default values on some required attributes.
             if (empty($message->getMemoVersion())) {
-                $message->setMemoVersion(1.1);
+                $message->setMemoVersion($this->getDefaultMeMoVersion());
             }
-            if (empty($message->getMemoSchVersion())) {
+            // memoSchVersion is required for MeMo 1.1 only (cf. https://digitaliser.dk/Media/638608781984779669/MeMo%20Versionshistorik%20v1.2.pdf)
+            if (empty($message->getMemoSchVersion()) && self::MEMO_1_1 === $message->getMemoVersion()) {
                 $message->setMemoSchVersion('1.1.0');
             }
 
@@ -203,6 +207,11 @@ class SF1601 extends AbstractRESTService
                 throw new InvalidMemoException('MeMo message header must have a sender with a label');
             }
 
+            $this->validateActions($message->getMessageBody()->getMainDocument()->getAction());
+            foreach ($message->getMessageBody()->getAdditionalDocument() as $document) {
+                $this->validateActions($document->getAction());
+            }
+
             // Serialize message and import and append it to kombi_request element.
             $messageDocument = Serializer::loadXML((new Serializer())->serialize($message));
 
@@ -219,5 +228,58 @@ class SF1601 extends AbstractRESTService
         }
 
         return $document;
+    }
+
+    private function getDefaultMeMoVersion(): float
+    {
+        $value = floatval(getenv('SERVICEPLATFORMEN_MEMO_DEFAULT_VERSION'));
+
+        return match ($value) {
+            self::MEMO_1_1 => self::MEMO_1_1,
+            default => self::MEMO_1_2,
+        };
+    }
+
+    /**
+     * Sanitize MeMo filename (cf. https://digitaliser.dk/digital-post/nyhedsarkiv/2024/nov/oeget-validering-i-digital-post)
+     *
+     * Non-empty sequences of invalid characters are replaced with a single character.
+     */
+    public static function sanitizeFilename(string $filename, string $replacer = '-'): string
+    {
+        // < > : " / \ | ? * CR LF CRLF U+00A0 U+2000 U+2001 U+2002 U+2003 U+2004 U+2005 U+2006 U+2007 U+2008 U+2009 U+200A U+2028 U+205F U+2060 U+3000
+        $pattern = '@[<>:"/\\\\|?*\x{000D}\x{000A}\x{00A0}\x{2000}\x{2001}\x{2002}\x{2003}\x{2004}\x{2005}\x{2006}\x{2007}\x{2008}\x{2009}\x{200A}\x{2028}\x{205F}\x{2060}\x{3000}]+@u';
+
+        if (mb_strlen($replacer) !== 1) {
+            throw new \InvalidArgumentException(sprintf('Replacer must have length 1 (is %d)', mb_strlen($replacer)));
+        }
+
+        if (preg_match($pattern, $replacer, $matches)) {
+            throw new \InvalidArgumentException(sprintf('Replacer %s contains invalid character %s', var_export($replacer, true), var_export($matches[0], true)));
+        }
+
+        return preg_replace($pattern, $replacer, $filename);
+    }
+
+    /**
+     * Validate MeMo actions.
+     *
+     * @param \DigitalPost\MeMo\Action[] $actions
+     */
+    private function validateActions(array $actions)
+    {
+        foreach ($actions as $action) {
+            /** @phpstan-ignore nullsafe.neverNull (Action::getEntryPoint can actually return null) */
+            $url = $action->getEntryPoint()?->getUrl();
+            // URL must be absolute and use https (cf. https://digitaliser.dk/digital-post/nyhedsarkiv/2024/nov/oeget-validering-i-digital-post)
+            if ($url && 'https' !== parse_url($url, PHP_URL_SCHEME)) {
+                throw new \RuntimeException(sprintf(
+                    'URL %s for action "%s" (%s) must be absolute and use the https scheme, i.e. start with "https://".',
+                    $url,
+                    $action->getLabel(),
+                    $action->getActionCode()
+                ));
+            }
+        }
     }
 }

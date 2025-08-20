@@ -18,32 +18,32 @@ generate PHP classes for talking to SOAP services. To update
 [resources](./resources) and [generated classes](./generated-classes), run
 
 ``` shell
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer install
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest composer install
 # Update WSDL resources.
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest bin/generate resources
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest bin/generate resources
 # Generate PHP classes from WSDL resources.
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest bin/generate classes
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest bin/generate classes
 ```
 
 ## Test commands
 
 ``` shell
-docker run --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest vendor/bin/serviceplatformen-sf1601-kombipostafsend --help
+docker run --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest vendor/bin/serviceplatformen-sf1601-kombipostafsend --help
 ```
 
 Use `bin/serviceplatformen-sf1601-kombipostafsend` (symlinked to
 `bin/SF1601/kombipostafsend`) during development of this library. i.e.
 
 ``` shell
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest bin/serviceplatformen-sf1601-kombipostafsend
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest bin/serviceplatformen-sf1601-kombipostafsend
 ```
 
 ``` shell
-docker run --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest vendor/bin/serviceplatformen-sf1601-postforespoerg --help
+docker run --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest vendor/bin/serviceplatformen-sf1601-postforespoerg --help
 ```
 
 ``` shell
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest bin/serviceplatformen-sf1601-postforespoerg
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest bin/serviceplatformen-sf1601-postforespoerg
 ```
 
 ## Getting Started
@@ -79,13 +79,13 @@ composer install
 Unit tests:
 
 ``` shell
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer tests/unit
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest composer tests/unit
 ```
 
 End to end tests:
 
 ``` shell
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer tests/end-to-end
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest composer tests/end-to-end
 ```
 
 ### And coding style tests
@@ -237,9 +237,9 @@ reviewer to merge it for you.
 ### Coding standards
 
 ``` shell
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer install
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer coding-standards-apply
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.1-fpm:latest composer coding-standards-check
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest composer install
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest composer coding-standards-apply
+docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest composer coding-standards-check
 ```
 
 ``` shell
@@ -250,7 +250,7 @@ docker run --rm --volume ${PWD}:/md peterdavehello/markdownlint markdownlint --i
 ### Code analysis
 
 ``` shell
-docker run --interactive --tty --rm --volume ${PWD}:/app --env COMPOSER_MEMORY_LIMIT=-1 itkdev/php8.1-fpm:latest composer code-analysis
+docker run --interactive --tty --rm --volume ${PWD}:/app --env COMPOSER_MEMORY_LIMIT=-1 itkdev/php8.3-fpm:latest composer code-analysis
 ```
 
 ## Versioning
