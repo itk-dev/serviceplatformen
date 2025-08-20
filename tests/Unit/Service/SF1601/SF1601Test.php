@@ -15,10 +15,22 @@ use PHPUnit\Framework\TestCase;
 
 final class SF1601Test extends TestCase
 {
+    private static \ReflectionMethod $sanitizeFilename;
+
+    public static function setUpBeforeClass(): void
+    {
+        self::$sanitizeFilename = new \ReflectionMethod(SF1601::class, 'sanitizeFilename');
+    }
+
+    private function sanitizeFilename(string $filename, string $replacer = '-'): string
+    {
+        return self::$sanitizeFilename->invoke(null, $filename, $replacer);
+    }
+
     /** @dataProvider sanitizeFilenameProvider */
     public function testSanitizeFilename(string $filename, string $expected): void
     {
-        $actual = SF1601::sanitizeFilename($filename);
+        $actual = $this->sanitizeFilename($filename);
         $this->assertEquals($expected, $actual);
     }
 
@@ -28,7 +40,7 @@ final class SF1601Test extends TestCase
         if ($expected instanceof \Exception) {
             $this->expectException($expected::class);
         }
-        $actual = SF1601::sanitizeFilename($filename, $replacer);
+        $actual = $this->sanitizeFilename($filename, $replacer);
         $this->assertEquals($expected, $actual);
     }
 
