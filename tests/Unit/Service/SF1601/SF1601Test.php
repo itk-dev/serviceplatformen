@@ -10,14 +10,6 @@
 
 namespace ItkDev\Serviceplatformen\Tests\Unit\Service\SF1601;
 
-/**
- * This file is part of itk-dev/serviceplatformen.
- *
- * (c) 2020 ITK Development
- *
- * This source file is subject to the MIT license.
- */
-
 use ItkDev\Serviceplatformen\Service\SF1601\SF1601;
 use PHPUnit\Framework\TestCase;
 
