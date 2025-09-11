@@ -1,26 +1,20 @@
 <?php
+// This file is copied from config/symfony/php/.php-cs-fixer.dist.php in https://github.com/itk-dev/devops_itkdev-docker.
+// Feel free to edit the file, but consider making a pull request if you find a general issue with the file.
 
-$finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__.'/{src,tests}')
-;
+// https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/blob/master/doc/config.rst
 
-$header =<<<'HEADER'
-This file is part of itk-dev/serviceplatformen.
+$finder = new PhpCsFixer\Finder();
+// Check all files …
+$finder->in(__DIR__);
+// … that are not ignored by VCS
+$finder->ignoreVCSIgnored(true);
 
-(c) 2020 ITK Development
+$config = new PhpCsFixer\Config();
+$config->setFinder($finder);
 
-This source file is subject to the MIT license.
-HEADER;
+$config->setRules([
+  '@Symfony' => true,
+]);
 
-return (new PhpCsFixer\Config())
-    ->setRiskyAllowed(true)
-    ->setRules([
-        '@PSR2' => true,
-        'array_syntax' => ['syntax' => 'short'],
-        'header_comment' => ['header' => $header, 'comment_type' => 'PHPDoc'],
-        'list_syntax' => ['syntax' => 'short'],
-        'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
-        'strict_comparison' => true,
-    ])
-    ->setFinder($finder)
-;
+return $config;

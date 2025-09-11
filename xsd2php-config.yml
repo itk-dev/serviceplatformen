@@ -2,15 +2,15 @@
 
 xsd2php:
   namespaces:
-    'https://DigitalPost.dk/MeMo-1':                                                                           'DigitalPost\MeMo'
-    'https://data.gov.dk/model/dataTypes/':                                                                    'DataGovDk\Model\DataTypes'
-    'https://data.gov.dk/model/core/':                                                                         'DataGovDk\Model\Core'
-    'https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/':                            'WwwGs1Dk\Gs1Standarder\Identifikation\GlnGlobalLocationNumber'
-    'https://services.nsi.dk/en/Services/SOR':                                                                 'ServicesNsiDk\En\Services\SOR'
-    'https://motorregister.skat.dk/':                                                                          'MotorregisterSkatDk'
-    'http://kle-online.dk/':                                                                                   'KleOnlineDk'
-    'http://www.form-online.dk/':                                                                              'WwwFormOnlineDk'
-    'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#': 'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd'
+    "https://DigitalPost.dk/MeMo-1": "DigitalPost\\MeMo"
+    "https://data.gov.dk/model/dataTypes/": "DataGovDk\\Model\\DataTypes"
+    "https://data.gov.dk/model/core/": "DataGovDk\\Model\\Core"
+    "https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/": "WwwGs1Dk\\Gs1Standarder\\Identifikation\\GlnGlobalLocationNumber"
+    "https://services.nsi.dk/en/Services/SOR": "ServicesNsiDk\\En\\Services\\SOR"
+    "https://motorregister.skat.dk/": "MotorregisterSkatDk"
+    "http://kle-online.dk/": "KleOnlineDk"
+    "http://www.form-online.dk/": "WwwFormOnlineDk"
+    "https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#": "WwwDstDk\\Da\\TilSalg\\Forskningsservice\\Dokumentation\\Hoejkvalitetsvariable\\Elevregister2\\Udd"
 
     # https://digitaliseringskataloget.dk/integration/sf1500
     "http://stoettesystemerne.dk/klassifikation/facet/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Facet"
@@ -30,71 +30,71 @@ xsd2php:
     "http://stoettesystemerne.dk/organisation/organisationsystem/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Organisationsystem"
     "http://stoettesystemerne.dk/organisation/person/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Person"
     "http://stoettesystemerne.dk/organisation/virksomhed/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Virksomhed"
-    "urn:oio:sagdok:3.0.0": "Digitaliseringskataloget\\Sagdok3_0_0"
+    # "urn:oio:sagdok:3.0.0": "Digitaliseringskataloget\\Sagdok3_0_0"
     "urn:oio:sts:6": "Digitaliseringskataloget\\Sts6"
     "urn:oio:sts:part:6": "Digitaliseringskataloget\\Sts6\\Part"
 
-    'http://rep.oio.dk/cpr.dk/xml/schemas/core/2005/03/18/':                                                   'Oio\Cpr'
-    'http://rep.oio.dk/cpr.dk/xml/schemas/core/2005/05/19/':                                                   'Oio\Cpr'
-    'http://rep.oio.dk/cvr.dk/xml/schemas/2005/03/22/':                                                        'Oio\Cvr'
-    'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/':                                                    'Oio\Ebxml'
-    'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/03/15/':                                                    'Oio\Ebxml'
-    'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/13/':                                                    'Oio\Ebxml'
-    'http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/':                                                    'Oio\Ebxml'
-    'http://rep.oio.dk/itst.dk/xml/schemas/2006/01/17/':                                                       'Oio\Itst'
-    'http://rep.oio.dk/xkom.dk/xml/schemas/2005/03/15/':                                                       'Oio\Xkom'
-    'urn:oio:adir:dagpenge:2009.07.01':                                                                        'Oio\Adir\Dagpenge'
-    'urn:oio:dkal:1.0.0':                                                                                      'Oio\Dkal'
-    'urn:oio:fjernprint:1.0.0':                                                                                'Oio\Fjernprint'
-    'urn:oio:sagdok:3.0.0':                                                                                    'Oio\Sagdok'
+    "http://rep.oio.dk/cpr.dk/xml/schemas/core/2005/03/18/": "Oio\\Cpr"
+    "http://rep.oio.dk/cpr.dk/xml/schemas/core/2005/05/19/": "Oio\\Cpr"
+    "http://rep.oio.dk/cvr.dk/xml/schemas/2005/03/22/": "Oio\\Cvr"
+    "http://rep.oio.dk/ebxml/xml/schemas/dkcc/2003/02/13/": "Oio\\Ebxml"
+    "http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/03/15/": "Oio\\Ebxml"
+    "http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/13/": "Oio\\Ebxml"
+    "http://rep.oio.dk/ebxml/xml/schemas/dkcc/2005/05/19/": "Oio\\Ebxml"
+    "http://rep.oio.dk/itst.dk/xml/schemas/2006/01/17/": "Oio\\Itst"
+    "http://rep.oio.dk/xkom.dk/xml/schemas/2005/03/15/": "Oio\\Xkom"
+    "urn:oio:adir:dagpenge:2009.07.01": "Oio\\Adir\\Dagpenge"
+    "urn:oio:dkal:1.0.0": "Oio\\Dkal"
+    "urn:oio:fjernprint:1.0.0": "Oio\\Fjernprint"
+    "urn:oio:sagdok:3.0.0": "Oio\\Sagdok"
 
   destinations_php:
     # These must also be set in autoload.psr-4 in composer.json.
-    'DigitalPost\MeMo':                                                                            'lib/DigitalPost/MeMo/'
-    'DataGovDk\Model\DataTypes':                                                                   'lib/DataGovDk/Model/DataTypes/'
-    'DataGovDk\Model\Core':                                                                        'lib/DataGovDk/Model/Core/'
-    'WwwGs1Dk\Gs1Standarder\Identifikation\GlnGlobalLocationNumber':                               'lib/WwwGs1Dk/Gs1Standarder/Identifikation/GlnGlobalLocationNumber/'
-    'ServicesNsiDk\En\Services\SOR':                                                               'lib/ServicesNsiDk/En/Services/SOR/'
-    'MotorregisterSkatDk':                                                                         'lib/MotorregisterSkatDk/'
-    'KleOnlineDk':                                                                                 'lib/KleOnlineDk/'
-    'WwwFormOnlineDk':                                                                             'lib/WwwFormOnlineDk/'
-    'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd': 'lib/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/'
+    "DigitalPost\\MeMo": "lib/DigitalPost/MeMo/"
+    "DataGovDk\\Model\\DataTypes": "lib/DataGovDk/Model/DataTypes/"
+    "DataGovDk\\Model\\Core": "lib/DataGovDk/Model/Core/"
+    "WwwGs1Dk\\Gs1Standarder\\Identifikation\\GlnGlobalLocationNumber": "lib/WwwGs1Dk/Gs1Standarder/Identifikation/GlnGlobalLocationNumber/"
+    "ServicesNsiDk\\En\\Services\\SOR": "lib/ServicesNsiDk/En/Services/SOR/"
+    "MotorregisterSkatDk": "lib/MotorregisterSkatDk/"
+    "KleOnlineDk": "lib/KleOnlineDk/"
+    "WwwFormOnlineDk": "lib/WwwFormOnlineDk/"
+    "WwwDstDk\\Da\\TilSalg\\Forskningsservice\\Dokumentation\\Hoejkvalitetsvariable\\Elevregister2\\Udd": "lib/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/"
 
     # https://digitaliseringskataloget.dk/integration/sf1500
     "Digitaliseringskataloget\\Sts6": "lib/digitaliseringskataloget/Sts6"
     "Digitaliseringskataloget\\Sagdok3_0_0": "lib/digitaliseringskataloget/Sagdok3_0_0"
     "Digitaliseringskataloget\\SF1500\\Organisation6": "lib/digitaliseringskataloget/SF1500/Organisation6"
 
-    'Oio':                                                                                         'lib/Oio'
+    "Oio": "lib/Oio"
 
   destinations_jms:
     # These must also be set in src/Service/SF1601/Serializer.php
-    'DigitalPost\MeMo':                                                                            'lib/metadata/DigitalPost/MeMo/'
-    'DataGovDk\Model\DataTypes':                                                                   'lib/metadata/DataGovDk/Model/DataTypes/'
-    'DataGovDk\Model\Core':                                                                        'lib/metadata/DataGovDk/Model/Core/'
-    'WwwGs1Dk\Gs1Standarder\Identifikation\GlnGlobalLocationNumber':                               'lib/metadata/WwwGs1Dk/Gs1Standarder/Identifikation/GlnGlobalLocationNumber/'
-    'ServicesNsiDk\En\Services\SOR':                                                               'lib/metadata/ServicesNsiDk/En/Services/SOR/'
-    'MotorregisterSkatDk':                                                                         'lib/metadata/MotorregisterSkatDk/'
-    'KleOnlineDk':                                                                                 'lib/metadata/KleOnlineDk/'
-    'WwwFormOnlineDk':                                                                             'lib/metadata/WwwFormOnlineDk/'
-    'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd': 'lib/metadata/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/'
+    "DigitalPost\\MeMo": "lib/metadata/DigitalPost/MeMo/"
+    "DataGovDk\\Model\\DataTypes": "lib/metadata/DataGovDk/Model/DataTypes/"
+    "DataGovDk\\Model\\Core": "lib/metadata/DataGovDk/Model/Core/"
+    "WwwGs1Dk\\Gs1Standarder\\Identifikation\\GlnGlobalLocationNumber": "lib/metadata/WwwGs1Dk/Gs1Standarder/Identifikation/GlnGlobalLocationNumber/"
+    "ServicesNsiDk\\En\\Services\\SOR": "lib/metadata/ServicesNsiDk/En/Services/SOR/"
+    "MotorregisterSkatDk": "lib/metadata/MotorregisterSkatDk/"
+    "KleOnlineDk": "lib/metadata/KleOnlineDk/"
+    "WwwFormOnlineDk": "lib/metadata/WwwFormOnlineDk/"
+    "WwwDstDk\\Da\\TilSalg\\Forskningsservice\\Dokumentation\\Hoejkvalitetsvariable\\Elevregister2\\Udd": "lib/metadata/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/"
 
     # https://digitaliseringskataloget.dk/integration/sf1500
     "Digitaliseringskataloget\\Sts6": "lib/metadata/digitaliseringskataloget/Sts6"
     "Digitaliseringskataloget\\Sagdok3_0_0": "lib/metadata/digitaliseringskataloget/Sagdok3_0_0"
     "Digitaliseringskataloget\\SF1500\\Organisation6": "lib/metadata/digitaliseringskataloget/SF1500/Organisation6"
 
-    'Oio': 'lib/metadata/Oio'
+    "Oio": "lib/metadata/Oio"
 
   xml_namespaces:
     # prefix: namespace
-    'memo': 'https://DigitalPost.dk/MeMo-1'
-    'gln': 'https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/'
-    'udd': 'https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#'
-    'rid': 'https://www.nets.eu/dk-da/l%%C3%%B8sninger/nemid/nemid-tjenesteudbyder/supplerende-tjenester/pid-rid-cpr-tjenester'
-    'pnum': 'https://indberet.virk.dk/myndigheder/stat/ERST/P-enhedsloesningen'
-    'form': 'http://www.form-online.dk/'
-    'kle': 'http://kle-online.dk/'
-    'dmv': 'https://motorregister.skat.dk/'
-    'grd': 'https://data.gov.dk/model/core/'
-    'sor': 'https://services.nsi.dk/en/Services/SOR'
+    "memo": "https://DigitalPost.dk/MeMo-1"
+    "gln": "https://www.gs1.dk/gs1-standarder/identifikation/gln-global-location-number/"
+    "udd": "https://www.dst.dk/da/TilSalg/Forskningsservice/Dokumentation/hoejkvalitetsvariable/elevregister-2/udd#"
+    "rid": "https://www.nets.eu/dk-da/l%%C3%%B8sninger/nemid/nemid-tjenesteudbyder/supplerende-tjenester/pid-rid-cpr-tjenester"
+    "pnum": "https://indberet.virk.dk/myndigheder/stat/ERST/P-enhedsloesningen"
+    "form": "http://www.form-online.dk/"
+    "kle": "http://kle-online.dk/"
+    "dmv": "https://motorregister.skat.dk/"
+    "grd": "https://data.gov.dk/model/core/"
+    "sor": "https://services.nsi.dk/en/Services/SOR"
