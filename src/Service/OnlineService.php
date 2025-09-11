@@ -14,7 +14,7 @@ use ItkDev\Serviceplatformen\Service\Exception\NoCvrFoundException;
 use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
 
 /**
- * Class OnlineService
+ * Class OnlineService.
  */
 class OnlineService extends AbstractService
 {
@@ -22,18 +22,18 @@ class OnlineService extends AbstractService
      * Performs a call to the getLegalUnit operation on the Online Service.
      * Returns the response in raw object form.
      *
-     * @param string $cvr The CVR number to look up.
+     * @param string $cvr the CVR number to look up
      *
-     * @return object the raw response in object form.
+     * @return object the raw response in object form
      *
      * @throws ServiceException
      */
     public function getLegalUnit(string $cvr)
     {
         $request = [
-          'GetLegalUnitRequest' => [
-              'LegalUnitIdentifier' => $cvr,
-          ],
+            'GetLegalUnitRequest' => [
+                'LegalUnitIdentifier' => $cvr,
+            ],
         ];
 
         try {
@@ -47,13 +47,13 @@ class OnlineService extends AbstractService
      * Returns specific exception based on the generic ServiceException.
      * If no specific exception can be determined, the original exception will be returned.
      *
-     * @param ServiceException $exception the exception to determine.
+     * @param ServiceException $exception the exception to determine
      *
-     * @return ServiceException the specific exception or the original exception if no specific could be determined.
+     * @return ServiceException the specific exception or the original exception if no specific could be determined
      */
     private function handleException(ServiceException $exception)
     {
-        if (strpos($exception->getMessage(), "Required property '/virksomhed/CVRNummer' missing.") !== false) {
+        if (false !== strpos($exception->getMessage(), "Required property '/virksomhed/CVRNummer' missing.")) {
             return new NoCvrFoundException($exception->getMessage(), $exception->getCode());
         }
 

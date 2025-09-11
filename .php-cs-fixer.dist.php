@@ -10,6 +10,8 @@ $finder->in(__DIR__);
 // … that are not ignored by VCS
 $finder->ignoreVCSIgnored(true);
 
+$finder->exclude(['lib', 'generated-classes']);
+
 $config = new PhpCsFixer\Config();
 $config->setFinder($finder);
 

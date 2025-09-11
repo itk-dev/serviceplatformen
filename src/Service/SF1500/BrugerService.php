@@ -37,9 +37,6 @@ final class BrugerService extends AbstractService
     public const FILTER_EMAIL = 'email';
     public const FILTER_LEDER = 'leder';
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getValidFilters(): array
     {
         return [
@@ -49,9 +46,6 @@ final class BrugerService extends AbstractService
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function list(array $ids, array $fields = []): array
     {
         $list = $this->doList($ids);
@@ -98,9 +92,6 @@ final class BrugerService extends AbstractService
         return $items;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doSoeg(array $query): ?SoegOutputType
     {
         $attributListe = new AttributListeType();
@@ -114,7 +105,7 @@ final class BrugerService extends AbstractService
             // TODO We cannot search by email yet
         }
         if (isset($query[self::FILTER_PERSON_ID])) {
-            $ids = (array)$query[self::FILTER_PERSON_ID];
+            $ids = (array) $query[self::FILTER_PERSON_ID];
             foreach ($ids as $id) {
                 $relationListe->addToTilknyttedePersoner((new PersonFlerRelationType())
                     ->setReferenceID(new UnikIdType($id)));
@@ -122,8 +113,8 @@ final class BrugerService extends AbstractService
         }
 
         $request = (new SoegInputType())
-            ->setMaksimalAntalKvantitet((int)($query['limit'] ?? self::DEFAULT_LIMIT))
-            ->setFoersteResultatReference((int)($query['offset'] ?? 0))
+            ->setMaksimalAntalKvantitet((int) ($query['limit'] ?? self::DEFAULT_LIMIT))
+            ->setFoersteResultatReference((int) ($query['offset'] ?? 0))
             ->setAttributListe($attributListe)
             ->setRelationListe($relationListe);
 
@@ -164,27 +155,18 @@ final class BrugerService extends AbstractService
         )));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doList(array $ids): ?ListOutputType
     {
         return $this->clientList()
             ->_list_1(new ListInputType($ids)) ?: null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doLaes(string $id): ?LaesOutputType
     {
         return $this->clientLaes()
             ->laes(new LaesInputType($id)) ?: null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function buildModel($oejebliksbillede): Bruger
     {
         assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);

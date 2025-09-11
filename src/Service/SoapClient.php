@@ -59,17 +59,16 @@ class SoapClient
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_SSLVERSION, 6);
 
-
         $headers = [
             null !== $action
-                ? 'Content-Type: application/soap+xml; charset=utf-8; action="' . $action . '"'
+                ? 'Content-Type: application/soap+xml; charset=utf-8; action="'.$action.'"'
                 : 'Content-Type: application/soap+xml; charset=utf-8',
-            'Content-Length: ' . strlen($request),
+            'Content-Length: '.strlen($request),
         ];
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        if ($request !== null) {
+        if (null !== $request) {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
         }
@@ -91,7 +90,7 @@ class SoapClient
         return preg_replace(
             '#[{}()/\\\\@:]+#',
             '_',
-            $key . '|' . sha1(json_encode($payload+$this->options))
+            $key.'|'.sha1(json_encode($payload + $this->options))
         );
     }
 
@@ -113,7 +112,7 @@ class SoapClient
     {
         $resolver
             ->setRequired([
-                'cache_expiration_time'
+                'cache_expiration_time',
             ])
             ->setDefaults([
                 'cache' => static function (Options $options) {

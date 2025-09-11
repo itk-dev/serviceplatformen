@@ -11,7 +11,7 @@
 namespace ItkDev\Serviceplatformen\Certificate\Exception;
 
 /**
- * Class FilesystemCertificateLocatorException
+ * Class FilesystemCertificateLocatorException.
  *
  * Exception cast by the FilesystemCertificateLocator class when errors occurs.
  */

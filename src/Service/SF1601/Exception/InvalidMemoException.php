@@ -10,8 +10,6 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1601\Exception;
 
-use Exception;
-
-class InvalidMemoException extends Exception
+class InvalidMemoException extends \Exception
 {
 }

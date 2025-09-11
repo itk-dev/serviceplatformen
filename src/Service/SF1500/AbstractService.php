@@ -12,7 +12,6 @@ namespace ItkDev\Serviceplatformen\Service\SF1500;
 
 use ItkDev\Serviceplatformen\Service\Exception\InvalidQueryException;
 use ItkDev\Serviceplatformen\Service\SF1500\Model\AbstractModel;
-use ItkDev\Serviceplatformen\SF1500\Person\StructType\FiltreretOejebliksbilledeType;
 
 /**
  * @template T of AbstractModel
@@ -39,9 +38,6 @@ abstract class AbstractService extends SF1500 implements ServiceInterface
      */
     abstract public static function getValidFilters(): array;
 
-    /**
-     * {@inheritdoc}
-     */
     public function soeg(array $query, array $fields = []): array
     {
         $this->validateQuery($query);
@@ -68,9 +64,6 @@ abstract class AbstractService extends SF1500 implements ServiceInterface
         return $this->list($ids, $fields);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function list(array $ids, array $fields = []): array
     {
         $list = $this->doList($ids);
@@ -85,9 +78,6 @@ abstract class AbstractService extends SF1500 implements ServiceInterface
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function laes(string $id, array $fields = []): mixed
     {
         $data = $this->doLaes($id);
@@ -109,11 +99,7 @@ abstract class AbstractService extends SF1500 implements ServiceInterface
         $validFilters = array_merge($this->getValidFilters(), self::getPaginationParameters());
         $invalidFilters = array_values(array_diff($usedFilters, $validFilters));
         if (!empty($invalidFilters)) {
-            throw new InvalidQueryException(sprintf(
-                'Invalid filters: %s; Valid filters: %s.',
-                json_encode($invalidFilters),
-                json_encode($validFilters)
-            ));
+            throw new InvalidQueryException(sprintf('Invalid filters: %s; Valid filters: %s.', json_encode($invalidFilters), json_encode($validFilters)));
         }
     }
 

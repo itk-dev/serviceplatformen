@@ -11,9 +11,7 @@
 namespace ItkDev\Serviceplatformen\Service\Exception;
 
 /**
- * Class SoapException
- *
- * @package ItkDev\Serviceplatformen\Service\Exception
+ * Class SoapException.
  */
 class SoapException extends ServiceException
 {

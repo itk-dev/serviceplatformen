@@ -13,14 +13,14 @@ namespace ItkDev\Serviceplatformen\Certificate;
 use ItkDev\Serviceplatformen\Certificate\Exception\CertificateLocatorException;
 
 /**
- * Interface CertificateLocatorInterface
+ * Interface CertificateLocatorInterface.
  */
 interface CertificateLocatorInterface
 {
     /**
      * Returns the certificate parts.
      *
-     * @return array the certificate parts.
+     * @return array the certificate parts
      *
      * @throws CertificateLocatorException
      */
@@ -34,21 +34,18 @@ interface CertificateLocatorInterface
     /**
      * Returns the absolute path to the certificate.
      *
-     * @deprecated Use self::getCertificate() to get the certificate and store it in a temporary file if needed.
+     * @deprecated use self::getCertificate() to get the certificate and store it in a temporary file if needed
      *
-     * @return string the absolute path to the certificate.
+     * @return string the absolute path to the certificate
      *
      * @throws CertificateLocatorException
      */
     public function getAbsolutePathToCertificate(): string;
 
-    /**
-     * @return string
-     */
     public function getPassphrase(): string;
 
     /**
-     * @return bool true if passphrase is present else false.
+     * @return bool true if passphrase is present else false
      */
     public function hasPassphrase(): bool;
 }

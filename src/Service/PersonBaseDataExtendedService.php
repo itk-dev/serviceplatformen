@@ -14,7 +14,7 @@ use ItkDev\Serviceplatformen\Service\Exception\NoPnrFoundException;
 use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
 
 /**
- * Class PersonBaseDataExtendedService
+ * Class PersonBaseDataExtendedService.
  */
 class PersonBaseDataExtendedService extends AbstractService
 {
@@ -22,9 +22,9 @@ class PersonBaseDataExtendedService extends AbstractService
      * Performs a call to the personLookup operation on the PersonBaseDataExtended service.
      * Returns the response in raw object form.
      *
-     * @param string $pnr the person-number to lookup.
+     * @param string $pnr the person-number to lookup
      *
-     * @return object the raw response in object form.
+     * @return object the raw response in object form
      *
      * @throws ServiceException
      */
@@ -41,13 +41,13 @@ class PersonBaseDataExtendedService extends AbstractService
      * Returns specific exception based on the generic ServiceException.
      * If no specific exception can be determined, the original exception will be returned.
      *
-     * @param ServiceException $exception the exception to determine.
+     * @param ServiceException $exception the exception to determine
      *
-     * @return ServiceException the specific exception or the original exception if no specific could be determined.
+     * @return ServiceException the specific exception or the original exception if no specific could be determined
      */
     private function handleServiceException(ServiceException $exception): ServiceException
     {
-        if (strpos($exception->getMessage(), 'PNR not found') !== false) {
+        if (false !== strpos($exception->getMessage(), 'PNR not found')) {
             return new NoPnrFoundException($exception->getMessage(), $exception->getCode());
         }
 

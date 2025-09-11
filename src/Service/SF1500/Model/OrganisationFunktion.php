@@ -11,8 +11,8 @@
 namespace ItkDev\Serviceplatformen\Service\SF1500\Model;
 
 /**
- * @property string $id
- * @property string $funktionnavn
+ * @property string   $id
+ * @property string   $funktionnavn
  * @property string[] $tilknyttedeBrugere
  */
 final class OrganisationFunktion extends AbstractModel

@@ -11,7 +11,7 @@
 namespace ItkDev\Serviceplatformen\Certificate\Exception;
 
 /**
- * Class AzureKeyVaultCertificateLocatorException
+ * Class AzureKeyVaultCertificateLocatorException.
  *
  * Exception cast by the AzureKeyVaultCertificateLocator class when errors occurs.
  */

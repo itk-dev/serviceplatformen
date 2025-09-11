@@ -75,6 +75,7 @@ abstract class AbstractCommand extends Command
             if (null === $certificatepath) {
                 throw new InvalidOptionException(sprintf('Invalid path %s', $spec));
             }
+
             return new FilesystemCertificateLocator($certificatepath, $passphrase);
         }
     }
@@ -120,7 +121,6 @@ abstract class AbstractCommand extends Command
             ])
         ;
     }
-
 
     protected function getOptionsDetails(OptionsResolver $resolver, string $indent = '')
     {

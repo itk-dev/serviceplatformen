@@ -31,7 +31,6 @@ abstract class AbstractModel implements \JsonSerializable
     /**
      * All properties (apart from id) are nullable.
      *
-     * @param $name
      * @return mixed|null
      */
     public function __get($name)

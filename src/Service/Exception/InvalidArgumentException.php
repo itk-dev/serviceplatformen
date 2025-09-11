@@ -11,9 +11,7 @@
 namespace ItkDev\Serviceplatformen\Service\Exception;
 
 /**
- * Class InvalidArgumentException
- *
- * @package ItkDev\Serviceplatformen\Service\Exception
+ * Class InvalidArgumentException.
  */
 class InvalidArgumentException extends ServiceException
 {

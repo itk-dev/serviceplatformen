@@ -122,12 +122,12 @@ HELP;
 
         switch ($type) {
             case 'adresse':
-                return ($this->getAdresseService($options))->soeg($query, $fields);
+                return $this->getAdresseService($options)->soeg($query, $fields);
             case 'person':
-                return ($this->getPersonService($options))->soeg($query, $fields);
+                return $this->getPersonService($options)->soeg($query, $fields);
             case 'user':
             case 'bruger':
-                return ($this->getBrugerService($options))->soeg($query, $fields);
+                return $this->getBrugerService($options)->soeg($query, $fields);
         }
 
         throw new RuntimeException(sprintf('invalid search type: %s', $type));

@@ -11,7 +11,7 @@
 namespace ItkDev\Serviceplatformen\Service\Exception;
 
 /**
- * Class NoPnrFoundException
+ * Class NoPnrFoundException.
  *
  * Exception cast when performing a call to the PersonBaseDataExtended service with an unknown PNR.
  */

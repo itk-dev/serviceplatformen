@@ -10,8 +10,6 @@
 
 namespace ItkDev\Serviceplatformen\Service;
 
-use DateTimeImmutable;
-use DateTimeInterface;
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
 use ItkDev\Serviceplatformen\Service\SF1601\Serializer;
@@ -51,17 +49,12 @@ abstract class AbstractRESTService
 
     public function isTestMode(): bool
     {
-        return (bool)$this->options['test_mode'];
+        return (bool) $this->options['test_mode'];
     }
 
     /**
      * Call a REST service endpoint.
      *
-     * @param string $entityId
-     * @param string $method
-     * @param string $url
-     * @param array $options
-     * @return ResponseInterface
      * @throws ServiceException
      */
     protected function call(string $entityId, string $method, string $url, array $options): ResponseInterface
@@ -76,13 +69,13 @@ abstract class AbstractRESTService
         $transactionId = $options['transactionId'];
         unset($options['transactionId']);
 
-        $transactionTid = $options['transactionTid'] ?? new DateTimeImmutable();
-        if ($transactionTid instanceof DateTimeInterface) {
+        $transactionTid = $options['transactionTid'] ?? new \DateTimeImmutable();
+        if ($transactionTid instanceof \DateTimeInterface) {
             $transactionTid = Serializer::formatDateTimeZulu($transactionTid);
         }
         unset($options['transactionTid']);
 
-        $headers = (isset($options['headers']) && is_array($options['headers'])) ?  $options['headers'] : [];
+        $headers = (isset($options['headers']) && is_array($options['headers'])) ? $options['headers'] : [];
         unset($options['headers']);
 
         return $this->request(
@@ -90,12 +83,12 @@ abstract class AbstractRESTService
             $url,
             [
                 'headers' => [
-                        'Authorization' => sprintf('%s %s', $accessToken['token_type'], $accessToken['access_token']),
-                        'x-TransaktionsId' => $transactionId,
-                        'x-TransaktionsTid' => $transactionTid,
-                    ] + $headers,
+                    'Authorization' => sprintf('%s %s', $accessToken['token_type'], $accessToken['access_token']),
+                    'x-TransaktionsId' => $transactionId,
+                    'x-TransaktionsTid' => $transactionTid,
+                ] + $headers,
             ]
-            +$options
+            + $options
         );
     }
 
@@ -121,28 +114,26 @@ abstract class AbstractRESTService
         file_put_contents($privateKeyFilename, $this->getPrivateKey());
 
         return $this->client()->request($method, $url, $options + [
-                'local_cert' => $certificateFilename,
-                'local_pk' => $privateKeyFilename,
-                'on_progress' => function (int $dlNow, int $dlSize, array $info) use (&$certificateFilename, &$privateKeyFilename): void {
-                    // Delete temporary certificate files when receiving response headers.
-                    if (!empty($info['response_headers'])) {
-                        if (isset($certificateFilename) && file_exists($certificateFilename)) {
-                            unlink($certificateFilename);
-                            $certificateFilename = null;
-                        }
-                        if (isset($privateKeyFilename) && file_exists($privateKeyFilename)) {
-                            unlink($privateKeyFilename);
-                            $privateKeyFilename = null;
-                        }
+            'local_cert' => $certificateFilename,
+            'local_pk' => $privateKeyFilename,
+            'on_progress' => function (int $dlNow, int $dlSize, array $info) use (&$certificateFilename, &$privateKeyFilename): void {
+                // Delete temporary certificate files when receiving response headers.
+                if (!empty($info['response_headers'])) {
+                    if (isset($certificateFilename) && file_exists($certificateFilename)) {
+                        unlink($certificateFilename);
+                        $certificateFilename = null;
                     }
-                },
-            ]);
+                    if (isset($privateKeyFilename) && file_exists($privateKeyFilename)) {
+                        unlink($privateKeyFilename);
+                        $privateKeyFilename = null;
+                    }
+                }
+            },
+        ]);
     }
 
     /**
      * Get SAML token.
-     *
-     * @return string
      */
     private function getSAMLToken(string $entityId): string
     {
@@ -169,6 +160,7 @@ abstract class AbstractRESTService
         if (null !== $token && $this->getSAMLTokenExpirationTime($token)->modify($expirationTimeOffset) <= new \DateTimeImmutable()) {
             // Remove expired token from cache and get a new token.
             $cache->delete($cacheKey);
+
             return $this->getSAMLToken($entityId);
         }
 
@@ -185,7 +177,7 @@ abstract class AbstractRESTService
         return preg_replace(
             '#[{}()/\\\\@:]+#',
             '_',
-            $key . '|' . sha1(json_encode($payload+$this->options))
+            $key.'|'.sha1(json_encode($payload + $this->options))
         );
     }
 
@@ -199,13 +191,12 @@ abstract class AbstractRESTService
         }
         $notOnOrAfter = reset($nodes);
 
-        return new \DateTimeImmutable((string)$notOnOrAfter);
+        return new \DateTimeImmutable((string) $notOnOrAfter);
     }
 
     /**
      * Fetch SAML token.
      *
-     * @return string
      * @throws ServiceException
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
@@ -228,7 +219,7 @@ abstract class AbstractRESTService
                 'AnvenderKontekst' => ['Cvr' => $this->options['authority_cvr']],
                 'UseKey' => $useKey,
                 'AppliesTo' => ['EndpointReference' => ['Address' => $entityId]],
-                'OnBehalfOf' => null
+                'OnBehalfOf' => null,
             ];
 
             $response = $this->request('POST', $this->options['saml_token_svc'], [

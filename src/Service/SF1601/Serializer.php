@@ -10,13 +10,7 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1601;
 
-use DateTimeImmutable;
-use DateTimeInterface;
-use DateTimeZone;
-use DOMDocument;
-use DOMXPath;
 use GoetasWebservices\Xsd\XsdToPhpRuntime\Jms\Handler\BaseTypesHandler;
-use GoetasWebservices\Xsd\XsdToPhpRuntime\Jms\Handler\XmlSchemaDateHandler;
 use ItkDev\Serviceplatformen\Service\SF1601\Xsd\XsdToPhpRuntime\Jms\Handler\MeMoXmlSchemaDateHandler;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\SerializerBuilder;
@@ -27,25 +21,23 @@ class Serializer
 {
     // Must match xsd2php.destinations_jms in xsd2php-config.yml
     private const NAMESPACE2METADATA = [
-        'DigitalPost\MeMo' =>                                                                            'lib/metadata/DigitalPost/MeMo',
-        'DataGovDk\Model\DataTypes' =>                                                                   'lib/metadata/DataGovDk/Model/DataTypes',
-        'DataGovDk\Model\Core' =>                                                                        'lib/metadata/DataGovDk/Model/Core',
-        'WwwGs1Dk\Gs1Standarder\Identifikation\GlnGlobalLocationNumber' =>                               'lib/metadata/WwwGs1Dk/Gs1Standarder/Identifikation/GlnGlobalLocationNumber',
-        'ServicesNsiDk\En\Services\SOR' =>                                                               'lib/metadata/ServicesNsiDk/En/Services/SOR',
-        'MotorregisterSkatDk' =>                                                                         'lib/metadata/MotorregisterSkatDk',
-        'KleOnlineDk' =>                                                                                 'lib/metadata/KleOnlineDk',
-        'WwwFormOnlineDk' =>                                                                             'lib/metadata/WwwFormOnlineDk',
+        'DigitalPost\MeMo' => 'lib/metadata/DigitalPost/MeMo',
+        'DataGovDk\Model\DataTypes' => 'lib/metadata/DataGovDk/Model/DataTypes',
+        'DataGovDk\Model\Core' => 'lib/metadata/DataGovDk/Model/Core',
+        'WwwGs1Dk\Gs1Standarder\Identifikation\GlnGlobalLocationNumber' => 'lib/metadata/WwwGs1Dk/Gs1Standarder/Identifikation/GlnGlobalLocationNumber',
+        'ServicesNsiDk\En\Services\SOR' => 'lib/metadata/ServicesNsiDk/En/Services/SOR',
+        'MotorregisterSkatDk' => 'lib/metadata/MotorregisterSkatDk',
+        'KleOnlineDk' => 'lib/metadata/KleOnlineDk',
+        'WwwFormOnlineDk' => 'lib/metadata/WwwFormOnlineDk',
         'WwwDstDk\Da\TilSalg\Forskningsservice\Dokumentation\Hoejkvalitetsvariable\Elevregister2\Udd' => 'lib/metadata/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd',
 
-        'Oio' =>                                                                                         'lib/metadata/Oio',
+        'Oio' => 'lib/metadata/Oio',
     ];
 
     private SerializerInterface $serializer;
 
     /**
      * Serialize data as XML.
-     *
-     * @param $data
      */
     public function serialize($data): string
     {
@@ -58,13 +50,10 @@ class Serializer
      * Format date time as Zulu time.
      *
      * @see https://stackoverflow.com/a/57701653/2502647
-     *
-     * @param DateTimeInterface $dateTime
-     * @return string
      */
-    public static function formatDateTimeZulu(DateTimeInterface $dateTime): string
+    public static function formatDateTimeZulu(\DateTimeInterface $dateTime): string
     {
-        return (new DateTimeImmutable($dateTime->format(DateTimeInterface::ATOM), new DateTimeZone('UTC')))
+        return (new \DateTimeImmutable($dateTime->format(\DateTimeInterface::ATOM), new \DateTimeZone('UTC')))
             ->format('Y-m-d\TH:i:s\Z');
     }
 
@@ -80,7 +69,7 @@ class Serializer
      */
     public static function loadXML(string $xml, ?\DOMDocument $document = null): \DOMDocument
     {
-        $document ??= new DOMDocument();
+        $document ??= new \DOMDocument();
 
         $document->loadXML($xml, LIBXML_PARSEHUGE);
 

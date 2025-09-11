@@ -11,7 +11,7 @@
 namespace ItkDev\Serviceplatformen\Request;
 
 /**
- * Interface RequestGeneratorInterface
+ * Interface RequestGeneratorInterface.
  */
 interface RequestGeneratorInterface
 {

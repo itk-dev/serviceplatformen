@@ -10,11 +10,7 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1601;
 
-use DateTimeInterface;
 use DigitalPost\MeMo\Message;
-use DOMDocument;
-use DOMElement;
-use DOMText;
 use ItkDev\Serviceplatformen\Service\AbstractRESTService;
 use ItkDev\Serviceplatformen\Service\Exception\InvalidArgumentException;
 use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
@@ -23,7 +19,6 @@ use Oio\Fjernprint\ForsendelseI;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\HttpClient\ResponseInterface;
-use XSLTProcessor;
 
 class SF1601 extends AbstractRESTService
 {
@@ -80,8 +75,8 @@ class SF1601 extends AbstractRESTService
         self::ACTION_UNDERSKRIV,
     ];
 
-    private ?DOMElement $lastKombiMemoMessage = null;
-    private ?DOMElement $lastKombiForsendelse = null;
+    private ?\DOMElement $lastKombiMemoMessage = null;
+    private ?\DOMElement $lastKombiForsendelse = null;
 
     protected function configureOptions(OptionsResolver $resolver)
     {
@@ -104,13 +99,13 @@ class SF1601 extends AbstractRESTService
         ]);
     }
 
-    public function postForespoerg(string $transactionId, string $type, string $identifier, DateTimeInterface $transactionTid = null): array
+    public function postForespoerg(string $transactionId, string $type, string $identifier, ?\DateTimeInterface $transactionTid = null): array
     {
         if (!in_array($type, self::FORESPOERG_TYPES)) {
             throw new InvalidArgumentException(sprintf('Invalid type: %s', $type));
         }
         $entityId = $this->getOption('post_forespoerg_svc_entity_id');
-        $url = $this->getOption('post_forespoerg_svc_endpoint') . '/' . $type;
+        $url = $this->getOption('post_forespoerg_svc_endpoint').'/'.$type;
         $response = $this->call($entityId, 'GET', $url, [
             'query' => [
                 // This almost matches the documented keys …
@@ -123,14 +118,14 @@ class SF1601 extends AbstractRESTService
         return $response->toArray();
     }
 
-    public function kombiPostAfsend(string $transactionId, string $type, ?Message $message, ?ForsendelseI $forsendelse = null, DateTimeInterface $transactionTid = null): ResponseInterface
+    public function kombiPostAfsend(string $transactionId, string $type, ?Message $message, ?ForsendelseI $forsendelse = null, ?\DateTimeInterface $transactionTid = null): ResponseInterface
     {
         $document = $this->buildKombiRequestDocument($type, $message, $forsendelse);
 
         // Serviceplatformen doesn't understand XML namespaces!
-        $xsldoc = new DOMDocument();
+        $xsldoc = new \DOMDocument();
         $xsldoc->load(__DIR__.'/resources/namespaces.xslt');
-        $xsl = new XSLTProcessor();
+        $xsl = new \XSLTProcessor();
         $xsl->importStyleSheet($xsldoc);
         $document = $xsl->transformToDoc($document);
 
@@ -149,29 +144,29 @@ class SF1601 extends AbstractRESTService
         $entityId = $this->getOption('svc_entity_id');
         $url = $this->getOption('svc_endpoint');
         $response = $this->call($entityId, 'POST', $url, [
-                'headers' => [
-                    'content-type' => 'application/xml',
-                    'accept' => 'application/xml',
-                ],
-                'body' => $document->saveXML(),
-                'transactionId' => $transactionId,
-                'transactionTid' => $transactionTid,
-            ]);
+            'headers' => [
+                'content-type' => 'application/xml',
+                'accept' => 'application/xml',
+            ],
+            'body' => $document->saveXML(),
+            'transactionId' => $transactionId,
+            'transactionTid' => $transactionTid,
+        ]);
 
         return $response;
     }
 
-    public function getLastKombiMeMoMessage(): ?DOMElement
+    public function getLastKombiMeMoMessage(): ?\DOMElement
     {
         return $this->lastKombiMemoMessage;
     }
 
-    public function getLastKombiForsendelse(): ?DOMElement
+    public function getLastKombiForsendelse(): ?\DOMElement
     {
         return $this->lastKombiForsendelse;
     }
 
-    private function buildKombiRequestDocument(string $type, ?Message $message, ?ForsendelseI $forsendelse): DOMDocument
+    private function buildKombiRequestDocument(string $type, ?Message $message, ?ForsendelseI $forsendelse): \DOMDocument
     {
         if (!in_array($type, [self::TYPE_AUTOMATISK_VALG, self::TYPE_DIGITAL_POST, self::TYPE_FYSISK_POST, self::TYPE_NEM_SMS])) {
             throw new ServiceException(sprintf('Invalid type: %s', $type));
@@ -180,7 +175,7 @@ class SF1601 extends AbstractRESTService
         // Build kombi document.
         $document = Serializer::loadXML('<kombi_request><KombiValgKode/></kombi_request>');
         // Set KombiValgKode.
-        $document->documentElement->firstChild->appendChild(new DOMText($type));
+        $document->documentElement->firstChild->appendChild(new \DOMText($type));
 
         if (null !== $message) {
             // Set default values on some required attributes.
@@ -256,18 +251,14 @@ class SF1601 extends AbstractRESTService
             $url = $action->getEntryPoint()?->getUrl();
             // URL must be absolute and use https (cf. https://digitaliser.dk/digital-post/nyhedsarkiv/2024/nov/oeget-validering-i-digital-post)
             if ($url && 'https' !== parse_url($url, PHP_URL_SCHEME)) {
-                throw new \RuntimeException(sprintf(
-                    'URL %s for action "%s" (%s) must be absolute and use the https scheme, i.e. start with "https://".',
-                    $url,
-                    $action->getLabel(),
-                    $action->getActionCode()
-                ));
+                throw new \RuntimeException(sprintf('URL %s for action "%s" (%s) must be absolute and use the https scheme, i.e. start with "https://".', $url, $action->getLabel(), $action->getActionCode()));
             }
         }
     }
 
     /**
      * @param \DigitalPost\MeMo\File[] $files
+     *
      * @return void
      */
     private function sanitizeFilenames(array $files)
@@ -282,7 +273,7 @@ class SF1601 extends AbstractRESTService
     }
 
     /**
-     * Sanitize MeMo filename (cf. https://digitaliser.dk/digital-post/nyhedsarkiv/2024/nov/oeget-validering-i-digital-post)
+     * Sanitize MeMo filename (cf. https://digitaliser.dk/digital-post/nyhedsarkiv/2024/nov/oeget-validering-i-digital-post).
      *
      * Non-empty sequences of invalid characters are replaced with a single character.
      */
@@ -291,7 +282,7 @@ class SF1601 extends AbstractRESTService
         // < > : " / \ | ? * CR LF CRLF U+00A0 U+2000 U+2001 U+2002 U+2003 U+2004 U+2005 U+2006 U+2007 U+2008 U+2009 U+200A U+2028 U+205F U+2060 U+3000
         $pattern = '@[<>:"/\\\\|?*\x{000D}\x{000A}\x{00A0}\x{2000}\x{2001}\x{2002}\x{2003}\x{2004}\x{2005}\x{2006}\x{2007}\x{2008}\x{2009}\x{200A}\x{2028}\x{205F}\x{2060}\x{3000}]+@u';
 
-        if (mb_strlen($replacer) !== 1) {
+        if (1 !== mb_strlen($replacer)) {
             throw new \InvalidArgumentException(sprintf('Replacer must have length 1 (is %d)', mb_strlen($replacer)));
         }
 

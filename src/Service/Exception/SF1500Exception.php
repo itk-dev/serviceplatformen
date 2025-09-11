@@ -11,7 +11,7 @@
 namespace ItkDev\Serviceplatformen\Service\Exception;
 
 /**
- * Class SAMLTokenException
+ * Class SAMLTokenException.
  *
  * Exception cast when failing to fetch SAML token from SF1514.
  */

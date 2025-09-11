@@ -18,9 +18,9 @@ class SoapClient extends \SoapClient
     private ?string $lastFormattedRequest;
     private bool $disableCache;
 
-    public function __construct(?string $wsdl, array $options = null)
+    public function __construct(?string $wsdl, ?array $options = null)
     {
-        $this->disableCache = (bool)($options[SoapClientBase::SOAP_DISABLE_CACHE] ?? false);
+        $this->disableCache = (bool) ($options[SoapClientBase::SOAP_DISABLE_CACHE] ?? false);
         unset($options[SoapClientBase::SOAP_DISABLE_CACHE]);
 
         parent::__construct($wsdl, $options);
@@ -49,7 +49,7 @@ class SoapClient extends \SoapClient
         string $location,
         string $action,
         int $version,
-        bool $oneWay = false
+        bool $oneWay = false,
     ): ?string {
         $formattedRequest = $this->sf1500->formatSoapRequest($request, $location, $action, $version, $oneWay);
         $this->lastFormattedRequest = $formattedRequest;

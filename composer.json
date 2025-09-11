@@ -1,8 +1,8 @@
 {
     "name": "itk-dev/serviceplatformen",
     "description": "",
-    "type": "library",
     "license": "MIT",
+    "type": "library",
     "authors": [
         {
             "name": "Lars Steen",
@@ -12,10 +12,6 @@
             "name": "Mikkel Ricky",
             "email": "rimi@aarhus.dk"
         }
-    ],
-    "bin": [
-        "bin/serviceplatformen-sf1500-data-lookup",
-        "bin/serviceplatformen-sf1601-kombipostafsend"
     ],
     "require": {
         "php": "^8.3",
@@ -40,6 +36,7 @@
         "wsdltophp/packagebase": "^5.0"
     },
     "require-dev": {
+        "ergebnis/composer-normalize": "^2.48",
         "friendsofphp/php-cs-fixer": "^3.11",
         "goetas-webservices/xsd2php": "dev-feature-xml-namespace-prefix",
         "phan/phan": "^5.4",
@@ -50,27 +47,30 @@
         "symfony/mime": "^5.4 || ^6.0",
         "wsdltophp/packagegenerator": "^4.1"
     },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true
+    "repositories": {
+        "goetas-webservices/xsd2php": {
+            "type": "vcs",
+            "url": "https://github.com/rimi-itk/xsd2php"
+        }
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
+            "DataGovDk\\Model\\Core\\": "lib/DataGovDk/Model/Core/",
+            "DataGovDk\\Model\\DataTypes\\": "lib/DataGovDk/Model/DataTypes/",
+            "DigitalPost\\MeMo\\": "lib/DigitalPost/MeMo/",
+            "Digitaliseringskataloget\\": "lib/digitaliseringskataloget",
             "ItkDev\\Serviceplatformen\\": "src/",
             "ItkDev\\Serviceplatformen\\SF1500\\": "generated-classes/ItkDev/Serviceplatformen/SF1500/",
             "ItkDev\\Serviceplatformen\\SF1600\\": "generated-classes/ItkDev/Serviceplatformen/SF1600/",
-            "DigitalPost\\MeMo\\":                                                                                  "lib/DigitalPost/MeMo/",
-            "DataGovDk\\Model\\DataTypes\\":                                                                        "lib/DataGovDk/Model/DataTypes/",
-            "DataGovDk\\Model\\Core\\":                                                                             "lib/DataGovDk/Model/Core/",
-            "WwwGs1Dk\\Gs1Standarder\\Identifikation\\GlnGlobalLocationNumber\\":                                   "lib/WwwGs1Dk/Gs1Standarder/Identifikation/GlnGlobalLocationNumber/",
-            "ServicesNsiDk\\En\\Services\\SOR\\":                                                                   "lib/ServicesNsiDk/En/Services/SOR/",
-            "MotorregisterSkatDk\\":                                                                                "lib/MotorregisterSkatDk/",
-            "KleOnlineDk\\":                                                                                        "lib/KleOnlineDk/",
-            "WwwFormOnlineDk\\":                                                                                    "lib/WwwFormOnlineDk/",
+            "KleOnlineDk\\": "lib/KleOnlineDk/",
+            "MotorregisterSkatDk\\": "lib/MotorregisterSkatDk/",
+            "Oio\\": "lib/Oio/",
+            "ServicesNsiDk\\En\\Services\\SOR\\": "lib/ServicesNsiDk/En/Services/SOR/",
             "WwwDstDk\\Da\\TilSalg\\Forskningsservice\\Dokumentation\\Hoejkvalitetsvariable\\Elevregister2\\Udd\\": "lib/WwwDstDk/Da/TilSalg/Forskningsservice/Dokumentation/Hoejkvalitetsvariable/Elevregister2/Udd/",
-            "Digitaliseringskataloget\\":                                                                           "lib/digitaliseringskataloget",
-            "Oio\\":                                                                                                "lib/Oio/"
+            "WwwFormOnlineDk\\": "lib/WwwFormOnlineDk/",
+            "WwwGs1Dk\\Gs1Standarder\\Identifikation\\GlnGlobalLocationNumber\\": "lib/WwwGs1Dk/Gs1Standarder/Identifikation/GlnGlobalLocationNumber/"
         }
     },
     "autoload-dev": {
@@ -78,28 +78,32 @@
             "ItkDev\\Serviceplatformen\\Tests\\": "tests/"
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
+    "bin": [
+        "bin/serviceplatformen-sf1500-data-lookup",
+        "bin/serviceplatformen-sf1601-kombipostafsend"
+    ],
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        },
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
     "scripts": {
-        "tests/unit": [
-            "phpunit --configuration phpunit.xml.dist --testsuite Unit"
+        "code-analysis": [
+            "@code-analysis/phan",
+            "@code-analysis/phpstan"
         ],
-        "tests/end-to-end": [
-            "phpunit --configuration phpunit.xml.dist --testsuite EndToEnd"
+        "code-analysis/phan": [
+            "phan --allow-polyfill-parser"
         ],
-        "tests": [
-            "@tests/unit",
-            "@tests/end-to-end"
+        "code-analysis/phpstan": [
+            "phpstan analyse"
         ],
-        "coding-standards-check/php-cs-fixer": [
-            "php-cs-fixer fix --dry-run"
-        ],
-        "coding-standards-check/phpcs": [
-            "phpcs --standard=phpcs.xml.dist"
-        ],
-        "coding-standards-check": [
-            "@coding-standards-check/php-cs-fixer",
-            "@coding-standards-check/phpcs"
+        "coding-standards-apply": [
+            "@coding-standards-apply/php-cs-fixer",
+            "@coding-standards-apply/phpcs"
         ],
         "coding-standards-apply/php-cs-fixer": [
             "php-cs-fixer fix"
@@ -107,25 +111,25 @@
         "coding-standards-apply/phpcs": [
             "phpcbf --standard=phpcs.xml.dist"
         ],
-        "coding-standards-apply": [
-            "@coding-standards-apply/php-cs-fixer",
-            "@coding-standards-apply/phpcs"
+        "coding-standards-check": [
+            "@coding-standards-check/php-cs-fixer",
+            "@coding-standards-check/phpcs"
         ],
-        "code-analysis/phan": [
-            "phan --allow-polyfill-parser"
+        "coding-standards-check/php-cs-fixer": [
+            "php-cs-fixer fix --dry-run"
         ],
-         "code-analysis/phpstan": [
-            "phpstan analyse"
+        "coding-standards-check/phpcs": [
+            "phpcs --standard=phpcs.xml.dist"
         ],
-        "code-analysis": [
-            "@code-analysis/phan",
-            "@code-analysis/phpstan"
+        "tests": [
+            "@tests/unit",
+            "@tests/end-to-end"
+        ],
+        "tests/end-to-end": [
+            "phpunit --configuration phpunit.xml.dist --testsuite EndToEnd"
+        ],
+        "tests/unit": [
+            "phpunit --configuration phpunit.xml.dist --testsuite Unit"
         ]
-    },
-    "repositories": {
-        "goetas-webservices/xsd2php": {
-            "type": "vcs",
-            "url": "https://github.com/rimi-itk/xsd2php"
-        }
     }
 }

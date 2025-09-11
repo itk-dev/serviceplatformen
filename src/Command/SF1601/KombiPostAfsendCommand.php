@@ -74,8 +74,8 @@ class KombiPostAfsendCommand extends Command implements LoggerAwareInterface
             new InputOption('certificate-passphrase', null, InputOption::VALUE_REQUIRED, 'certificate passphrase', ''),
             new InputOption('file', null, InputOption::VALUE_REQUIRED, 'file to send'),
             new InputOption('memo', null, InputOption::VALUE_REQUIRED, 'memo document to send'),
-            new InputOption('attachment', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'attachment'),
-            new InputOption('action', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'action (see help for details)'),
+            new InputOption('attachment', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'attachment'),
+            new InputOption('action', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'action (see help for details)'),
         ];
         $this->setDefinition(new InputDefinition($inputOptions));
 
@@ -190,11 +190,7 @@ HELP;
         try {
             $options = $resolver->resolve($options);
         } catch (ExceptionInterface $exception) {
-            throw new InvalidOptionException(sprintf(
-                'Invalid action %s: %s',
-                json_encode($spec),
-                $exception->getMessage()
-            ));
+            throw new InvalidOptionException(sprintf('Invalid action %s: %s', json_encode($spec), $exception->getMessage()));
         }
 
         $this->debug(var_export(['action options' => $options], true));
@@ -265,6 +261,7 @@ HELP;
             if (null === $certificatepath) {
                 throw new InvalidOptionException(sprintf('Invalid path %s', $spec));
             }
+
             return new FilesystemCertificateLocator($certificatepath, $passphrase);
         }
     }
@@ -289,7 +286,7 @@ HELP;
                 'action' => null,
                 'certificate-passphrase' => '',
             ])
-            ->setNormalizer('production', static fn (Options $options, $value) => (bool)$value)
+            ->setNormalizer('production', static fn (Options $options, $value) => (bool) $value)
             ->setNormalizer('file', static function (Options $options, $value) {
                 if (null === $value xor null === $options['memo']) {
                     return $value;
@@ -361,7 +358,7 @@ HELP;
                         ->setEncodingFormat($mimeTypes->guessMimeType($filename))
                         ->setLanguage('da')
                         ->setFilename(basename($filename))
-                        ->setContent(file_get_contents($filename))
+                        ->setContent(file_get_contents($filename)),
                 ]);
 
             if ($options['action']) {
@@ -378,13 +375,13 @@ HELP;
             if (!empty($options['attachment'])) {
                 foreach ($options['attachment'] as $index => $filename) {
                     $additionalDocument = (new AdditionalDocument())
-                        ->setLabel(sprintf('Attachment %d', $index+1))
+                        ->setLabel(sprintf('Attachment %d', $index + 1))
                         ->setFile([
                             (new File())
                                 ->setEncodingFormat($mimeTypes->guessMimeType($filename))
                                 ->setLanguage('da')
                                 ->setFilename(basename($filename))
-                                ->setContent(file_get_contents($filename))
+                                ->setContent(file_get_contents($filename)),
                         ]);
                     $body->addToAdditionalDocument($additionalDocument);
                 }
@@ -423,10 +420,7 @@ HELP;
             })
             ->setNormalizer('entrypoint', static function (Options $options, $value) {
                 if (null === $value && SF1601::ACTION_AFTALE !== $options['action']) {
-                    throw new InvalidOptionsException(sprintf(
-                        'Action entrypoint is required for all actions but %s',
-                        SF1601::ACTION_AFTALE
-                    ));
+                    throw new InvalidOptionsException(sprintf('Action entrypoint is required for all actions but %s', SF1601::ACTION_AFTALE));
                 }
 
                 return $value;

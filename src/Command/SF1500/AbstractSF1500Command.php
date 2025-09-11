@@ -22,18 +22,16 @@ use ItkDev\Serviceplatformen\Service\SF1500\AdresseService;
 use ItkDev\Serviceplatformen\Service\SF1500\BrugerService;
 use ItkDev\Serviceplatformen\Service\SF1500\PersonService;
 use ItkDev\Serviceplatformen\Service\SF1500\SF1500;
-use ItkDev\Serviceplatformen\Service\SF1500\SF1500XMLBuilder;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
 use ItkDev\Serviceplatformen\Service\SoapClient;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class AbstractSF1500Command extends Command
 {
-    const SF1500_SERVICE_ENDPOINT = 'http://stoettesystemerne.dk/service/organisation/3';
+    public const SF1500_SERVICE_ENDPOINT = 'http://stoettesystemerne.dk/service/organisation/3';
     protected array $inputOptions = [];
 
     protected function buildInputOptions(array $definition): array
@@ -50,7 +48,9 @@ class AbstractSF1500Command extends Command
 
     /**
      * @template T of SF1500
+     *
      * @param class-string<T> $className
+     *
      * @return T
      */
     protected function getService(string $className, array $options): SF1500
@@ -135,6 +135,7 @@ class AbstractSF1500Command extends Command
             if (null === $certificatepath) {
                 throw new InvalidOptionException(sprintf('Invalid path %s', $spec));
             }
+
             return new FilesystemCertificateLocator($certificatepath, $passphrase);
         }
     }

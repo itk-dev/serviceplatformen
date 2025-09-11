@@ -42,12 +42,10 @@ abstract class DigitalPost
 
     /**
      * The client.
-     *
-     * @var ClientInterface
      */
     private ClientInterface $guzzleClient;
 
-    public function __construct(ClientInterface $client = null)
+    public function __construct(?ClientInterface $client = null)
     {
         $this->guzzleClient = $client ?? new Client();
     }
@@ -58,24 +56,24 @@ abstract class DigitalPost
     protected function afsendBrevPerson(
         string $kanalValg,
         string $prioritet,
-        string $cprNummerIdentifikator = null,
-        string $personName = null,
-        string $coNavn = null,
-        string $streetName = null,
-        string $streetBuildingIdentifier = null,
-        string $floorIdentifier = null,
-        string $suiteIdentifier = null,
-        string $mailDeliverySublocationIdentifier = null,
-        string $postCodeIdentifier = null,
-        string $districtSubdivisionIdentifier = null,
-        int $postOfficeBoxIdentifier = null,
-        string $countryIdentificationCode = null,
-        string $filFormatNavn = null,
-        string $meddelelseIndholdData = null,
-        string $titelTekst = null,
-        string $brevDato = null,
-        BilagSamlingType $bilagSamling = null
-    ):  array {
+        ?string $cprNummerIdentifikator = null,
+        ?string $personName = null,
+        ?string $coNavn = null,
+        ?string $streetName = null,
+        ?string $streetBuildingIdentifier = null,
+        ?string $floorIdentifier = null,
+        ?string $suiteIdentifier = null,
+        ?string $mailDeliverySublocationIdentifier = null,
+        ?string $postCodeIdentifier = null,
+        ?string $districtSubdivisionIdentifier = null,
+        ?int $postOfficeBoxIdentifier = null,
+        ?string $countryIdentificationCode = null,
+        ?string $filFormatNavn = null,
+        ?string $meddelelseIndholdData = null,
+        ?string $titelTekst = null,
+        ?string $brevDato = null,
+        ?BilagSamlingType $bilagSamling = null,
+    ): array {
         if (!$this->acquireLock()) {
             $this->waitLock();
         }
@@ -174,13 +172,13 @@ abstract class DigitalPost
      * Afsend digital post person.
      */
     public function afsendDigitalPostPerson(
-        string $kanalValg = null,
-        string $prioritet = null,
-        string $cprNummerIdentifikator = null,
-        string $filFormatNavn = null,
-        string $meddelelseIndholdData = null,
-        string $titelTekst = null,
-        BilagSamlingType $bilagSamling = null
+        ?string $kanalValg = null,
+        ?string $prioritet = null,
+        ?string $cprNummerIdentifikator = null,
+        ?string $filFormatNavn = null,
+        ?string $meddelelseIndholdData = null,
+        ?string $titelTekst = null,
+        ?BilagSamlingType $bilagSamling = null,
     ): array {
         if (!$this->acquireLock()) {
             $this->waitLock();
@@ -260,24 +258,24 @@ abstract class DigitalPost
     protected function afsendBrevCVR(
         string $kanalValg,
         string $prioritet,
-        string $cvrNummerIdentifikator = null,
-        string $personName = null,
-        string $coNavn = null,
-        string $streetName = null,
-        string $streetBuildingIdentifier = null,
-        string $floorIdentifier = null,
-        string $suiteIdentifier = null,
-        string $mailDeliverySublocationIdentifier = null,
-        string $postCodeIdentifier = null,
-        string $districtSubdivisionIdentifier = null,
-        int $postOfficeBoxIdentifier = null,
-        string $countryIdentificationCode = null,
-        string $filFormatNavn = null,
-        string $meddelelseIndholdData = null,
-        string $titelTekst = null,
-        string $brevDato = null,
-        BilagSamlingType $bilagSamling = null
-    ):  array {
+        ?string $cvrNummerIdentifikator = null,
+        ?string $personName = null,
+        ?string $coNavn = null,
+        ?string $streetName = null,
+        ?string $streetBuildingIdentifier = null,
+        ?string $floorIdentifier = null,
+        ?string $suiteIdentifier = null,
+        ?string $mailDeliverySublocationIdentifier = null,
+        ?string $postCodeIdentifier = null,
+        ?string $districtSubdivisionIdentifier = null,
+        ?int $postOfficeBoxIdentifier = null,
+        ?string $countryIdentificationCode = null,
+        ?string $filFormatNavn = null,
+        ?string $meddelelseIndholdData = null,
+        ?string $titelTekst = null,
+        ?string $brevDato = null,
+        ?BilagSamlingType $bilagSamling = null,
+    ): array {
         if (!$this->acquireLock()) {
             $this->waitLock();
         }
@@ -391,7 +389,7 @@ abstract class DigitalPost
         string $clientSecret,
         string $keyVaultName,
         string $keyVaultSecret,
-        string $keyVaultSecretVersion
+        string $keyVaultSecretVersion,
     ): CertificateLocatorInterface {
         $httpClient = new GuzzleAdapter($this->guzzleClient);
         $requestFactory = new RequestFactory();
@@ -418,7 +416,6 @@ abstract class DigitalPost
         );
     }
 
-
     /**
      * Generate AfsendelsesIdentifikator.
      *
@@ -433,9 +430,10 @@ abstract class DigitalPost
         if (strlen($serialNumber) > 21) {
             throw new \RuntimeException(sprintf('The digital post serial contains more the 21 characters: %s', $serialNumber));
         }
+
         return str_pad($this->serviceOptions['digital_post_system_id'], 6, '0', STR_PAD_LEFT)
-            . $this->serviceOptions['digital_post_afsender_system']
-            . str_pad($serialNumber, 21, '0', STR_PAD_LEFT);
+            .$this->serviceOptions['digital_post_afsender_system']
+            .str_pad($serialNumber, 21, '0', STR_PAD_LEFT);
     }
 
     protected function generateNextSerialNumber(): string

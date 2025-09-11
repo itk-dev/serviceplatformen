@@ -121,12 +121,13 @@ HELP;
                     $organisationFunktionsId = $managerInfo['funktionsId'];
 
                     $this->outputData($output, $sf1500, $userId, [$organisationFunktionsId]);
-                    $count++;
+                    ++$count;
                 }
 
                 return static::SUCCESS;
             } else {
                 $output->writeln(sprintf('Cannot find a manager for: %s', $name));
+
                 return static::SUCCESS;
             }
         }
@@ -135,6 +136,7 @@ HELP;
 
         if (empty($organisationFunktionsIds)) {
             $output->writeln('Cannot find any organisation funktion(ansættelse) for provided user id.');
+
             return static::SUCCESS;
         }
 
@@ -145,29 +147,28 @@ HELP;
 
     private function outputData(OutputInterface $output, SF1500 $sf1500, string $userId, array $funktiondIds)
     {
-        $output->writeln('Name: '. $sf1500->getPersonName($userId));
-        $output->writeln('Phone: '. $sf1500->getPersonPhone($userId));
-        $output->writeln('Email: '. $sf1500->getPersonEmail($userId));
-        $output->writeln('Az: '. $sf1500->getPersonAZIdent($userId));
-        $output->writeln('Location: '. $sf1500->getPersonLocation($userId));
+        $output->writeln('Name: '.$sf1500->getPersonName($userId));
+        $output->writeln('Phone: '.$sf1500->getPersonPhone($userId));
+        $output->writeln('Email: '.$sf1500->getPersonEmail($userId));
+        $output->writeln('Az: '.$sf1500->getPersonAZIdent($userId));
+        $output->writeln('Location: '.$sf1500->getPersonLocation($userId));
 
         $count = 1;
         foreach ($funktiondIds as $funktionsId) {
             $output->writeln(sprintf('Printing data for organisation funktion %s', $count));
             $this->outputFunktionsData($output, $sf1500, $funktionsId);
-            $count++;
+            ++$count;
         }
     }
 
-
     private function outputFunktionsData(OutputInterface $output, SF1500 $sf1500, string $funktionsId)
     {
-        $output->writeln('Organisation funktion: '. $funktionsId);
-        $output->writeln('Organisation funktions navn: '. $sf1500->getFunktionsNavn($funktionsId));
-        $output->writeln('Organisations enhed: '. $sf1500->getOrganisationEnhed($funktionsId));
-        $output->writeln('Organisations adresse: '. $sf1500->getOrganisationAddress($funktionsId));
-        $output->writeln('Organisations enhed niveau 2: '. $sf1500->getOrganisationEnhedNiveauTo($funktionsId));
-        $output->writeln('Magistrat: '. $sf1500->getPersonMagistrat($funktionsId));
+        $output->writeln('Organisation funktion: '.$funktionsId);
+        $output->writeln('Organisation funktions navn: '.$sf1500->getFunktionsNavn($funktionsId));
+        $output->writeln('Organisations enhed: '.$sf1500->getOrganisationEnhed($funktionsId));
+        $output->writeln('Organisations adresse: '.$sf1500->getOrganisationAddress($funktionsId));
+        $output->writeln('Organisations enhed niveau 2: '.$sf1500->getOrganisationEnhedNiveauTo($funktionsId));
+        $output->writeln('Magistrat: '.$sf1500->getPersonMagistrat($funktionsId));
     }
 
     protected function configureOptions(OptionsResolver $resolver): OptionsResolver

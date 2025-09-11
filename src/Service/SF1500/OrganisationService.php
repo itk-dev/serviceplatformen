@@ -10,7 +10,6 @@
 
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
-use ItkDev\Serviceplatformen\Service\SF1500\Model\Bruger;
 use ItkDev\Serviceplatformen\Service\SF1500\Model\Organisation;
 use ItkDev\Serviceplatformen\SF1500\Organisation\ServiceType\_List;
 use ItkDev\Serviceplatformen\SF1500\Organisation\ServiceType\Laes;
@@ -28,17 +27,11 @@ use ItkDev\Serviceplatformen\SF1500\Organisation\StructType\SoegOutputType;
 
 final class OrganisationService extends AbstractService
 {
-    /**
-     * {@inheritdoc}
-     */
     public static function getValidFilters(): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doSoeg(array $query): ?SoegOutputType
     {
         $attributListe = new AttributListeType();
@@ -50,35 +43,26 @@ final class OrganisationService extends AbstractService
         $relationListe = new RelationListeType();
 
         $request = (new SoegInputType())
-            ->setMaksimalAntalKvantitet((int)($query['limit'] ?? self::DEFAULT_LIMIT))
-            ->setFoersteResultatReference((int)($query['offset'] ?? 0))
+            ->setMaksimalAntalKvantitet((int) ($query['limit'] ?? self::DEFAULT_LIMIT))
+            ->setFoersteResultatReference((int) ($query['offset'] ?? 0))
             ->setAttributListe($attributListe)
             ->setRelationListe($relationListe);
 
         return $this->clientSoeg()->soeg($request) ?: null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doList(array $ids): ?ListOutputType
     {
         return $this->clientList()
             ->_list_8(new ListInputType($ids)) ?: null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doLaes(string $id): ?LaesOutputType
     {
         return $this->clientLaes()
             ->laes(new LaesInputType($id));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function buildModel($oejebliksbillede): Organisation
     {
         assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);

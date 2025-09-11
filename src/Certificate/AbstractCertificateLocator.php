@@ -10,41 +10,28 @@
 
 namespace ItkDev\Serviceplatformen\Certificate;
 
-use phpDocumentor\Reflection\Types\Mixed_;
-
 abstract class AbstractCertificateLocator implements CertificateLocatorInterface, \JsonSerializable
 {
     protected $passphrase;
 
     /**
      * AbstractCertificateLocator constructor.
-     *
-     * @param string $passphrases
      */
     public function __construct(string $passphrases = '')
     {
         $this->passphrase = $passphrases;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getPassphrase(): string
     {
         return $this->passphrase;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function hasPassphrase(): bool
     {
         return !empty($this->passphrase);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize(): mixed
     {
         return [

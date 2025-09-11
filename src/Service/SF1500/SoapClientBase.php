@@ -11,7 +11,6 @@
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
 use ItkDev\Serviceplatformen\Service\Exception\SoapException;
-use SoapFault;
 use WsdlToPhp\PackageBase\AbstractSoapClientBase;
 
 /**
@@ -21,7 +20,7 @@ class SoapClientBase extends AbstractSoapClientBase
 {
     protected SF1500 $sf1500;
 
-    const SOAP_DISABLE_CACHE = 'soap_disable_cache';
+    public const SOAP_DISABLE_CACHE = 'soap_disable_cache';
 
     public function getSoapClientClassName(?string $soapClientClassName = null): string
     {
@@ -31,8 +30,8 @@ class SoapClientBase extends AbstractSoapClientBase
     public static function getDefaultWsdlOptions(): array
     {
         return [
-                self::WSDL_SOAP_VERSION => SOAP_1_2,
-            ]+parent::getDefaultWsdlOptions();
+            self::WSDL_SOAP_VERSION => SOAP_1_2,
+        ] + parent::getDefaultWsdlOptions();
     }
 
     public function setSF1500(SF1500 $sf1500): self
@@ -51,7 +50,7 @@ class SoapClientBase extends AbstractSoapClientBase
         return $soapClient;
     }
 
-    public function saveLastError(string $methodName, SoapFault $soapFault): self
+    public function saveLastError(string $methodName, \SoapFault $soapFault): self
     {
         // Throw a SOAP exception rather than just storing a SOAP fault as the parent class does.
         throw new SoapException($soapFault, $this->getLastRequest(), $this->getLastResponse());

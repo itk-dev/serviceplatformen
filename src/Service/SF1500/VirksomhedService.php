@@ -11,7 +11,6 @@
 namespace ItkDev\Serviceplatformen\Service\SF1500;
 
 use ItkDev\Serviceplatformen\Service\SF1500\Model\Virksomhed;
-use ItkDev\Serviceplatformen\SF1500\Virksomhed\ClassMap;
 use ItkDev\Serviceplatformen\SF1500\Virksomhed\ServiceType\_List;
 use ItkDev\Serviceplatformen\SF1500\Virksomhed\ServiceType\Laes;
 use ItkDev\Serviceplatformen\SF1500\Virksomhed\ServiceType\Soeg;
@@ -28,17 +27,11 @@ use ItkDev\Serviceplatformen\SF1500\Virksomhed\StructType\SoegOutputType;
 
 final class VirksomhedService extends AbstractService
 {
-    /**
-     * {@inheritdoc}
-     */
     public static function getValidFilters(): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doSoeg(array $query): ?SoegOutputType
     {
         $attributListe = new AttributListeType();
@@ -50,35 +43,26 @@ final class VirksomhedService extends AbstractService
         $relationListe = new RelationListeType();
 
         $request = (new SoegInputType())
-            ->setMaksimalAntalKvantitet((int)($query['limit'] ?? self::DEFAULT_LIMIT))
-            ->setFoersteResultatReference((int)($query['offset'] ?? 0))
+            ->setMaksimalAntalKvantitet((int) ($query['limit'] ?? self::DEFAULT_LIMIT))
+            ->setFoersteResultatReference((int) ($query['offset'] ?? 0))
             ->setAttributListe($attributListe)
             ->setRelationListe($relationListe);
 
         return $this->clientSoeg()->soeg($request) ?: null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doList(array $ids): ?ListOutputType
     {
         return $this->clientList()
             ->_list_12(new ListInputType($ids)) ?: null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doLaes(string $id): ?LaesOutputType
     {
         return $this->clientLaes()
             ->laes(new LaesInputType($id)) ?: null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function buildModel($oejebliksbillede): Virksomhed
     {
         assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);

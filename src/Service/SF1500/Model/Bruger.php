@@ -33,7 +33,7 @@ final class Bruger extends AbstractModel
             self::FIELD_EMAIL => $this->relations[self::RELATION_ADRESSE][Adresse::EMAIL] ?? null,
             self::FIELD_MOBILTELEFON => $this->relations[self::RELATION_ADRESSE][Adresse::MOBILTELEFON] ?? null,
             self::FIELD_LOKATION => $this->relations[self::RELATION_ADRESSE][Adresse::LOKATION] ?? null,
-            default => parent::__get($name)
+            default => parent::__get($name),
         };
     }
 }

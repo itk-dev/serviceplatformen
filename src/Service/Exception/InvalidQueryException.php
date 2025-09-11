@@ -11,7 +11,7 @@
 namespace ItkDev\Serviceplatformen\Service\Exception;
 
 /**
- * Class InvalidFilterException
+ * Class InvalidFilterException.
  *
  * Exception cast when specifying an invalid filter.
  */

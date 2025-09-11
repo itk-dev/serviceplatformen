@@ -104,12 +104,12 @@ HELP;
 
         switch ($type) {
             case 'adresse':
-                return ($this->getAdresseService($options))->laes($id, $fields);
+                return $this->getAdresseService($options)->laes($id, $fields);
             case 'person':
-                return ($this->getPersonService($options))->laes($id, $fields);
+                return $this->getPersonService($options)->laes($id, $fields);
             case 'user':
             case 'bruger':
-                return ($this->getBrugerService($options))->laes($id, $fields);
+                return $this->getBrugerService($options)->laes($id, $fields);
         }
 
         throw new RuntimeException(sprintf('invalid search type: %s', $type));

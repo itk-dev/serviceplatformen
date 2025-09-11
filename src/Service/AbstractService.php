@@ -13,11 +13,10 @@ namespace ItkDev\Serviceplatformen\Service;
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Request\RequestGeneratorInterface;
 use ItkDev\Serviceplatformen\Service\Exception\ServiceException;
-use SoapClient;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class AbstractService
+ * Class AbstractService.
  */
 abstract class AbstractService
 {
@@ -26,9 +25,6 @@ abstract class AbstractService
 
     /**
      * AbstractService constructor.
-     *
-     * @param array $soapClientOptions
-     * @param RequestGeneratorInterface $requestGenerator
      */
     public function __construct(array $soapClientOptions, RequestGeneratorInterface $requestGenerator)
     {
@@ -39,12 +35,12 @@ abstract class AbstractService
     /**
      * Performs a call to the provided operation with the message in the right context.
      *
-     * @param string $operation the operation on the service to call.
-     * @param array $message the message to be passed to the operation.
+     * @param string $operation the operation on the service to call
+     * @param array  $message   the message to be passed to the operation
      *
-     * @return object the raw response.
+     * @return object the raw response
      *
-     * @throws ServiceException is thrown on SoapFaults.
+     * @throws ServiceException is thrown on SoapFaults
      */
     public function makeCall(string $operation, array $message): object
     {
@@ -56,10 +52,10 @@ abstract class AbstractService
         $localCertFilename = tempnam(sys_get_temp_dir(), 'cert');
         file_put_contents($localCertFilename, $certificateLocator->getCertificate());
 
-        $soapClient = new SoapClient($wsdl, $this->soapClientOptions['options']
+        $soapClient = new \SoapClient($wsdl, $this->soapClientOptions['options']
             + [
                 'local_cert' => $localCertFilename,
-                'passphrase' => $certificateLocator->getPassphrase()
+                'passphrase' => $certificateLocator->getPassphrase(),
             ]);
 
         try {

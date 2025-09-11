@@ -13,10 +13,10 @@ namespace ItkDev\Serviceplatformen\Service\Exception;
 use Exception;
 
 /**
- * Class ServiceException
+ * Class ServiceException.
  *
  * Generic exception cast when an error occurs on a service call.
  */
-class ServiceException extends Exception
+class ServiceException extends \Exception
 {
 }

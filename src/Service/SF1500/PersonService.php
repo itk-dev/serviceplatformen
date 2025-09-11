@@ -29,9 +29,6 @@ class PersonService extends AbstractService
 {
     public const FILTER_NAVNTEKST = 'navntekst';
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getValidFilters(): array
     {
         return [
@@ -39,9 +36,6 @@ class PersonService extends AbstractService
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doSoeg(array $query): ?SoegOutputType
     {
         $attributListe = new AttributListeType();
@@ -53,35 +47,26 @@ class PersonService extends AbstractService
         $relationListe = new RelationListeType();
 
         $request = (new SoegInputType())
-            ->setMaksimalAntalKvantitet((int)($query['limit'] ?? 50))
-            ->setFoersteResultatReference((int)($query['offset'] ?? 0))
+            ->setMaksimalAntalKvantitet((int) ($query['limit'] ?? 50))
+            ->setFoersteResultatReference((int) ($query['offset'] ?? 0))
             ->setAttributListe($attributListe)
             ->setRelationListe($relationListe);
 
         return $this->clientSoeg()->soeg($request) ?: null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doList(array $ids): ?ListOutputType
     {
         return $this->clientList()
             ->_list_11(new ListInputType($ids)) ?: null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doLaes(string $id): ?LaesOutputType
     {
         return $this->clientLaes()
             ->laes(new LaesInputType($id)) ?: null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function buildModel($oejebliksbillede): Person
     {
         assert($oejebliksbillede instanceof FiltreretOejebliksbilledeType);

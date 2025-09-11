@@ -32,7 +32,7 @@ class PostForespoergCommand extends AbstractCommand
             new InputOption('certificate', null, InputOption::VALUE_REQUIRED, 'Path to certificate or a query string with Azure Key Vault information (see help for details)'),
             new InputOption('certificate-passphrase', null, InputOption::VALUE_REQUIRED, 'certificate passphrase', ''),
             new InputOption('type', null, InputOption::VALUE_REQUIRED, 'type', 'digitalpost'),
-            new InputArgument('identifier', InputArgument::REQUIRED|InputArgument::IS_ARRAY, 'identifier'),
+            new InputArgument('identifier', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'identifier'),
         ];
         $this->setDefinition(new InputDefinition($definition));
 
@@ -101,7 +101,7 @@ HELP;
 
             $io->definitionList(
                 ['identifier' => $identifier],
-                ['result' => json_encode($result, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)]
+                ['result' => json_encode($result, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)]
             );
         }
 

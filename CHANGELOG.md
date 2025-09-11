@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [PR-44](https://github.com/itk-dev/serviceplatformen/pull/44)
+  - Cleaned up in preparation for adding support for
+    [Fordelingskomponenten](https://digitaliseringskataloget.dk/l%C3%B8sninger/fordelingskomponenten)
+
 ## [1.7.1] - 2025-08-20
 
 - [PR-43](https://github.com/itk-dev/serviceplatformen/pull/43)

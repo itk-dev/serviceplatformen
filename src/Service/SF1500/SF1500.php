@@ -63,13 +63,11 @@ class SF1500
 {
     /**
      * Client instances indexed by class name.
-     * @var array
      */
     protected array $clients = [];
 
     /**
      * Service instances indexed by class name.
-     * @var array
      */
     protected array $services = [];
 
@@ -77,7 +75,7 @@ class SF1500
     private SF1514 $sf1514;
     protected array $options;
 
-    private static bool|null $shutdownFunctionRegistered = null;
+    private static ?bool $shutdownFunctionRegistered = null;
 
     public function __construct(SF1514 $sf1514, array $options)
     {
@@ -219,6 +217,7 @@ class SF1500
     public function getFunktionsNavn(string $funktionsId): string
     {
         $response = $this->organisationFunktionLaes($funktionsId);
+
         return $response
           ->getFiltreretOejebliksbillede()
           ->getRegistrering()[0]
@@ -254,6 +253,7 @@ class SF1500
             }
 
             $response = $this->organisationEnhedLaes($orgEnhedId);
+
             return $response
               ->getFiltreretOejebliksbillede()
               ->getRegistrering()[0]
@@ -363,14 +363,15 @@ class SF1500
         }
 
         return [
-          'overordnet_id' => $overordnetId,
-          'enhedNavn' => $enhedNavn,
+            'overordnet_id' => $overordnetId,
+            'enhedNavn' => $enhedNavn,
         ];
     }
 
     /**
      * Fetches bruger and organisation funktions id for managers from user id.
      * Returns empty array if no manager exists.
+     *
      * @throws SF1500Exception|SAMLTokenException
      */
     public function getManagerBrugerAndFunktionsIdFromUserId($userId, $managerFunktionsTypeId): array
@@ -400,7 +401,8 @@ class SF1500
 
     /**
      * Fetches bruger and organisation funktions id for managers from funktions id.
-     * Returns empty array if no manager exists
+     * Returns empty array if no manager exists.
+     *
      * @throws SF1500Exception
      */
     private function getManagerBrugerAndFunktionsIdFromFunktionsId($funktionsId, $managerFunktionsTypeId): array
@@ -487,6 +489,7 @@ class SF1500
 
     /**
      * Gets SAML token from SF1514.
+     *
      * @throws SAMLTokenException
      */
     private function getSAMLToken(): string
@@ -518,6 +521,7 @@ class SF1500
     private function brugerLaes($brugerId): BrugerLaesOutputType
     {
         $brugerLaesClient = $this->getClient(BrugerLaes::class);
+
         return $brugerLaesClient->laes(new BrugerLaesInputType($brugerId));
     }
 
@@ -562,7 +566,7 @@ class SF1500
 
         $relationsListe = new OrganisationFunktionRelationListeType();
         if (null !== $brugerId) {
-            $relationsListe->addToTilknyttedeBrugere((new OrganisationFunktionBrugerFlerRelationType)
+            $relationsListe->addToTilknyttedeBrugere((new OrganisationFunktionBrugerFlerRelationType())
                 ->setReferenceID(new OrganisationFunktionUnikIdType($brugerId)));
         }
         if (null !== $organisationsId) {
@@ -571,7 +575,7 @@ class SF1500
               ->setReferenceID(new OrganisationFunktionUnikIdType($organisationsId)));
         }
         if (null !== $funktionsTypeId) {
-            $relationsListe->setFunktionstype((new OrganisationFunktionKlasseRelationType)
+            $relationsListe->setFunktionstype((new OrganisationFunktionKlasseRelationType())
                 ->setReferenceID(new OrganisationFunktionUnikIdType($funktionsTypeId)));
         }
 
@@ -670,7 +674,6 @@ class SF1500
         return $soapLocation;
     }
 
-
     private const NS_SOAP_ENVELOPE = 'http://www.w3.org/2003/05/soap-envelope';
     private const NS_SAGDOK = 'urn:oio:sagdok:3.0.0';
     private const STATUS_KODE_OK = '20';
@@ -680,7 +683,7 @@ class SF1500
         string $location,
         string $action,
         int $version,
-        bool $oneWay = false
+        bool $oneWay = false,
     ): string {
         $doc = Serializer::loadXML($request);
 
@@ -706,7 +709,6 @@ class SF1500
     private static array $tokenXSLTProcessors = [];
 
     /**
-     *
      * @see https://bugs.php.net/bug.php?id=55294
      */
     private static function getTokenXSLTProcessor(string $token): \XSLTProcessor
@@ -791,7 +793,7 @@ class SF1500
         return preg_replace(
             '#[{}()/\\\\@:]+#',
             '_',
-            $key . '|' . sha1(json_encode($payload+$this->options))
+            $key.'|'.sha1(json_encode($payload + $this->options))
         );
     }
 
@@ -811,7 +813,9 @@ class SF1500
 
     /**
      * @template Service of ServiceInterface
+     *
      * @param class-string<Service> $className
+     *
      * @return Service
      */
     public function getService(string $className): ServiceInterface
@@ -825,7 +829,9 @@ class SF1500
 
     /**
      * @template Client of SoapClientBase
+     *
      * @param class-string<Client> $className
+     *
      * @return Client
      */
     public function getClient(string $className, array $options = []): SoapClientBase
@@ -833,8 +839,8 @@ class SF1500
         if (!isset($this->clients[$className])) {
             [$wsdlUrl, $classMap] = $this->getSoapClientInfo($className);
             $this->clients[$className] = (new $className([
-              SoapClientBase::WSDL_URL => $wsdlUrl,
-              SoapClientBase::WSDL_CLASSMAP => $classMap,
+                SoapClientBase::WSDL_URL => $wsdlUrl,
+                SoapClientBase::WSDL_CLASSMAP => $classMap,
             ] + $options))
               ->setSF1500($this);
         }
@@ -849,37 +855,37 @@ class SF1500
             case AdresseList::class:
             case AdresseLaes::class:
                 return [
-                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Adresse.wsdl',
-                AdresseClassMap::get(),
-              ];
+                    __DIR__.'/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Adresse.wsdl',
+                    AdresseClassMap::get(),
+                ];
             case BrugerSoeg::class:
             case BrugerList::class:
             case BrugerLaes::class:
                 return [
-                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Bruger.wsdl',
-                BrugerClassMap::get(),
-              ];
+                    __DIR__.'/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Bruger.wsdl',
+                    BrugerClassMap::get(),
+                ];
             case OrganisationEnhedSoeg::class:
             case OrganisationEnhedList::class:
             case OrganisationEnhedLaes::class:
                 return [
-                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/OrganisationEnhed.wsdl',
-                OrganisationEnhedClassMap::get(),
-              ];
+                    __DIR__.'/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/OrganisationEnhed.wsdl',
+                    OrganisationEnhedClassMap::get(),
+                ];
             case OrganisationFunktionSoeg::class:
             case OrganisationFunktionList::class:
             case OrganisationFunktionLaes::class:
                 return [
-                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/OrganisationFunktion.wsdl',
-                OrganisationFunktionClassMap::get(),
-              ];
+                    __DIR__.'/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/OrganisationFunktion.wsdl',
+                    OrganisationFunktionClassMap::get(),
+                ];
             case PersonSoeg::class:
             case PersonList::class:
             case PersonLaes::class:
                 return [
-                __DIR__ . '/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Person.wsdl',
-                PersonClassMap::get(),
-              ];
+                    __DIR__.'/../../../resources/sf1500/Tekniske specifikationer (v6.0 Services)/v6_0_0_0/wsdl/Person.wsdl',
+                    PersonClassMap::get(),
+                ];
         }
 
         throw new \InvalidArgumentException(sprintf('Invalid class name: %s', $className));

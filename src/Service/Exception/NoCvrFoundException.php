@@ -11,9 +11,7 @@
 namespace ItkDev\Serviceplatformen\Service\Exception;
 
 /**
- * Class NoCvrFoundException
- *
- * @package ItkDev\Serviceplatformen\Service\Exception
+ * Class NoCvrFoundException.
  */
 class NoCvrFoundException extends ServiceException
 {

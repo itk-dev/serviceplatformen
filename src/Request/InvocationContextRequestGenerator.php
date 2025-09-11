@@ -11,7 +11,7 @@
 namespace ItkDev\Serviceplatformen\Request;
 
 /**
- * Class InvocationContextRequestGenerator
+ * Class InvocationContextRequestGenerator.
  */
 class InvocationContextRequestGenerator implements RequestGeneratorInterface
 {
@@ -23,10 +23,10 @@ class InvocationContextRequestGenerator implements RequestGeneratorInterface
     /**
      * InvocationContextRequestGenerator constructor.
      *
-     * @param string $serviceAgreementUuid the uuid of the service agreement.
-     * @param string $userSystemUuid the uuid of the user system.
-     * @param string $serviceUuid the uuid of the called service.
-     * @param string $userUuid the uuid of the user, usually the uuid of the calling municipality.
+     * @param string $serviceAgreementUuid the uuid of the service agreement
+     * @param string $userSystemUuid       the uuid of the user system
+     * @param string $serviceUuid          the uuid of the called service
+     * @param string $userUuid             the uuid of the user, usually the uuid of the calling municipality
      */
     public function __construct(string $serviceAgreementUuid, string $userSystemUuid, string $serviceUuid, string $userUuid)
     {
@@ -36,9 +36,6 @@ class InvocationContextRequestGenerator implements RequestGeneratorInterface
         $this->userUuid = $userUuid;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function makeRequest(array $message): array
     {
         $context = [
