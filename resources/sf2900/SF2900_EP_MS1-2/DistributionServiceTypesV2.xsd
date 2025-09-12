@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:tns="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/2/types"
+        targetNamespace="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/2/types"
+        elementFormDefault="qualified"
+        xmlns:oio="urn:oio:definitions:1.0.0"
+        oio:mapping="urn:oio:sagdok:MPD:3.0.0"
+        attributeFormDefault="unqualified">
+
+    <simpleType name="URN">
+        <restriction base="string">
+            <pattern value="[uU][rR][nN]:[a-zA-Z0-9][a-zA-Z0-9-]{0,30}[a-zA-Z0-9]:[a-zA-Z0-9\(\)+,\\\-.:=@;$_!*'%/?#]+"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="UUID">
+        <restriction base="string">
+            <pattern value="[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="UUID_URN">
+        <choice>
+            <element name="UUID" type="tns:UUID"/>
+            <element name="URN" type="tns:URN"/>
+        </choice>
+    </complexType>
+
+    <complexType name="UUID_URN_Tekst">
+        <choice>
+            <element name="UUID" type="tns:UUID"/>
+            <element name="URN" type="tns:URN"/>
+            <element name="Tekst" type="string"/>
+        </choice>
+    </complexType>
+
+    <simpleType name="CVRNumber">
+        <restriction base="string">
+            <pattern value="[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="KLEEmneType">
+        <restriction base="string">
+            <pattern value="[0-9][0-9][.][0-9][0-9][.][0-9][0-9]"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="KLEHandlingFacetType">
+        <restriction base="string">
+            <pattern value="[A-Z,Æ,Ø,Å][0-9][0-9]"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="ObjektTypeType">
+        <restriction base="string">
+            <enumeration value="JOURNALPOST"/>
+            <enumeration value="DOKUMENT"/>
+            <enumeration value="FORMULAR"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="LivscyklusKodeType">
+        <restriction base="string">
+            <enumeration value="Oprettet"/>
+        </restriction>
+    </simpleType>
+
+    <!-- Kvitteringer -->
+
+    <simpleType name="TransportValideringsKodeType">
+        <restriction base="string">
+            <enumeration value="OK"/>
+            <enumeration value="ADVARSEL"/>
+            <enumeration value="FEJL"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="TransportkvitteringType">
+        <sequence>
+            <element name="TransportValideringsKode" type="tns:TransportValideringsKodeType" minOccurs="1"
+                     maxOccurs="1"/>
+            <element name="Begrundelse" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="FejlListe" type="tns:FejlListeType" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="FejlListeType">
+        <sequence>
+            <element name="Fejl" type="tns:FejlType" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="FejlType">
+        <sequence>
+            <element name="FejlKode" type="string" minOccurs="1" maxOccurs="1"/>
+            <element name="FejlTekst" type="string" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <simpleType name="ForretningsValideringsKodeType">
+        <restriction base="string">
+            <enumeration value="MODTAGET"/>
+            <enumeration value="AFLEVERET"/>
+            <enumeration value="ACCEPTERET"/>
+            <enumeration value="AFVIST"/>
+            <enumeration value="FEJLET"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="KvitteringstypeType">
+        <restriction base="string">
+            <enumeration value="Teknisk"/>
+            <enumeration value="Forretning"/>
+            <enumeration value="Digital post"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="ForretningskvitteringType">
+        <sequence>
+            <element name="ForretningsValideringsKode" type="tns:ForretningsValideringsKodeType" minOccurs="1"
+                     maxOccurs="1"/>
+            <element name="Kvitteringstype" type="tns:KvitteringstypeType" minOccurs="1" maxOccurs="1"/>
+            <element name="Begrundelse" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="FejlListe" type="tns:FejlListeType" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <!-- Typer til specifikke services -->
+
+    <complexType name="anmodRequestType">
+        <sequence>
+            <element name="DistributionContext" type="tns:DistributionContextType" minOccurs="1" maxOccurs="1"/>
+            <element name="DistributionObject" type="tns:DistributionObjectType" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="DistributionContextType">
+        <sequence>
+            <element name="AnvenderTransaktionsID" type="tns:UUID" minOccurs="1" maxOccurs="1"/>
+            <element name="DistributionTransktionsID" type="tns:UUID" minOccurs="0" maxOccurs="1"/>
+            <element name="DigitalPostMeddelelsesID" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="AfsendendeMyndighed" type="tns:CVRNumber" minOccurs="1" maxOccurs="1"/>
+            <element name="RoutingMyndighed" type="tns:CVRNumber" minOccurs="1" maxOccurs="1"/>
+            <element name="RoutingValg" type="tns:RoutingValg" minOccurs="1" maxOccurs="1"/>
+            <element name="DokumentFilNavn" type="string" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="RoutingValg">
+        <choice>
+            <element name="RoutingKLEEmneHandling" type="tns:RoutingKLEInfo" minOccurs="1" maxOccurs="1"/>
+            <element name="RoutingModtagerAktoer" type="tns:UUID" minOccurs="1" maxOccurs="1"/>
+        </choice>
+    </complexType>
+
+    <complexType name="RoutingKLEInfo">
+        <sequence>
+            <element name="RoutingKLEEmne" type="tns:KLEEmneType" minOccurs="1" maxOccurs="1"/>
+            <element name="RoutingHandlingFacet" type="tns:KLEHandlingFacetType" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="RoutingListeType">
+        <sequence>
+            <element name="Routing" type="tns:RoutingType" minOccurs="1" maxOccurs="unbounded"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="RoutingType">
+        <sequence>
+            <element name="RoutingMyndighed" type="tns:CVRNumber" minOccurs="1" maxOccurs="1"/>
+            <element name="RoutingModtagerAktoer" type="tns:UUID" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="RoutingResposneListeType">
+        <sequence>
+            <element name="RoutingModtager" type="tns:RoutingResponseType" minOccurs="1" maxOccurs="unbounded"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="RoutingResponseType">
+        <sequence>
+            <element name="RoutingMyndighed" type="tns:CVRNumber" minOccurs="1" maxOccurs="1"/>
+            <element name="RoutingModtagerAktoer" type="tns:UUID" minOccurs="1" maxOccurs="1"/>
+            <element name="KanModtage" type="boolean" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="DistributionObjectType">
+        <sequence>
+            <element name="ObjektType" type="tns:ObjektTypeType" minOccurs="1" maxOccurs="1"/>
+            <element name="ObjektIndhold" type="tns:ObjektIndholdType" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="ObjektIndholdType">
+        <sequence>
+            <choice minOccurs="0" maxOccurs="1">
+                <element name="DistributionDokument" type="tns:DistributionDokumentType"/>
+                <element name="DistributionJournalPost" type="tns:DistributionJournalPostType"/>
+                <element name="DistributionFormular" type="tns:DistributionFormularType"/>
+            </choice>
+        </sequence>
+    </complexType>
+
+    <complexType name="DistributionDokumentType">
+        <sequence>
+            <element name="ID" type="tns:UUID" minOccurs="1" maxOccurs="1"/>
+            <element name="KLEEmneForslag" type="tns:KLEEmneType" minOccurs="1" maxOccurs="1"/>
+            <element name="HandlingFacetForslag" type="tns:KLEHandlingFacetType" minOccurs="0" maxOccurs="1"/>
+            <element name="SagForslag" type="tns:UUID" minOccurs="0" maxOccurs="1"/>
+            <element name="Registrering" type="tns:DokumentRegistreringType" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="DokumentRegistreringType">
+        <sequence>
+            <element name="FraTidsPunkt" type="dateTime" minOccurs="1" maxOccurs="1"/>
+            <element name="LivscyklusKode" type="tns:LivscyklusKodeType" minOccurs="1" maxOccurs="1"/>
+            <element name="ImportTidspunkt" type="dateTime" minOccurs="0" maxOccurs="1"/>
+            <element name="BrugerRef" type="tns:UUID_URN" minOccurs="0" maxOccurs="1"/>
+            <element name="RegistreringItSystem" type="tns:UUID_URN" minOccurs="1" maxOccurs="1"/>
+            <element name="RelationListe" type="tns:RelationsListe" minOccurs="1" maxOccurs="1"/>
+            <element name="TilstandsListe" type="tns:TilstandListeType" minOccurs="1" maxOccurs="unbounded"/>
+            <element name="AttributListe" type="tns:AttributterListeType" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="RelationsListe">
+        <sequence>
+            <element name="VariantListe" type="tns:VariantListeType" minOccurs="1" maxOccurs="1"/>
+            <element name="DokumentPartListe" type="tns:DokumentPartListeType" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="VariantListeType">
+        <sequence>
+            <element name="Variant" type="tns:VariantType" minOccurs="1" maxOccurs="unbounded"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="VariantType">
+        <sequence>
+            <element name="Virkning" type="tns:VirkningType" minOccurs="1" maxOccurs="1"/>
+            <element name="Rolle" type="tns:VariantRolleType" minOccurs="1" maxOccurs="1"/>
+            <element name="Indeks" type="string" minOccurs="1" maxOccurs="1"/>
+            <element name="VariantAttributter" type="tns:VariantAttributterType" minOccurs="1" maxOccurs="1"/>
+            <element name="DelAttributter" type="tns:DelAttributterType" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <simpleType name="VariantRolleType">
+        <restriction base="string">
+            <enumeration value="Variant"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="VariantAttributterType">
+        <sequence>
+            <element name="VariantType" type="string" minOccurs="1" maxOccurs="1"/>
+            <element name="Produktion" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="Offentliggoerelse" type="boolean" minOccurs="0" maxOccurs="1"/>
+            <element name="Arkivering" type="boolean" minOccurs="0" maxOccurs="1"/>
+            <element name="DelvistScannet" type="boolean" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="DelAttributterType">
+        <sequence>
+            <element name="DelTekst" type="string" minOccurs="1" maxOccurs="1"/>
+            <element name="Indeks" type="integer" minOccurs="0" maxOccurs="1"/>
+            <element name="Indhold" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="Filstoerrelse" type="integer" minOccurs="0" maxOccurs="1"/>
+            <element name="MimeType" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="ScannerID" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="Location" type="string" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="DokumentPartListeType">
+        <sequence>
+            <element name="DokumentPart" type="tns:DokumentPartType" minOccurs="1" maxOccurs="unbounded"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="DokumentPartType">
+        <sequence>
+            <element name="Virkning" type="tns:VirkningType" minOccurs="1" maxOccurs="1"/>
+            <element name="Rolle" type="tns:DokumentPartRolleType" minOccurs="1" maxOccurs="1"/>
+            <element name="Indeks" type="integer" minOccurs="1" maxOccurs="1"/>
+            <element name="Part" type="tns:PartType" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <simpleType name="DokumentPartRolleType">
+        <restriction base="string">
+            <enumeration value="PrimaerPart"/>
+            <enumeration value="SekundaerPart"/>
+            <enumeration value="KopiModtager"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="VirkningType">
+        <sequence>
+            <element name="FraTidspunkt" type="dateTime" minOccurs="0" maxOccurs="1"/>
+            <element name="TilTidspunkt" type="dateTime" minOccurs="0" maxOccurs="1"/>
+            <element name="Aktoer" type="tns:UUID_URN" minOccurs="1" maxOccurs="1"/>
+            <element name="AktoerType" type="tns:AktoerTypeType" minOccurs="1" maxOccurs="1"/>
+            <element name="NoteTekst" type="string" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <simpleType name="AktoerTypeType">
+        <restriction base="string">
+            <enumeration value="Organisation"/>
+            <enumeration value="OrganisationEnhed"/>
+            <enumeration value="OrganisationFunktion"/>
+            <enumeration value="Bruger"/>
+            <enumeration value="ItSystem"/>
+            <enumeration value="Interessefaellesskab"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="TilstandListeType">
+        <sequence>
+            <element name="Tilstand" type="tns:TilstandType" minOccurs="1" maxOccurs="unbounded"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="TilstandType">
+        <sequence>
+            <element name="Fremdrift" type="tns:FremdriftType" minOccurs="1" maxOccurs="1"/>
+            <element name="Virkning" type="tns:VirkningType" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <simpleType name="FremdriftType">
+        <restriction base="string">
+            <enumeration value="Modtaget"/>
+            <enumeration value="Fordelt"/>
+            <enumeration value="UnderUdarbejdelse"/>
+            <enumeration value="UnderReview"/>
+            <enumeration value="Endeligt"/>
+            <enumeration value="Afleveret"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="AttributterListeType">
+        <sequence>
+            <element name="Attributter" type="tns:AttributterType" minOccurs="1" maxOccurs="unbounded"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="AttributterType">
+        <sequence>
+            <element name="BrugervendtNoegleTekst" type="string" minOccurs="1" maxOccurs="1"/>
+            <element name="TitelTekst" type="string" minOccurs="1" maxOccurs="1"/>
+            <element name="BeskrivelseTekst" type="string" minOccurs="1" maxOccurs="1"/>
+            <element name="Dokumenttype" type="tns:DokumenttypeType" minOccurs="1" maxOccurs="1"/>
+            <element name="Retning" type="tns:RetningType" minOccurs="1" maxOccurs="1"/>
+            <element name="Brevdato" type="date" minOccurs="1" maxOccurs="1"/>
+            <element name="Fristdato" type="date" minOccurs="0" maxOccurs="1"/>
+            <element name="VersionIdentifikator" type="integer" minOccurs="0" maxOccurs="1"/>
+            <element name="UnderversionIdentificator" type="integer" minOccurs="0" maxOccurs="1"/>
+            <element name="KassationskodeTekst" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="Virkning" type="tns:VirkningType" minOccurs="1" maxOccurs="1"/>
+            <element name="OffentlighedUndtaget" type="tns:OffentlighedUndtagetType" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <simpleType name="DokumenttypeType">
+        <restriction base="string">
+            <enumeration value="Faktura"/>
+            <enumeration value="Brev"/>
+            <enumeration value="Notat"/>
+            <enumeration value="Rapport"/>
+            <enumeration value="Dagsorden"/>
+            <enumeration value="Refereat"/>
+            <enumeration value="eMail"/>
+            <enumeration value="Anden"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="RetningType">
+        <restriction base="string">
+            <enumeration value="Indgaaende"/>
+            <enumeration value="Udgaaende"/>
+            <enumeration value="InterntInd"/>
+            <enumeration value="InterntUd"/>
+            <enumeration value="Internt"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="OffentlighedUndtagetType">
+        <sequence>
+            <element name="TitelAlternativTekst" type="string" minOccurs="1" maxOccurs="1"/>
+            <element name="HjemmelTekst" type="string" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="DistributionJournalPostType">
+        <sequence>
+            <element name="ID" type="tns:UUID" minOccurs="1" maxOccurs="1"/>
+            <element name="KLEEmneForslag" type="tns:KLEEmneType" minOccurs="1" maxOccurs="1"/>
+            <element name="HandlingFacetForslag" type="tns:KLEHandlingFacetType" minOccurs="0" maxOccurs="1"/>
+            <element name="SagForslag" type="tns:UUID" minOccurs="0" maxOccurs="1"/>
+            <element name="PartAngivelse" type="tns:PartType" minOccurs="0" maxOccurs="1"/>
+            <element name="Registrering" type="tns:JournalPostRegistreringType" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="JournalPostRegistreringType">
+        <sequence>
+            <element name="FraTidsPunkt" type="dateTime" minOccurs="1" maxOccurs="1"/>
+            <element name="LivscyklusKode" type="tns:LivscyklusKodeType" minOccurs="1" maxOccurs="1"/>
+            <element name="ImportTidspunkt" type="dateTime" minOccurs="0" maxOccurs="1"/>
+            <element name="BrugerRef" type="tns:UUID_URN" minOccurs="0" maxOccurs="1"/>
+            <element name="RegistreringItSystem" type="tns:UUID_URN" minOccurs="1" maxOccurs="1"/>
+            <element name="RelationListe" type="tns:JournalPostRelationsListeType" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="PartType">
+        <sequence>
+            <element name="ObjektType" type="tns:PartObjektTypeType" minOccurs="1" maxOccurs="1"/>
+            <element name="ReferenceID" type="tns:UUID_URN_Tekst" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <simpleType name="PartObjektTypeType">
+        <restriction base="string">
+            <enumeration value="Person"/>
+            <enumeration value="Virksomhed"/>
+            <enumeration value="Organisation"/>
+            <enumeration value="OrgEnhed"/>
+            <enumeration value="OrgFunktion"/>
+            <enumeration value="Interesse-faellesskab"/>
+            <enumeration value="Bruger"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="JournalPostRelationsListeType">
+        <sequence>
+            <element name="JournalPost" type="tns:JournalPostType" minOccurs="1" maxOccurs="unbounded"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="JournalPostType">
+        <sequence>
+            <element name="Virkning" type="tns:VirkningType" minOccurs="1" maxOccurs="1"/>
+            <element name="Rolle" type="tns:JournalPostRolleType" minOccurs="1" maxOccurs="1"/>
+            <element name="Indeks" type="string" minOccurs="1" maxOccurs="1"/>
+            <element name="Dokument" type="tns:JournalPartType" minOccurs="0" maxOccurs="1"/>
+            <element name="JournalpostAttributter" type="tns:JournalpostEgenskaberType" minOccurs="0" maxOccurs="1"/>
+            <element name="JournalnotatAttributter" type="tns:JournalNotatEgenskaberType" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <simpleType name="JournalPostRolleType">
+        <restriction base="string">
+            <enumeration value="Journalpost"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="JournalpostEgenskaberType">
+        <sequence>
+            <element name="Dokumenttitel" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="OffentlighedUndtaget" type="tns:OffentlighedUndtagetType" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="JournalNotatEgenskaberType">
+        <sequence>
+            <element name="Titel" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="Notat" type="string" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="JournalPartType">
+        <sequence>
+            <element name="Objekttype" type="tns:JournalPartObjekttypeType" minOccurs="1" maxOccurs="1"/>
+            <element name="ReferenceID" type="tns:UUID_URN" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <simpleType name="JournalPartObjekttypeType">
+        <restriction base="string">
+            <enumeration value="Dokument"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="DistributionFormularType">
+        <sequence>
+            <element name="ID" type="tns:UUID" minOccurs="1" maxOccurs="1"/>
+            <element name="KLEEmneForslag" type="tns:KLEEmneType" minOccurs="1" maxOccurs="1"/>
+            <element name="HandlingFacetForslag" type="tns:KLEHandlingFacetType" minOccurs="0" maxOccurs="1"/>
+            <element name="Meddelelse" type="tns:MeddelelseType" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="MeddelelseType">
+        <sequence>
+            <element name="FormularType" type="string" minOccurs="1" maxOccurs="1"/>
+            <element name="Formular" type="tns:FormularType" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="FormularType">
+        <sequence>
+            <element name="TitelTekst" type="string" minOccurs="1" maxOccurs="1"/>
+            <element name="FormatNavn" type="string" minOccurs="1" maxOccurs="1"/>
+            <element name="FormularIndhold" type="base64Binary" minOccurs="1" maxOccurs="1"/>
+            <element name="FormularXML" type="tns:FormularXMLType" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="FormularXMLType">
+        <sequence>
+            <any minOccurs="1" maxOccurs="1" processContents="skip"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="tilgaengeligeModtagereType">
+        <sequence>
+            <element name="System" type="tns:ModtagerMedEndpointType" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="ModtagerMedEndpointType">
+        <sequence>
+            <element name="SystemMyndighed" minOccurs="1" maxOccurs="1" type="tns:CVRNumber"/>
+            <element name="SystemUUID" minOccurs="1" maxOccurs="1" type="tns:UUID"/>
+            <element name="SystemNavn" minOccurs="1" maxOccurs="1" type="string"/>
+            <element name="RoutingKLEEmne" type="tns:KLEEmneType" minOccurs="1" maxOccurs="1"/>
+            <element name="RoutingHandlingFacet" type="tns:KLEHandlingFacetType" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="FordelingsmodtagerListRequest">
+        <sequence>
+            <element name="AfsendendeMyndighed" type="tns:CVRNumber" minOccurs="1" maxOccurs="1"/>
+            <element name="RoutingMyndighed" type="tns:CVRNumber" minOccurs="1" maxOccurs="1"/>
+            <element name="RoutingKLEEmne" type="tns:KLEEmneType" minOccurs="1" maxOccurs="1"/>
+            <element name="RoutingHandlingFacet" type="tns:KLEHandlingFacetType" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+
+</schema>
