@@ -34,7 +34,7 @@ class SoapClientBase extends AbstractSoapClientBase
         ] + parent::getDefaultWsdlOptions();
     }
 
-    public function setSF2900(SF2900 $sf2900): self
+    public function setSF2900(SF2900 $sf2900): static
     {
         $this->sf2900 = $sf2900;
 
@@ -50,7 +50,7 @@ class SoapClientBase extends AbstractSoapClientBase
         return $soapClient;
     }
 
-    public function saveLastError(string $methodName, \SoapFault $soapFault): self
+    public function saveLastError(string $methodName, \SoapFault $soapFault): static
     {
         // Throw a SOAP exception rather than just storing a SOAP fault as the parent class does.
         throw new SoapException($soapFault, $this->getLastRequest(), $this->getLastResponse());

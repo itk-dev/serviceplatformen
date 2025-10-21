@@ -11,20 +11,27 @@
 namespace ItkDev\Serviceplatformen\Service\SF2900;
 
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
+use ItkDev\Serviceplatformen\Service\Exception\SAMLTokenException;
 use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
 use ItkDev\Serviceplatformen\Service\SF1601\Serializer;
 use ItkDev\Serviceplatformen\SF2900\ClassMap;
 use ItkDev\Serviceplatformen\SF2900\ServiceType\Fordelingsmodtager;
+use ItkDev\Serviceplatformen\SF2900\ServiceType\Fordelingsobjekt;
+use ItkDev\Serviceplatformen\SF2900\StructType\AnmodRequestType;
+use ItkDev\Serviceplatformen\SF2900\StructType\DistributionContextType;
+use ItkDev\Serviceplatformen\SF2900\StructType\DistributionObjectType;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsmodtagerListRequest;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsmodtagerListRequestType;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsmodtagerListResponseType;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsobjektAfsendRequestType;
+use ItkDev\Serviceplatformen\SF2900\StructType\ObjektIndholdType;
+use ItkDev\Serviceplatformen\SF2900\StructType\RoutingKLEInfo;
+use ItkDev\Serviceplatformen\SF2900\StructType\RoutingValg;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
-use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class SF2900
 {
@@ -49,22 +56,6 @@ class SF2900
         }
     }
 
-    // #[\Override]
-    // protected function configureOptions(OptionsResolver $resolver)
-    // {
-    //     // @todo https://digitaliseringskataloget.dk/integration/sf2900#:~:text=Servicen%20er%20udstillet%20med%20f%C3%B8lgende%20sikkerhedsmodeller
-    //     parent::configureOptions($resolver);
-    //     // https://digitaliseringskataloget.dk/integration/sf2900
-    //     $resolver->setDefaults([
-    //         'svc_entity_id' => 'http://sp.serviceplatformen.dk/service/fordeling/3',
-    //         'svc_endpoint' => static function (Options $options) {
-    //             return $options['test_mode']
-    //                 ? 'https://exttest.serviceplatformen.dk/service/SP/Distribution/3'
-    //                 : 'https://prod.serviceplatformen.dk/service/SP/Distribution/3';
-    //         },
-    //     ]);
-    // }
-
     public function getModtagerList(
         string $routingMyndighed,
         string $routingKLEEmne,
@@ -80,32 +71,11 @@ class SF2900
             SoapClientBase::WSDL_URL => __DIR__.'/../../../resources/sf2900/wsdl/context/DistributionService.wsdl',
             SoapClientBase::WSDL_CLASSMAP => ClassMap::get(),
         ]))
-        ->setSF2900($this);
+            ->setSF2900($this);
+
         $result = $service->FordelingsmodtagerList($request);
 
         return $result;
-
-        $entityId = $this->getOption('svc_entity_id');
-        $url = $this->getOption('svc_endpoint');
-
-        // $url = 'https://fordelingskomponent-itkdev.aarhuskommune.dk/fordelingskomponent/';
-
-        $client = new \SoapClient(__DIR__.'/../../../resources/sf2900/wsdl/context/DistributionService.wsdl', [
-            'location' => $url,
-            'trace' => true,
-        ]);
-        try {
-            $outputHeaders = [];
-            $result = $client->__soapCall('FordelingsmodtagerList', args: [$request], outputHeaders: $outputHeaders);
-
-            return $result;
-        } catch (\SoapFault $exception) {
-            $req = $client->__getLastRequest();
-            $res = $client->__getLastResponse();
-            $exceptionMessage = $exception->getMessage();
-
-            throw $exception;
-        }
     }
 
     private function buildFordelingsmodtagerListRequest(
@@ -132,8 +102,8 @@ class SF2900
         string $routingMyndighed,
         string $routingKLEEmne,
         ?string $routingHandlingFacet = null,
-    ): ResponseInterface {
-        $document = $this->buildFordelingsobjektAfsendRequest(
+    ): FordelingsobjektAfsendRequestType|bool {
+        $request = $this->buildFordelingsobjektAfsendRequest(
             $transactionId,
             $type,
             routingMyndighed: $routingMyndighed,
@@ -141,22 +111,15 @@ class SF2900
             routingHandlingFacet: $routingHandlingFacet
         );
 
-        header('content-type: text/plain');
-        echo var_export($document, true);
-        exit(__FILE__.':'.__LINE__.':'.__METHOD__);
+        $service = (new Fordelingsobjekt([
+            SoapClientBase::WSDL_URL => __DIR__.'/../../../resources/sf2900/wsdl/context/DistributionService.wsdl',
+            SoapClientBase::WSDL_CLASSMAP => ClassMap::get(),
+        ]))
+            ->setSF2900($this);
 
-        $entityId = $this->getOption('svc_entity_id');
-        $url = $this->getOption('svc_endpoint');
-        $response = $this->call($entityId, 'POST', $url, [
-            'headers' => [
-                'content-type' => 'application/xml',
-                'accept' => 'application/xml',
-            ],
-            'body' => $document->saveXML(),
-            'transactionId' => $transactionId,
-        ]);
+        $result = $service->FordelingsobjektAfsend($request);
 
-        return $response;
+        return $result;
     }
 
     private function buildFordelingsobjektAfsendRequest(
@@ -167,12 +130,39 @@ class SF2900
         ?string $routingHandlingFacet = null,
         ?string $afsendendeMyndighed = null,
     ): FordelingsobjektAfsendRequestType {
-        $t = new FordelingsobjektAfsendRequestType();
-        // $t->getAnmodning()->setDistributionContext();
-        $t->getAnmodning()->getDistributionObject()->setObjektType($type->value);
-        $t->getCallContext()->setPropertyValue('cpr', '0123456789');
+        $afsendendeMyndighed ??= $this->options['authority_cvr'];
 
-        return $t;
+        $objectIndhold = new ObjektIndholdType(
+            // distributionDokument: null
+        );
+        $distributionObject = new DistributionObjectType(
+            objektType: $type->value,
+            objektIndhold: $objectIndhold,
+        );
+        $distributionContext = new DistributionContextType(
+            anvenderTransaktionsID: $transactionId,
+            afsendendeMyndighed: $afsendendeMyndighed,
+            routingMyndighed: $routingMyndighed,
+            routingValg: new RoutingValg(
+                new RoutingKLEInfo(
+                    routingKLEEmne: $routingKLEEmne,
+                    routingHandlingFacet: $routingHandlingFacet,
+                )
+            ),
+            distributionTransktionsID: null,
+            digitalPostMeddelelsesID: null,
+            dokumentFilNavn: null
+        );
+        $anmodning = new AnmodRequestType(
+            distributionContext: $distributionContext,
+            distributionObject: $distributionObject,
+        );
+
+        return new FordelingsobjektAfsendRequestType(
+            anmodning: $anmodning,
+            callContext: null,
+            authorityContext: null,
+        );
     }
 
     /**

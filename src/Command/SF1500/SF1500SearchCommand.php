@@ -36,8 +36,8 @@ class SF1500SearchCommand extends AbstractSF1500Command
                 ''
             ),
             new InputOption('authority-cvr', null, InputOption::VALUE_REQUIRED, 'authority cvr'),
-            new InputArgument('type', InputArgument::REQUIRED, 'The object type', null, ['user', 'hest']),
-            new InputArgument('query', InputArgument::REQUIRED, 'The search query'),
+            new InputArgument('type', InputArgument::REQUIRED, 'The object type, e.g. \'bruger\'', null, ['user', 'hest']),
+            new InputArgument('query', InputArgument::REQUIRED, 'The search query as JSON, e.g. \'{"brugernavn": "…"}\''),
             new InputOption('fields', null, InputOption::VALUE_REQUIRED, 'List of fields to include'),
         ];
         $this->setDefinition(new InputDefinition($definition));
