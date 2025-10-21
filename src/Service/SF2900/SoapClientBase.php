@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * This file is part of itk-dev/serviceplatformen.
+ *
+ * (c) 2020 ITK Development
+ *
+ * This source file is subject to the MIT license.
+ */
+
+namespace ItkDev\Serviceplatformen\Service\SF2900;
+
+use ItkDev\Serviceplatformen\Service\Exception\SoapException;
+use WsdlToPhp\PackageBase\AbstractSoapClientBase;
+
+/**
+ * @see https://github.com/WsdlToPhp/PackageEws365/blob/master/SoapClient/SoapClientBase.php
+ */
+class SoapClientBase extends AbstractSoapClientBase
+{
+    protected SF2900 $sf2900;
+
+    public const SOAP_DISABLE_CACHE = 'soap_disable_cache';
+
+    public function getSoapClientClassName(?string $soapClientClassName = null): string
+    {
+        return parent::getSoapClientClassName(SoapClient::class);
+    }
+
+    public static function getDefaultWsdlOptions(): array
+    {
+        return [
+            self::WSDL_SOAP_VERSION => SOAP_1_2,
+        ] + parent::getDefaultWsdlOptions();
+    }
+
+    public function setSF2900(SF2900 $sf2900): self
+    {
+        $this->sf2900 = $sf2900;
+
+        return $this;
+    }
+
+    public function getSoapClient(): ?SoapClient
+    {
+        $soapClient = parent::getSoapClient();
+        assert($soapClient instanceof SoapClient);
+        $soapClient->sf2900 = $this->sf2900;
+
+        return $soapClient;
+    }
+
+    public function saveLastError(string $methodName, \SoapFault $soapFault): self
+    {
+        // Throw a SOAP exception rather than just storing a SOAP fault as the parent class does.
+        throw new SoapException($soapFault, $this->getLastRequest(), $this->getLastResponse());
+    }
+}

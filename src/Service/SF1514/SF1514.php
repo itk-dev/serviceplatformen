@@ -220,6 +220,10 @@ class SF1514
 
         $this->handleReference($xpath, $toElement, $toId, 'to_id');
 
+        // AppliesTo Address.
+        $appliesToAddressElement = $this->getElement($xpath, '//wsp:AppliesTo/wsa:EndpointReference/wsa:Address');
+        $appliesToAddressElement->nodeValue = $appliesTo;
+
         // ReplyTo.
         $replyToId = '_'.$this->generateUuid();
         $replyToElement = $this->getElement($xpath, '//wsa:ReplyTo');

@@ -81,7 +81,7 @@
             <wst:RequestType>http://docs.oasis-open.org/ws-sx/ws-trust/200512/Issue</wst:RequestType>
             <wsp:AppliesTo xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
                 <wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
-                    <wsa:Address>http://stoettesystemerne.dk/service/organisation/3</wsa:Address>
+                    <wsa:Address></wsa:Address>
                 </wsa:EndpointReference>
             </wsp:AppliesTo>
             <Claims xmlns="http://docs.oasis-open.org/ws-sx/ws-trust/200512" Dialect="http://docs.oasis-open.org/wsfed/authorization/200706/authclaims">

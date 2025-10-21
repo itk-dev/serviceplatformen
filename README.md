@@ -9,6 +9,7 @@ Library for interacting with services on [Serviceplatformen](https://www.service
 * Parts of [Afsend post (SF1601):
   https://digitaliseringskataloget.dk/integration/sf1601](https://digitaliseringskataloget.dk/integration/sf1601).
   See [SF1601: Afsend post](docs/SF1601.md) for details.
+* [Fordelingskomponenten (SF2900): https://digitaliseringskataloget.dk/integration/sf2900](https://digitaliseringskataloget.dk/integration/sf2900)
 
 ## Updating resources and classes
 
@@ -18,11 +19,7 @@ generate PHP classes for talking to SOAP services. To update
 [resources](./resources) and [generated classes](./generated-classes), run
 
 ``` shell
-docker compose run --rm phpfpm composer install
-# Update WSDL resources.
-docker compose run --rm phpfpm bin/generate resources
-# Generate PHP classes from WSDL resources.
-docker compose run --rm phpfpm bin/generate classes
+task generate
 ```
 
 ## Test commands
@@ -71,7 +68,7 @@ Install the dependencies:
 ``` shell
 cd serviceplatformen
 
-composer install
+docker compose run --rm phpfpm composer install
 ```
 
 ## Running the tests
@@ -93,13 +90,13 @@ docker compose run --rm phpfpm composer tests/end-to-end
 PHP_CodeSniffer
 
 ``` shell
-composer coding-standards-check/phpcs
+docker compose run --rm phpfpm composer coding-standards-check/phpcs
 ```
 
 PHP-CS-Fixer
 
 ``` shell
-composer coding-standards-check/php-cs-fixer
+docker compose run --rm phpfpm composer coding-standards-check/php-cs-fixer
 ```
 
 ### Static code analysis
@@ -107,13 +104,13 @@ composer coding-standards-check/php-cs-fixer
 Phan
 
 ``` shell
-composer static-code-analysis/phan
+docker compose run --rm phpfpm composer static-code-analysis/phan
 ```
 
 ## Deployment
 
 ``` shell
-composer require itk-dev/serviceplatformen
+docker compose run --rm phpfpm composer require itk-dev/serviceplatformen
 ```
 
 ## Usage

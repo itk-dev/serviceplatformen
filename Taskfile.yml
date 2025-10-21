@@ -20,3 +20,23 @@ tasks:
     cmds:
       - docker compose {{.COMPOSE_ARGS}} {{.CLI_ARGS}}
     internal: true
+
+  php:
+    # https://taskfile.dev/docs/reference/templating#task-1
+    desc: Run PHP inside docker compose setup, e.g. `task {{.TASK}} -- bin/serviceplatformen-sf2900-fordelingsobjekt-list`
+    cmds:
+      - task: compose
+        vars:
+          COMPOSE_ARGS: run --rm phpfpm php
+
+  debug:php:
+    desc: Run PHP inside docker compose setup with Xdebug enabled, e.g. `task {{.TASK}} -- bin/serviceplatformen-sf2900-fordelingsobjekt-list`
+    cmds:
+      - task: compose
+        vars:
+          COMPOSE_ARGS: run --env PHP_XDEBUG_MODE=debug --env PHP_XDEBUG_WITH_REQUEST=yes --rm phpfpm php
+
+  default:
+    cmds:
+      - task --list
+    silent: true
