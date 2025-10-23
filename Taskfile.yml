@@ -21,6 +21,13 @@ tasks:
       - docker compose {{.COMPOSE_ARGS}} {{.CLI_ARGS}}
     internal: true
 
+  composer:
+    desc: Run composer inside docker compose setup, e.g. `task {{.TASK}} -- install`
+    cmds:
+      - task: compose
+        vars:
+          COMPOSE_ARGS: run --rm phpfpm composer
+
   php:
     # https://taskfile.dev/docs/reference/templating#task-1
     desc: Run PHP inside docker compose setup, e.g. `task {{.TASK}} -- bin/serviceplatformen-sf2900-fordelingsobjekt-list`

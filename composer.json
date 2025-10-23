@@ -39,7 +39,7 @@
     "require-dev": {
         "ergebnis/composer-normalize": "^2.48",
         "friendsofphp/php-cs-fixer": "^3.11",
-        "goetas-webservices/xsd2php": "dev-feature-xml-namespace-prefix",
+        "goetas-webservices/xsd2php": "dev-feature-xml-namespace-prefix#itk-0.4.14",
         "phan/phan": "^5.4",
         "phpstan/phpstan": "^1.8",
         "phpunit/phpunit": "^9.0",

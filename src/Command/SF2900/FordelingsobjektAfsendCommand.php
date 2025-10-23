@@ -73,7 +73,6 @@ HELP,
         $sf1514 = new SF1514($soapClient, $serviceOptions);
 
         $sf2900 = new SF2900(
-            $sf1514,
             [
                 'authority_cvr' => $options['sender-id'],
                 'certificate_locator' => $certificateLocator,
