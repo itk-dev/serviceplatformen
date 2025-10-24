@@ -4,18 +4,45 @@ declare(strict_types=1);
 
 namespace ItkDev\Serviceplatformen\Command\SF2900;
 
-use ItkDev\Serviceplatformen\Service\SF1514\SF1514;
+use ItkDev\Serviceplatformen\Service\Exception\SoapException;
 use ItkDev\Serviceplatformen\Service\SF1601\Serializer;
 use ItkDev\Serviceplatformen\Service\SF2900\SF2900;
-use ItkDev\Serviceplatformen\Service\SF2900\Type;
-use ItkDev\Serviceplatformen\Service\SoapClient;
+use ItkDev\Serviceplatformen\SF2900\EnumType\AktoerTypeType;
+use ItkDev\Serviceplatformen\SF2900\EnumType\DokumenttypeType;
+use ItkDev\Serviceplatformen\SF2900\EnumType\FremdriftType;
+use ItkDev\Serviceplatformen\SF2900\EnumType\JournalPostRolleType;
+use ItkDev\Serviceplatformen\SF2900\EnumType\LivscyklusKodeType;
+use ItkDev\Serviceplatformen\SF2900\EnumType\ObjektTypeType;
+use ItkDev\Serviceplatformen\SF2900\EnumType\RetningType;
+use ItkDev\Serviceplatformen\SF2900\EnumType\VariantRolleType;
+use ItkDev\Serviceplatformen\SF2900\StructType\AttributterListeType;
+use ItkDev\Serviceplatformen\SF2900\StructType\AttributterType;
+use ItkDev\Serviceplatformen\SF2900\StructType\DelAttributterType;
+use ItkDev\Serviceplatformen\SF2900\StructType\DistributionDokumentType;
+use ItkDev\Serviceplatformen\SF2900\StructType\DistributionJournalPostType;
+use ItkDev\Serviceplatformen\SF2900\StructType\DokumentRegistreringType;
+use ItkDev\Serviceplatformen\SF2900\StructType\JournalNotatEgenskaberType;
+use ItkDev\Serviceplatformen\SF2900\StructType\JournalPostRegistreringType;
+use ItkDev\Serviceplatformen\SF2900\StructType\JournalPostRelationsListeType;
+use ItkDev\Serviceplatformen\SF2900\StructType\JournalPostType;
+use ItkDev\Serviceplatformen\SF2900\StructType\RelationsListe;
+use ItkDev\Serviceplatformen\SF2900\StructType\TilstandListeType;
+use ItkDev\Serviceplatformen\SF2900\StructType\TilstandType;
+use ItkDev\Serviceplatformen\SF2900\StructType\UUID_URN;
+use ItkDev\Serviceplatformen\SF2900\StructType\VariantAttributterType;
+use ItkDev\Serviceplatformen\SF2900\StructType\VariantListeType;
+use ItkDev\Serviceplatformen\SF2900\StructType\VariantType;
+use ItkDev\Serviceplatformen\SF2900\StructType\VirkningType;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Uid\Uuid;
 
 #[AsCommand(name: 'serviceplatformen:sf2900:fordelingsobjekt-afsend', description: 'Helper script for testing “FordelingsobjektAfsend”.')]
 final class FordelingsobjektAfsendCommand extends AbstractCommand
@@ -36,13 +63,17 @@ HELP,
         return array_merge(
             parent::getDefinitionItems(),
             [
-                new InputOption('type', null, InputOption::VALUE_REQUIRED, 'type', Type::Journalnotat->value),
+                new InputOption('type', null, InputOption::VALUE_REQUIRED, 'type', ObjektTypeType::VALUE_JOURNALPOST),
+                new InputOption('routing-modtager-aktoer', null, InputOption::VALUE_REQUIRED, 'routing-modtager-aktoer'),
+                new InputOption('registrering-it-system', null, InputOption::VALUE_REQUIRED, 'registrering-it-system'),
             ]
         );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new SymfonyStyle($input, $output);
+
         $options = $this->resolveOptions(
             array_filter(
                 $input->getOptions(),
@@ -55,22 +86,7 @@ HELP,
             throw new InvalidOptionException('Option "routing-kle" is required.');
         }
 
-        $io = new SymfonyStyle($input, $output);
-
         $certificateLocator = $this->getCertificateLocator($options['certificate'], $options['certificate-passphrase']);
-
-        $soapClient = new SoapClient([
-            'cache_expiration_time' => ['-1 hour'],
-        ]);
-
-        $serviceOptions = [
-            'certificate_locator' => $certificateLocator,
-            'authority_cvr' => $options['sender-id'],
-            'sts_applies_to' => SF2900::ENTITY_ID,
-            'test_mode' => !$options['production'],
-        ];
-
-        $sf1514 = new SF1514($soapClient, $serviceOptions);
 
         $sf2900 = new SF2900(
             [
@@ -80,15 +96,158 @@ HELP,
             ]
         );
 
+        $registreringItSystem = $options['registrering-it-system'];
+
+        $aktoer = $registreringItSystem;
+        $id = Serializer::createUuid();
+        $now = new \DateTimeImmutable();
+        $type = $options['type'];
+        $document = match ($type) {
+            ObjektTypeType::VALUE_JOURNALPOST => new DistributionJournalPostType(
+                iD: $id,
+                kLEEmneForslag: $options['routing-kle'],
+                registrering: new JournalPostRegistreringType(
+                    fraTidsPunkt: $now->format($sf2900::DATETIME_FORMAT),
+                    livscyklusKode: LivscyklusKodeType::VALUE_OPRETTET,
+                    registreringItSystem: new UUID_URN($registreringItSystem),
+                    relationListe: new JournalPostRelationsListeType([
+                        new JournalPostType(
+                            virkning: new VirkningType(
+                                aktoer: new UUID_URN($aktoer),
+                                aktoerType: AktoerTypeType::VALUE_IT_SYSTEM,
+                                // fraTidsPunkt: null,
+                                // tilTidspunkt: null,
+                                // noteTekst: null,
+                            ),
+                            rolle: JournalPostRolleType::VALUE_JOURNALPOST,
+                            indeks: __FILE__,
+                            journalnotatAttributter: new JournalNotatEgenskaberType(
+                                notat: __FILE__,
+                                titel: __METHOD__,
+                            )
+                        ),
+                    ])
+                ),
+            ),
+            ObjektTypeType::VALUE_DOKUMENT => new DistributionDokumentType(
+                iD: $id,
+                kLEEmneForslag: $options['routing-kle'],
+                // handlingFacetForslag: null,
+                registrering: new DokumentRegistreringType(
+                    fraTidsPunkt: $now->format($sf2900::DATETIME_FORMAT),
+                    livscyklusKode: LivscyklusKodeType::VALUE_OPRETTET,
+                    registreringItSystem: new UUID_URN($registreringItSystem),
+                    relationListe: new RelationsListe(
+                        variantListe: new VariantListeType([
+                            new VariantType(
+                                virkning: new VirkningType(
+                                    aktoer: new UUID_URN($aktoer),
+                                    aktoerType: AktoerTypeType::VALUE_IT_SYSTEM,
+                                    // fraTidsPunkt: null,
+                                    // tilTidspunkt: null,
+                                    // noteTekst: null,
+                                ),
+                                rolle: VariantRolleType::VALUE_VARIANT,
+                                indeks: __FILE__,
+                                variantAttributter: new VariantAttributterType(
+                                    variantType: __FILE__,
+                                ),
+                                delAttributter: new DelAttributterType(
+                                    delTekst: __FILE__,
+                                ),
+                            ),
+                        ]),
+                    ),
+                    tilstandsListe: [
+                        new TilstandListeType(
+                            tilstand: [
+                                new TilstandType(
+                                    // @todo
+                                    fremdrift: FremdriftType::VALUE_AFLEVERET,
+                                    virkning: new VirkningType(
+                                        aktoer: new UUID_URN($aktoer),
+                                        aktoerType: AktoerTypeType::VALUE_IT_SYSTEM,
+                                        // fraTidsPunkt: null,
+                                        // tilTidspunkt: null,
+                                        // noteTekst: null,
+                                    ),
+                                ),
+                            ]
+                        ),
+                    ],
+                    attributListe: new AttributterListeType([
+                        new AttributterType(
+                            brugervendtNoegleTekst: __FILE__,
+                            titelTekst: __FILE__,
+                            beskrivelseTekst: __FILE__,
+                            dokumenttype: DokumenttypeType::VALUE_NOTAT,
+                            retning: RetningType::VALUE_UDGAAENDE,
+                            brevdato: $now->format($sf2900::DATE_FORMAT),
+                            virkning: new VirkningType(
+                                aktoer: new UUID_URN($aktoer),
+                                aktoerType: AktoerTypeType::VALUE_IT_SYSTEM,
+                                // fraTidsPunkt: null,
+                                // tilTidspunkt: null,
+                                // noteTekst: null,
+                            ),
+                        ),
+                    ]),
+                    // importTidspunkt: null,
+                    // brugerRef: null,
+                )
+            ),
+            ObjektTypeType::VALUE_FORMULAR => '',
+            default => throw new InvalidArgumentException(sprintf('Invalid type: %s', $type)),
+        };
+
         $transactionId = Serializer::createUuid();
-        $sf2900->afsend(
-            $transactionId,
-            Type::Journalnotat,
-            routingMyndighed: $options['sender-id'],
-            routingKLEEmne: $options['routing-kle'],
-            routingHandlingFacet: $options['routing-handling-facet'],
-        );
+        try {
+            $result = $sf2900->afsend(
+                transactionId: $transactionId,
+                type: $type,
+                document: $document,
+                routingMyndighed: $options['sender-id'],
+                routingKLEEmne: $options['routing-kle'],
+                routingHandlingFacet: $options['routing-handling-facet'],
+                routingModtagerAktoer: $options['routing-modtager-aktoer'],
+            );
+            $io->writeln(var_export($result, true));
+        } catch (SoapException $exception) {
+            $io->writeln($exception->getRequest());
+            $io->error($exception->getResponse());
+
+            throw $exception;
+        }
 
         return Command::SUCCESS;
+    }
+
+    protected function configureOptions(OptionsResolver $resolver): OptionsResolver
+    {
+        return parent::configureOptions($resolver)
+            ->setDefault('type', ObjektTypeType::VALUE_JOURNALPOST)
+            ->setDefault('routing-modtager-aktoer', null)
+            ->setAllowedValues('routing-modtager-aktoer', static function (?string $value): bool {
+                if (null !== $value) {
+                    try {
+                        new Uuid($value);
+                    } catch (\Exception) {
+                        return false;
+                    }
+                }
+
+                return true;
+            })
+            ->setRequired('registrering-it-system')
+            ->setAllowedTypes('registrering-it-system', 'string')
+            ->setAllowedValues('registrering-it-system', static function (string $value): bool {
+                try {
+                    new Uuid($value);
+                } catch (\Exception) {
+                    return false;
+                }
+
+                return true;
+            });
     }
 }

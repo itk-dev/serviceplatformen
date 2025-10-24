@@ -17,11 +17,15 @@ use ItkDev\Serviceplatformen\SF2900\ServiceType\Fordelingsobjekt;
 use ItkDev\Serviceplatformen\SF2900\StructType\AnmodRequestType;
 use ItkDev\Serviceplatformen\SF2900\StructType\AuthorityContextType;
 use ItkDev\Serviceplatformen\SF2900\StructType\DistributionContextType;
+use ItkDev\Serviceplatformen\SF2900\StructType\DistributionDokumentType;
+use ItkDev\Serviceplatformen\SF2900\StructType\DistributionFormularType;
+use ItkDev\Serviceplatformen\SF2900\StructType\DistributionJournalPostType;
 use ItkDev\Serviceplatformen\SF2900\StructType\DistributionObjectType;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsmodtagerListRequest;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsmodtagerListRequestType;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsmodtagerListResponseType;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsobjektAfsendRequestType;
+use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsobjektAfsendResponseType;
 use ItkDev\Serviceplatformen\SF2900\StructType\ObjektIndholdType;
 use ItkDev\Serviceplatformen\SF2900\StructType\RoutingKLEInfo;
 use ItkDev\Serviceplatformen\SF2900\StructType\RoutingValg;
@@ -29,11 +33,14 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Cache\CacheInterface;
+use WsdlToPhp\PackageBase\SoapClientInterface;
 
 class SF2900
 {
     // https://digitaliseringskataloget.dk/integration/sf2900
-    public const ENTITY_ID = 'http://sp.serviceplatformen.dk/service/fordeling/3';
+    public const string ENTITY_ID = 'http://sp.serviceplatformen.dk/service/fordeling/3';
+    public const string DATETIME_FORMAT = \DateTimeInterface::ATOM;
+    public const string DATE_FORMAT = 'Y-m-d';
 
     protected array $options;
 
@@ -57,10 +64,10 @@ class SF2900
 
         try {
             $service = (new Fordelingsmodtager([
-                SoapClientBase::WSDL_URL => __DIR__.'/../../../resources/sf2900/wsdl/context/DistributionService.wsdl',
-                SoapClientBase::WSDL_CLASSMAP => ClassMap::get(),
-                SoapClientBase::WSDL_LOCAL_CERT => $localCert,
-                SoapClientBase::WSDL_PASSPHRASE => $passphrase,
+                SoapClientInterface::WSDL_URL => __DIR__.'/../../../resources/sf2900/wsdl/context/DistributionService.wsdl',
+                SoapClientInterface::WSDL_CLASSMAP => ClassMap::get(),
+                SoapClientInterface::WSDL_LOCAL_CERT => $localCert,
+                SoapClientInterface::WSDL_PASSPHRASE => $passphrase,
             ]))
                 ->setSF2900($this);
 
@@ -98,57 +105,93 @@ class SF2900
 
     public function afsend(
         string $transactionId,
-        Type $type,
+        string $type,
+        DistributionDokumentType|DistributionJournalPostType|DistributionFormularType $document,
         string $routingMyndighed,
         string $routingKLEEmne,
         ?string $routingHandlingFacet = null,
-    ): FordelingsobjektAfsendRequestType|bool {
+        ?string $routingModtagerAktoer = null,
+    ): ?FordelingsobjektAfsendResponseType {
         $request = $this->buildFordelingsobjektAfsendRequest(
-            $transactionId,
-            $type,
+            transactionId: $transactionId,
+            type: $type,
+            document: $document,
             routingMyndighed: $routingMyndighed,
             routingKLEEmne: $routingKLEEmne,
-            routingHandlingFacet: $routingHandlingFacet
+            routingHandlingFacet: $routingHandlingFacet,
+            routingModtagerAktoer: $routingModtagerAktoer,
         );
 
-        $service = (new Fordelingsobjekt([
-            SoapClientBase::WSDL_URL => __DIR__.'/../../../resources/sf2900/wsdl/context/DistributionService.wsdl',
-            SoapClientBase::WSDL_CLASSMAP => ClassMap::get(),
-        ]))
-            ->setSF2900($this);
+        [$localCert, $passphrase] = $this->getLocalCert();
 
-        $result = $service->FordelingsobjektAfsend($request);
+        try {
+            $service = (new Fordelingsobjekt([
+                SoapClientInterface::WSDL_URL => __DIR__.'/../../../resources/sf2900/wsdl/context/DistributionService.wsdl',
+                SoapClientInterface::WSDL_CLASSMAP => ClassMap::get(),
+                SoapClientInterface::WSDL_LOCAL_CERT => $localCert,
+                SoapClientInterface::WSDL_PASSPHRASE => $passphrase,
 
-        return $result;
+                SoapClientInterface::WSDL_TRACE => true,
+                //                SoapClientInterface::WSDL_EXCEPTIONS => false,
+            ]))
+                ->setSF2900($this);
+
+            return $service->FordelingsobjektAfsend($request) ?: null;
+        } finally {
+            if (file_exists($localCert)) {
+                unlink($localCert);
+            }
+        }
     }
 
     private function buildFordelingsobjektAfsendRequest(
         string $transactionId,
-        Type $type,
+        string $type,
+        DistributionDokumentType|DistributionJournalPostType|DistributionFormularType $document,
         string $routingMyndighed,
         string $routingKLEEmne,
         ?string $routingHandlingFacet = null,
         ?string $afsendendeMyndighed = null,
+        ?string $authorityContextMunicipalityCVR = null,
+        ?string $routingModtagerAktoer = null,
     ): FordelingsobjektAfsendRequestType {
         $afsendendeMyndighed ??= $this->options['authority_cvr'];
+        $authorityContextMunicipalityCVR ??= $afsendendeMyndighed;
 
-        $objectIndhold = new ObjektIndholdType(
-            // distributionDokument: null
-        );
+        $objectIndhold = new ObjektIndholdType();
+        switch ($document::class) {
+            case DistributionDokumentType::class:
+                $objectIndhold->setDistributionDokument($document);
+                break;
+            case DistributionJournalPostType::class:
+                $objectIndhold->setDistributionJournalPost($document);
+                break;
+            case DistributionFormularType::class:
+                $objectIndhold->setDistributionFormular($document);
+                break;
+            default:
+                throw new \Exception(__FILE__);
+        }
+
         $distributionObject = new DistributionObjectType(
-            objektType: $type->value,
+            objektType: $type,
             objektIndhold: $objectIndhold,
         );
+
+        $routingValg = null !== $routingModtagerAktoer
+            ? new RoutingValg(routingModtagerAktoer: $routingModtagerAktoer)
+            : new RoutingValg(
+                routingKLEEmneHandling: new RoutingKLEInfo(
+                    routingKLEEmne: $routingKLEEmne,
+                    routingHandlingFacet: $routingHandlingFacet,
+                ),
+            );
+
         $distributionContext = new DistributionContextType(
             anvenderTransaktionsID: $transactionId,
             afsendendeMyndighed: $afsendendeMyndighed,
             routingMyndighed: $routingMyndighed,
-            routingValg: new RoutingValg(
-                new RoutingKLEInfo(
-                    routingKLEEmne: $routingKLEEmne,
-                    routingHandlingFacet: $routingHandlingFacet,
-                )
-            ),
+            routingValg: $routingValg,
             distributionTransktionsID: null,
             digitalPostMeddelelsesID: null,
             dokumentFilNavn: null
@@ -158,10 +201,12 @@ class SF2900
             distributionObject: $distributionObject,
         );
 
+        $authorityContext = new AuthorityContextType($authorityContextMunicipalityCVR);
+
         return new FordelingsobjektAfsendRequestType(
             anmodning: $anmodning,
-            callContext: null,
-            authorityContext: null,
+            //            callContext: null,
+            authorityContext: $authorityContext,
         );
     }
 
