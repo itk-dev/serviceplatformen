@@ -194,7 +194,8 @@ class SF2900
             routingValg: $routingValg,
             distributionTransktionsID: null,
             digitalPostMeddelelsesID: null,
-            dokumentFilNavn: null
+            // @todo
+            dokumentFilNavn: 'test.pdf',
         );
         $anmodning = new AnmodRequestType(
             distributionContext: $distributionContext,

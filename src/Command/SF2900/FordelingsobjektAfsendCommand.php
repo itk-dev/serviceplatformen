@@ -97,8 +97,8 @@ HELP,
         );
 
         $registreringItSystem = $options['registrering-it-system'];
-
         $aktoer = $registreringItSystem;
+
         $id = Serializer::createUuid();
         $now = new \DateTimeImmutable();
         $type = $options['type'];
@@ -120,7 +120,8 @@ HELP,
                                 // noteTekst: null,
                             ),
                             rolle: JournalPostRolleType::VALUE_JOURNALPOST,
-                            indeks: __FILE__,
+                            // @todo What is "indeks"?
+                            indeks: '1',
                             journalnotatAttributter: new JournalNotatEgenskaberType(
                                 notat: __FILE__,
                                 titel: __METHOD__,
@@ -129,6 +130,7 @@ HELP,
                     ])
                 ),
             ),
+
             ObjektTypeType::VALUE_DOKUMENT => new DistributionDokumentType(
                 iD: $id,
                 kLEEmneForslag: $options['routing-kle'],
@@ -148,12 +150,12 @@ HELP,
                                     // noteTekst: null,
                                 ),
                                 rolle: VariantRolleType::VALUE_VARIANT,
-                                indeks: __FILE__,
+                                indeks: '1',
                                 variantAttributter: new VariantAttributterType(
-                                    variantType: __FILE__,
+                                    variantType: 'PDF',
                                 ),
                                 delAttributter: new DelAttributterType(
-                                    delTekst: __FILE__,
+                                    delTekst: 'Hele dokumentet',
                                 ),
                             ),
                         ]),
@@ -163,7 +165,7 @@ HELP,
                             tilstand: [
                                 new TilstandType(
                                     // @todo
-                                    fremdrift: FremdriftType::VALUE_AFLEVERET,
+                                    fremdrift: FremdriftType::VALUE_ENDELIGT,
                                     virkning: new VirkningType(
                                         aktoer: new UUID_URN($aktoer),
                                         aktoerType: AktoerTypeType::VALUE_IT_SYSTEM,
@@ -177,10 +179,10 @@ HELP,
                     ],
                     attributListe: new AttributterListeType([
                         new AttributterType(
-                            brugervendtNoegleTekst: __FILE__,
+                            brugervendtNoegleTekst: __METHOD__,
                             titelTekst: __FILE__,
                             beskrivelseTekst: __FILE__,
-                            dokumenttype: DokumenttypeType::VALUE_NOTAT,
+                            dokumenttype: DokumenttypeType::VALUE_ANDEN,
                             retning: RetningType::VALUE_UDGAAENDE,
                             brevdato: $now->format($sf2900::DATE_FORMAT),
                             virkning: new VirkningType(
@@ -196,7 +198,9 @@ HELP,
                     // brugerRef: null,
                 )
             ),
-            ObjektTypeType::VALUE_FORMULAR => '',
+
+            // ObjektTypeType::VALUE_FORMULAR => '',
+
             default => throw new InvalidArgumentException(sprintf('Invalid type: %s', $type)),
         };
 
