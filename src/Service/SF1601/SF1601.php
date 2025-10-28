@@ -127,13 +127,6 @@ class SF1601 extends AbstractRESTService
     {
         $document = $this->buildKombiRequestDocument($type, $message, $forsendelse);
 
-        // Serviceplatformen doesn't understand XML namespaces!
-        $xsldoc = new DOMDocument();
-        $xsldoc->load(__DIR__.'/resources/namespaces.xslt');
-        $xsl = new XSLTProcessor();
-        $xsl->importStyleSheet($xsldoc);
-        $document = $xsl->transformToDoc($document);
-
         $this->lastKombiMemoMessage = null;
         foreach ($document->getElementsByTagNameNS('https://DigitalPost.dk/MeMo-1', 'Message') as $element) {
             $this->lastKombiMemoMessage = $element;

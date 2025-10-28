@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [PR-45](https://github.com/itk-dev/serviceplatformen/pull/45)
+  Fixed issue with <kombi_request/> not using utf-8
+
 ## [1.7.1] - 2025-08-20
 
 - [PR-43](https://github.com/itk-dev/serviceplatformen/pull/43)
