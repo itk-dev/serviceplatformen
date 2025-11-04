@@ -43,10 +43,13 @@ abstract class AbstractCommand extends Command
         return [
             new InputOption('production', null, InputOption::VALUE_NONE, 'production mode'),
             new InputOption('sender-id', null, InputOption::VALUE_REQUIRED, 'sender-id (CVR)'),
-            new InputOption('certificate', null, InputOption::VALUE_REQUIRED, 'Path to certificate or a query string with Azure Key Vault information (see help for details)'),
-            new InputOption('certificate-passphrase', null, InputOption::VALUE_REQUIRED, 'certificate passphrase', ''),
             new InputOption('routing-kle', null, InputOption::VALUE_REQUIRED, 'routing-kle'),
             new InputOption('routing-handling-facet', null, InputOption::VALUE_REQUIRED, 'routing-handling-facet'),
+            new InputOption('certificate', null, InputOption::VALUE_REQUIRED, 'Path to certificate or a query string with Azure Key Vault information (see help for details)'),
+            new InputOption('certificate-passphrase', null, InputOption::VALUE_REQUIRED, 'certificate passphrase', ''),
+            new InputOption('sftp-host', null, InputOption::VALUE_REQUIRED, 'SFTP host', default: 'sftpexttest.serviceplatformen.dk'),
+            new InputOption('sftp-username', null, InputOption::VALUE_REQUIRED, 'SFTP username'),
+            new InputOption('sftp-private-key', null, InputOption::VALUE_REQUIRED, 'SFTP private key filename'),
         ];
     }
 
@@ -96,6 +99,9 @@ HELP;
             ])
             ->setDefaults([
                 'certificate-passphrase' => '',
+                'sftp-host' => 'sftpexttest.serviceplatformen.dk',
+                'sftp-username' => null,
+                'sftp-private-key' => null,
                 'production' => false,
                 'routing-kle' => '',
                 'routing-handling-facet' => '',

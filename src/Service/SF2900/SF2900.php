@@ -11,6 +11,9 @@
 namespace ItkDev\Serviceplatformen\Service\SF2900;
 
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
+use ItkDev\Serviceplatformen\Service\Exception\MissingArgumentException;
+use ItkDev\Serviceplatformen\Service\Exception\SoapException;
+use ItkDev\Serviceplatformen\Service\SF2900\SF2900\SftpHelper;
 use ItkDev\Serviceplatformen\SF2900\ClassMap;
 use ItkDev\Serviceplatformen\SF2900\ServiceType\Fordelingsmodtager;
 use ItkDev\Serviceplatformen\SF2900\ServiceType\Fordelingsobjekt;
@@ -39,14 +42,27 @@ class SF2900
 {
     // https://digitaliseringskataloget.dk/integration/sf2900
     public const string ENTITY_ID = 'http://sp.serviceplatformen.dk/service/fordeling/3';
-    public const string DATETIME_FORMAT = \DateTimeInterface::ATOM;
-    public const string DATE_FORMAT = 'Y-m-d';
 
-    protected array $options;
+    // Date(time) formats used in SOAP calls.
+    private const string DATETIME_FORMAT = \DateTimeInterface::ATOM;
+    private const string DATE_FORMAT = 'Y-m-d';
+
+    private readonly array $options;
 
     public function __construct(array $options)
     {
         $this->options = $this->resolveOptions($options);
+    }
+
+    private readonly SftpHelper $sftp;
+
+    public function sftp(): SftpHelper
+    {
+        if (!isset($this->sftp)) {
+            $this->sftp = new SftpHelper($this->options['sftp']);
+        }
+
+        return $this->sftp;
     }
 
     public function getModtagerList(
@@ -103,6 +119,9 @@ class SF2900
         );
     }
 
+    /**
+     * @throws SoapException
+     */
     public function afsend(
         string $transactionId,
         string $type,
@@ -111,7 +130,12 @@ class SF2900
         string $routingKLEEmne,
         ?string $routingHandlingFacet = null,
         ?string $routingModtagerAktoer = null,
+        ?string $dokumentFilNavn = null,
     ): ?FordelingsobjektAfsendResponseType {
+        if ($document instanceof DistributionDokumentType && null === $dokumentFilNavn) {
+            throw new MissingArgumentException(sprintf('documentFilNavn must be set for %s request.', $document::class));
+        }
+
         $request = $this->buildFordelingsobjektAfsendRequest(
             transactionId: $transactionId,
             type: $type,
@@ -120,6 +144,7 @@ class SF2900
             routingKLEEmne: $routingKLEEmne,
             routingHandlingFacet: $routingHandlingFacet,
             routingModtagerAktoer: $routingModtagerAktoer,
+            dokumentFilNavn: $dokumentFilNavn,
         );
 
         [$localCert, $passphrase] = $this->getLocalCert();
@@ -154,6 +179,7 @@ class SF2900
         ?string $afsendendeMyndighed = null,
         ?string $authorityContextMunicipalityCVR = null,
         ?string $routingModtagerAktoer = null,
+        ?string $dokumentFilNavn = null,
     ): FordelingsobjektAfsendRequestType {
         $afsendendeMyndighed ??= $this->options['authority_cvr'];
         $authorityContextMunicipalityCVR ??= $afsendendeMyndighed;
@@ -194,8 +220,7 @@ class SF2900
             routingValg: $routingValg,
             distributionTransktionsID: null,
             digitalPostMeddelelsesID: null,
-            // @todo
-            dokumentFilNavn: 'test.pdf',
+            dokumentFilNavn: $dokumentFilNavn,
         );
         $anmodning = new AnmodRequestType(
             distributionContext: $distributionContext,
@@ -217,6 +242,7 @@ class SF2900
             ->setRequired([
                 'certificate_locator',
                 'authority_cvr',
+                'sftp',
             ])
             ->setDefaults([
                 'debug' => false,
@@ -245,6 +271,7 @@ class SF2900
             ->setAllowedTypes('cache', CacheInterface::class)
             ->setAllowedTypes('soap_request_cache_expiration_time', 'string[]')
             ->setAllowedTypes('soap_service_version', 'string')
+            ->setOptions('sftp', SftpHelper::resolveOptions(...))
             ->resolve($options)
         ;
     }
@@ -255,6 +282,24 @@ class SF2900
             .parse_url($location, PHP_URL_PATH);
     }
 
+    public static function formatDateTime(\DateTimeInterface $dateTime): string
+    {
+        return $dateTime->format(self::DATETIME_FORMAT);
+    }
+
+    public static function formatDate(\DateTimeInterface $dateTime): string
+    {
+        return $dateTime->format(self::DATE_FORMAT);
+    }
+
+    /**
+     * Get local certificate in PEM format.
+     *
+     * @return array[string, string]
+     *   [filename, passphrase]
+     *
+     * @throws \ItkDev\Serviceplatformen\Certificate\Exception\CertificateLocatorException
+     */
     private function getLocalCert(): array
     {
         // @todo Does this only work with a file system certificate locator?!

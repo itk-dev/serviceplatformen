@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ItkDev\Serviceplatformen\Command\SF2900;
 
+use ItkDev\Serviceplatformen\Service\Exception\MissingArgumentException;
 use ItkDev\Serviceplatformen\Service\Exception\SoapException;
 use ItkDev\Serviceplatformen\Service\SF1601\Serializer;
 use ItkDev\Serviceplatformen\Service\SF2900\SF2900;
@@ -64,6 +65,7 @@ HELP,
             parent::getDefinitionItems(),
             [
                 new InputOption('type', null, InputOption::VALUE_REQUIRED, 'type', ObjektTypeType::VALUE_JOURNALPOST),
+                new InputOption('file', null, InputOption::VALUE_REQUIRED, 'File to send if type is "DOKUMENT"'),
                 new InputOption('routing-modtager-aktoer', null, InputOption::VALUE_REQUIRED, 'routing-modtager-aktoer'),
                 new InputOption('registrering-it-system', null, InputOption::VALUE_REQUIRED, 'registrering-it-system'),
             ]
@@ -93,6 +95,11 @@ HELP,
                 'authority_cvr' => $options['sender-id'],
                 'certificate_locator' => $certificateLocator,
                 'test_mode' => !$options['production'],
+                'sftp' => [
+                    'host' => $options['sftp-host'],
+                    'username' => $options['sftp-username'],
+                    'private-key' => $options['sftp-private-key'],
+                ],
             ]
         );
 
@@ -107,7 +114,7 @@ HELP,
                 iD: $id,
                 kLEEmneForslag: $options['routing-kle'],
                 registrering: new JournalPostRegistreringType(
-                    fraTidsPunkt: $now->format($sf2900::DATETIME_FORMAT),
+                    fraTidsPunkt: SF2900::formatDateTime($now),
                     livscyklusKode: LivscyklusKodeType::VALUE_OPRETTET,
                     registreringItSystem: new UUID_URN($registreringItSystem),
                     relationListe: new JournalPostRelationsListeType([
@@ -136,7 +143,7 @@ HELP,
                 kLEEmneForslag: $options['routing-kle'],
                 // handlingFacetForslag: null,
                 registrering: new DokumentRegistreringType(
-                    fraTidsPunkt: $now->format($sf2900::DATETIME_FORMAT),
+                    fraTidsPunkt: SF2900::formatDateTime($now),
                     livscyklusKode: LivscyklusKodeType::VALUE_OPRETTET,
                     registreringItSystem: new UUID_URN($registreringItSystem),
                     relationListe: new RelationsListe(
@@ -184,7 +191,7 @@ HELP,
                             beskrivelseTekst: __FILE__,
                             dokumenttype: DokumenttypeType::VALUE_ANDEN,
                             retning: RetningType::VALUE_UDGAAENDE,
-                            brevdato: $now->format($sf2900::DATE_FORMAT),
+                            brevdato: SF2900::formatDate($now),
                             virkning: new VirkningType(
                                 aktoer: new UUID_URN($aktoer),
                                 aktoerType: AktoerTypeType::VALUE_IT_SYSTEM,
@@ -204,6 +211,15 @@ HELP,
             default => throw new InvalidArgumentException(sprintf('Invalid type: %s', $type)),
         };
 
+        $dokumentFilNavn = null;
+        if ($document instanceof DistributionDokumentType) {
+            $file = $options['file'];
+            if (null === $file) {
+                throw new MissingArgumentException('File is required');
+            }
+            $dokumentFilNavn = $sf2900->sftp()->putFile($file);
+        }
+
         $transactionId = Serializer::createUuid();
         try {
             $result = $sf2900->afsend(
@@ -214,6 +230,7 @@ HELP,
                 routingKLEEmne: $options['routing-kle'],
                 routingHandlingFacet: $options['routing-handling-facet'],
                 routingModtagerAktoer: $options['routing-modtager-aktoer'],
+                dokumentFilNavn: $dokumentFilNavn,
             );
             $io->writeln(var_export($result, true));
         } catch (SoapException $exception) {
@@ -230,6 +247,7 @@ HELP,
     {
         return parent::configureOptions($resolver)
             ->setDefault('type', ObjektTypeType::VALUE_JOURNALPOST)
+            ->setDefault('file', null)
             ->setDefault('routing-modtager-aktoer', null)
             ->setAllowedValues('routing-modtager-aktoer', static function (?string $value): bool {
                 if (null !== $value) {

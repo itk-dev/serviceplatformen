@@ -39,6 +39,11 @@ final class FordelingsmodtagerListCommand extends AbstractCommand
                 'authority_cvr' => $options['sender-id'],
                 'certificate_locator' => $certificateLocator,
                 'test_mode' => !$options['production'],
+                'sftp' => [
+                    'host' => $options['sftp-host'],
+                    'username' => $options['sftp-username'],
+                    'private-key' => $options['sftp-private-key'],
+                ],
             ]
         );
 
@@ -49,8 +54,9 @@ final class FordelingsmodtagerListCommand extends AbstractCommand
         );
 
         assert(null !== $result);
-
-        foreach ($result->getSystemer()->getSystem() as $system) {
+        $systems = $result->getSystemer()->getSystem() ?? [];
+        $io->writeln(1 === count($systems) ? '1 system found' : sprintf('%d systems found', count($systems)));
+        foreach ($systems as $system) {
             $io->section($system->getSystemNavn());
             $io->writeln(Yaml::dump(json_decode(json_encode($system), true)));
         }
