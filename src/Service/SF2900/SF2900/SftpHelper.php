@@ -50,15 +50,27 @@ class SftpHelper
     /**
      * Get contents from ingoing folder on SFTP server.
      */
-    public function getContents(string $filename, string $dir = self::INCOMING_FOLDER): string
+    public function getContents(string $filename, string $dir = self::INCOMING_FOLDER, bool $delete = false, bool|string $localFile = false): string
     {
         $sftp = $this->getSftp($dir);
-        $contents = $sftp->get($filename);
+        $contents = $sftp->get($filename, local_file: $localFile);
         if (false === $contents) {
             throw new SftpException(sprintf('Error getting contents of file %s: %s', $filename, $sftp->getLastError()));
         }
 
+        if ($delete) {
+            $this->delete($filename, $dir);
+        }
+
         return $contents;
+    }
+
+    public function delete(string $filename, string $dir = self::INCOMING_FOLDER)
+    {
+        $sftp = $this->getSftp($dir);
+        if (!$sftp->delete($filename)) {
+            throw new SftpException(sprintf('Error deleting file %s: %s', $filename, $sftp->getLastError()));
+        }
     }
 
     public function getFiles(string $dir, bool $recursive = false): array
