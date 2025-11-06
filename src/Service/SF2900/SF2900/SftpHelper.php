@@ -47,6 +47,20 @@ class SftpHelper
         return $uniqueFilename;
     }
 
+    /**
+     * Get contents from ingoing folder on SFTP server.
+     */
+    public function getContents(string $filename, string $dir = self::INCOMING_FOLDER): string
+    {
+        $sftp = $this->getSftp($dir);
+        $contents = $sftp->get($filename);
+        if (false === $contents) {
+            throw new SftpException(sprintf('Error getting contents of file %s: %s', $filename, $sftp->getLastError()));
+        }
+
+        return $contents;
+    }
+
     public function getFiles(string $dir, bool $recursive = false): array
     {
         $sftp = $this->getSftp();
@@ -77,7 +91,7 @@ class SftpHelper
         return $resolver;
     }
 
-    private function getSftp(): SFTP
+    private function getSftp(string $dir = self::OUTGOING_FOLDER): SFTP
     {
         $username = $this->options['username'];
         if (empty($username)) {
@@ -98,7 +112,6 @@ class SftpHelper
             throw new SftpException(sprintf('Cannot log in to SFTP host %s: %s', $host, $sftp->getLastError()));
         }
 
-        $dir = self::OUTGOING_FOLDER;
         if (!$sftp->chdir($dir)) {
             throw new SftpException(sprintf('Cannot change SFTP directory to %s: %s', $dir, $sftp->getLastError()));
         }
