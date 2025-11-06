@@ -48,20 +48,16 @@ class SF2900
     private const string DATE_FORMAT = 'Y-m-d';
 
     private readonly array $options;
+    private readonly SftpHelper $sftp;
 
     public function __construct(array $options)
     {
         $this->options = $this->resolveOptions($options);
+        $this->sftp = new SftpHelper($this->options['sftp']);
     }
-
-    private readonly SftpHelper $sftp;
 
     public function sftp(): SftpHelper
     {
-        if (!isset($this->sftp)) {
-            $this->sftp = new SftpHelper($this->options['sftp']);
-        }
-
         return $this->sftp;
     }
 
