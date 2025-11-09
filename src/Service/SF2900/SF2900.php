@@ -15,6 +15,7 @@ use ItkDev\Serviceplatformen\Service\Exception\MissingArgumentException;
 use ItkDev\Serviceplatformen\Service\Exception\SoapException;
 use ItkDev\Serviceplatformen\Service\SF2900\SF2900\SftpHelper;
 use ItkDev\Serviceplatformen\SF2900\ClassMap;
+use ItkDev\Serviceplatformen\SF2900\ServiceType\Fordelingskvittering;
 use ItkDev\Serviceplatformen\SF2900\ServiceType\Fordelingsmodtager;
 use ItkDev\Serviceplatformen\SF2900\ServiceType\Fordelingsobjekt;
 use ItkDev\Serviceplatformen\SF2900\StructType\AnmodRequestType;
@@ -24,11 +25,13 @@ use ItkDev\Serviceplatformen\SF2900\StructType\DistributionDokumentType;
 use ItkDev\Serviceplatformen\SF2900\StructType\DistributionFormularType;
 use ItkDev\Serviceplatformen\SF2900\StructType\DistributionJournalPostType;
 use ItkDev\Serviceplatformen\SF2900\StructType\DistributionObjectType;
+use ItkDev\Serviceplatformen\SF2900\StructType\FordelingskvitteringModtagRequestType;
+use ItkDev\Serviceplatformen\SF2900\StructType\FordelingskvitteringModtagResponseType;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsmodtagerListRequest;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsmodtagerListRequestType;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsmodtagerListResponseType;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsobjektAfsendRequestType;
-use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsobjektAfsendResponseType;
+use ItkDev\Serviceplatformen\SF2900\StructType\ForretningskvitteringType;
 use ItkDev\Serviceplatformen\SF2900\StructType\ObjektIndholdType;
 use ItkDev\Serviceplatformen\SF2900\StructType\RoutingKLEInfo;
 use ItkDev\Serviceplatformen\SF2900\StructType\RoutingValg;
@@ -127,7 +130,7 @@ class SF2900
         ?string $routingHandlingFacet = null,
         ?string $routingModtagerAktoer = null,
         ?string $dokumentFilNavn = null,
-    ): ?FordelingsobjektAfsendResponseType {
+    ): Result {
         if ($document instanceof DistributionDokumentType && null === $dokumentFilNavn) {
             throw new MissingArgumentException(sprintf('documentFilNavn must be set for %s request.', $document::class));
         }
@@ -157,7 +160,10 @@ class SF2900
             ]))
                 ->setSF2900($this);
 
-            return $service->FordelingsobjektAfsend($request) ?: null;
+            return new Result(
+                request: $request,
+                response: $service->FordelingsobjektAfsend($request) ?: null
+            );
         } finally {
             if (file_exists($localCert)) {
                 unlink($localCert);
@@ -230,6 +236,38 @@ class SF2900
             //            callContext: null,
             authorityContext: $authorityContext,
         );
+    }
+
+    public function modtag(
+        ForretningskvitteringType $forretningsKvittering,
+        DistributionContextType $distributionContext,
+        ?AuthorityContextType $authorityContext = null,
+    ): ?FordelingskvitteringModtagResponseType {
+        $authorityContext ??= new AuthorityContextType($this->options['authority_cvr']);
+
+        $request = new FordelingskvitteringModtagRequestType(
+            forretningskvittering: $forretningsKvittering,
+            distributionContext: $distributionContext,
+            authorityContext: $authorityContext,
+        );
+
+        [$localCert, $passphrase] = $this->getLocalCert();
+
+        try {
+            $service = (new Fordelingskvittering([
+                SoapClientInterface::WSDL_URL => __DIR__.'/../../../resources/sf2900/wsdl/context/DistributionService.wsdl',
+                SoapClientInterface::WSDL_CLASSMAP => ClassMap::get(),
+                SoapClientInterface::WSDL_LOCAL_CERT => $localCert,
+                SoapClientInterface::WSDL_PASSPHRASE => $passphrase,
+            ]))
+                ->setSF2900($this);
+
+            return $service->FordelingskvitteringModtag($request) ?: null;
+        } finally {
+            if (file_exists($localCert)) {
+                unlink($localCert);
+            }
+        }
     }
 
     private function resolveOptions(array $options): array
