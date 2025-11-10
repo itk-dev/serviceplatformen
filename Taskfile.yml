@@ -18,7 +18,7 @@ tasks:
 
   compose:
     cmds:
-      - docker compose {{.COMPOSE_ARGS}} {{.CLI_ARGS}}
+      - docker compose {{.TASK_ARGS}} {{.CLI_ARGS}}
     internal: true
 
   composer:
@@ -26,7 +26,7 @@ tasks:
     cmds:
       - task: compose
         vars:
-          COMPOSE_ARGS: run --rm phpfpm composer
+          TASK_ARGS: run --rm phpfpm composer {{.TASK_ARGS}}
 
   php:
     # https://taskfile.dev/docs/reference/templating#task-1
@@ -34,14 +34,23 @@ tasks:
     cmds:
       - task: compose
         vars:
-          COMPOSE_ARGS: run --rm phpfpm php
+          TASK_ARGS: run --rm phpfpm php
 
   debug:php:
     desc: Run PHP inside docker compose setup with Xdebug enabled, e.g. `task {{.TASK}} -- bin/serviceplatformen-sf2900-fordelingsobjekt-list`
     cmds:
       - task: compose
         vars:
-          COMPOSE_ARGS: run --env PHP_XDEBUG_MODE=debug --env PHP_XDEBUG_WITH_REQUEST=yes --rm phpfpm php
+          TASK_ARGS: run --env PHP_XDEBUG_MODE=debug --env PHP_XDEBUG_WITH_REQUEST=yes --rm phpfpm php
+
+  coding-standards:coding-standards:check:
+    cmds:
+      - task: composer
+        vars:
+          TASK_ARGS: coding-standards-apply
+      - task: composer
+        vars:
+          TASK_ARGS: coding-standards-check
 
   default:
     cmds:

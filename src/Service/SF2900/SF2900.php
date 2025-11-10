@@ -31,6 +31,7 @@ use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsmodtagerListRequest;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsmodtagerListRequestType;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsmodtagerListResponseType;
 use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsobjektAfsendRequestType;
+use ItkDev\Serviceplatformen\SF2900\StructType\FordelingsobjektAfsendResponseType;
 use ItkDev\Serviceplatformen\SF2900\StructType\ForretningskvitteringType;
 use ItkDev\Serviceplatformen\SF2900\StructType\ObjektIndholdType;
 use ItkDev\Serviceplatformen\SF2900\StructType\RoutingKLEInfo;
@@ -39,6 +40,7 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Cache\CacheInterface;
+use WsdlToPhp\PackageBase\AbstractStructBase;
 use WsdlToPhp\PackageBase\SoapClientInterface;
 
 class SF2900
@@ -53,6 +55,8 @@ class SF2900
     private readonly array $options;
     private readonly SftpHelper $sftp;
 
+    private ?AbstractStructBase $lastRequest;
+
     public function __construct(array $options)
     {
         $this->options = $this->resolveOptions($options);
@@ -62,6 +66,11 @@ class SF2900
     public function sftp(): SftpHelper
     {
         return $this->sftp;
+    }
+
+    public function getLastRequest(): AbstractStructBase
+    {
+        return $this->lastRequest;
     }
 
     public function getModtagerList(
@@ -75,10 +84,125 @@ class SF2900
             routingHandlingFacet: $routingHandlingFacet
         );
 
+        return $this->callService(
+            serviceClass: Fordelingsmodtager::class,
+            serviceMethod: 'FordelingsmodtagerList',
+            request: $request
+        );
+    }
+
+    /**
+     * @throws SoapException
+     */
+    public function afsend(
+        string $transactionId,
+        string $type,
+        DistributionDokumentType|DistributionJournalPostType|DistributionFormularType $document,
+        string $routingMyndighed,
+        string $routingKLEEmne,
+        ?string $routingHandlingFacet = null,
+        ?string $routingModtagerAktoer = null,
+        ?string $dokumentFilNavn = null,
+    ): ?FordelingsobjektAfsendResponseType {
+        if ($document instanceof DistributionDokumentType && null === $dokumentFilNavn) {
+            throw new MissingArgumentException(sprintf('documentFilNavn must be set for %s request.', $document::class));
+        }
+
+        $request = $this->buildFordelingsobjektAfsendRequest(
+            transactionId: $transactionId,
+            type: $type,
+            document: $document,
+            routingMyndighed: $routingMyndighed,
+            routingKLEEmne: $routingKLEEmne,
+            routingHandlingFacet: $routingHandlingFacet,
+            routingModtagerAktoer: $routingModtagerAktoer,
+            dokumentFilNavn: $dokumentFilNavn,
+        );
+
+        return $this->callService(
+            serviceClass: Fordelingsobjekt::class,
+            serviceMethod: 'FordelingsobjektAfsend',
+            request: $request
+        );
+    }
+
+    public function modtag(
+        ForretningskvitteringType $forretningsKvittering,
+        DistributionContextType $distributionContext,
+        ?AuthorityContextType $authorityContext = null,
+    ): ?FordelingskvitteringModtagResponseType {
+        $authorityContext ??= new AuthorityContextType($this->options['authority_cvr']);
+
+        $request = new FordelingskvitteringModtagRequestType(
+            forretningskvittering: $forretningsKvittering,
+            distributionContext: $distributionContext,
+            authorityContext: $authorityContext,
+        );
+
+        return $this->callService(
+            serviceClass: Fordelingskvittering::class,
+            serviceMethod: 'FordelingskvitteringModtag',
+            request: $request,
+        );
+    }
+
+    private function resolveOptions(array $options): array
+    {
+        return (new OptionsResolver())
+            ->setRequired([
+                'certificate_locator',
+                'authority_cvr',
+                'sftp',
+            ])
+            ->setDefaults([
+                'debug' => false,
+                'test_mode' => true,
+                'certificate_passphrase' => '',
+                'service_endpoint_domain' => static function (Options $options) {
+                    return $options['test_mode']
+                        ? 'https://exttest.serviceplatformen.dk'
+                        : 'https://prod.serviceplatformen.dk';
+                },
+            ])
+            ->setAllowedTypes('certificate_locator', CertificateLocatorInterface::class)
+            ->setOptions('sftp', SftpHelper::resolveOptions(...))
+            ->resolve($options);
+    }
+
+    public function getSoapLocation(string $location): string
+    {
+        return $this->options['service_endpoint_domain']
+            .parse_url($location, PHP_URL_PATH);
+    }
+
+    public static function formatDateTime(\DateTimeInterface $dateTime): string
+    {
+        return $dateTime->format(self::DATETIME_FORMAT);
+    }
+
+    public static function formatDate(\DateTimeInterface $dateTime): string
+    {
+        return $dateTime->format(self::DATE_FORMAT);
+    }
+
+    /**
+     * Perform service request using a local certificate.
+     *
+     * @throws \ItkDev\Serviceplatformen\Certificate\Exception\CertificateLocatorException
+     *
+     * @todo (How) Can we do this in a better way?
+     */
+    private function callService(
+        string $serviceClass,
+        string $serviceMethod,
+        AbstractStructBase $request,
+    ): ?AbstractStructBase {
+        $this->lastRequest = $request;
+
         [$localCert, $passphrase] = $this->getLocalCert();
 
         try {
-            $service = (new Fordelingsmodtager([
+            $service = (new $serviceClass([
                 SoapClientInterface::WSDL_URL => __DIR__.'/../../../resources/sf2900/wsdl/context/DistributionService.wsdl',
                 SoapClientInterface::WSDL_CLASSMAP => ClassMap::get(),
                 SoapClientInterface::WSDL_LOCAL_CERT => $localCert,
@@ -86,12 +210,41 @@ class SF2900
             ]))
                 ->setSF2900($this);
 
-            return $service->FordelingsmodtagerList($request) ?: null;
+            $response = $service->{$serviceMethod}($request) ?: null;
+
+            return $response;
         } finally {
             if (file_exists($localCert)) {
                 unlink($localCert);
             }
         }
+    }
+
+    /**
+     * Get local certificate in PEM format.
+     *
+     * @return array[string, string]
+     *   [filename, passphrase]
+     *
+     * @throws \ItkDev\Serviceplatformen\Certificate\Exception\CertificateLocatorException
+     */
+    private function getLocalCert(): array
+    {
+        // @todo Does this only work with a file system certificate locator?!
+        $certificateLocator = $this->options['certificate_locator'];
+        assert($certificateLocator instanceof CertificateLocatorInterface);
+        $certificates = $certificateLocator->getCertificates();
+        $passphrase = '';
+        $output = [null, null];
+        openssl_x509_export($certificates['cert'], $output[0]);
+        openssl_pkey_export($certificates['pkey'], $output[1], $passphrase);
+        $localCertFilename = tempnam(sys_get_temp_dir(), 'cert');
+        file_put_contents($localCertFilename, join(PHP_EOL, $output));
+
+        return [
+            $localCertFilename,
+            $passphrase,
+        ];
     }
 
     private function buildFordelingsmodtagerListRequest(
@@ -116,59 +269,6 @@ class SF2900
             routing: $routing,
             authorityContext: $authorityContext
         );
-    }
-
-    /**
-     * @throws SoapException
-     */
-    public function afsend(
-        string $transactionId,
-        string $type,
-        DistributionDokumentType|DistributionJournalPostType|DistributionFormularType $document,
-        string $routingMyndighed,
-        string $routingKLEEmne,
-        ?string $routingHandlingFacet = null,
-        ?string $routingModtagerAktoer = null,
-        ?string $dokumentFilNavn = null,
-    ): Result {
-        if ($document instanceof DistributionDokumentType && null === $dokumentFilNavn) {
-            throw new MissingArgumentException(sprintf('documentFilNavn must be set for %s request.', $document::class));
-        }
-
-        $request = $this->buildFordelingsobjektAfsendRequest(
-            transactionId: $transactionId,
-            type: $type,
-            document: $document,
-            routingMyndighed: $routingMyndighed,
-            routingKLEEmne: $routingKLEEmne,
-            routingHandlingFacet: $routingHandlingFacet,
-            routingModtagerAktoer: $routingModtagerAktoer,
-            dokumentFilNavn: $dokumentFilNavn,
-        );
-
-        [$localCert, $passphrase] = $this->getLocalCert();
-
-        try {
-            $service = (new Fordelingsobjekt([
-                SoapClientInterface::WSDL_URL => __DIR__.'/../../../resources/sf2900/wsdl/context/DistributionService.wsdl',
-                SoapClientInterface::WSDL_CLASSMAP => ClassMap::get(),
-                SoapClientInterface::WSDL_LOCAL_CERT => $localCert,
-                SoapClientInterface::WSDL_PASSPHRASE => $passphrase,
-
-                SoapClientInterface::WSDL_TRACE => true,
-                //                SoapClientInterface::WSDL_EXCEPTIONS => false,
-            ]))
-                ->setSF2900($this);
-
-            return new Result(
-                request: $request,
-                response: $service->FordelingsobjektAfsend($request) ?: null
-            );
-        } finally {
-            if (file_exists($localCert)) {
-                unlink($localCert);
-            }
-        }
     }
 
     private function buildFordelingsobjektAfsendRequest(
@@ -236,120 +336,5 @@ class SF2900
             //            callContext: null,
             authorityContext: $authorityContext,
         );
-    }
-
-    public function modtag(
-        ForretningskvitteringType $forretningsKvittering,
-        DistributionContextType $distributionContext,
-        ?AuthorityContextType $authorityContext = null,
-    ): ?FordelingskvitteringModtagResponseType {
-        $authorityContext ??= new AuthorityContextType($this->options['authority_cvr']);
-
-        $request = new FordelingskvitteringModtagRequestType(
-            forretningskvittering: $forretningsKvittering,
-            distributionContext: $distributionContext,
-            authorityContext: $authorityContext,
-        );
-
-        [$localCert, $passphrase] = $this->getLocalCert();
-
-        try {
-            $service = (new Fordelingskvittering([
-                SoapClientInterface::WSDL_URL => __DIR__.'/../../../resources/sf2900/wsdl/context/DistributionService.wsdl',
-                SoapClientInterface::WSDL_CLASSMAP => ClassMap::get(),
-                SoapClientInterface::WSDL_LOCAL_CERT => $localCert,
-                SoapClientInterface::WSDL_PASSPHRASE => $passphrase,
-            ]))
-                ->setSF2900($this);
-
-            return $service->FordelingskvitteringModtag($request) ?: null;
-        } finally {
-            if (file_exists($localCert)) {
-                unlink($localCert);
-            }
-        }
-    }
-
-    private function resolveOptions(array $options): array
-    {
-        return (new OptionsResolver())
-            ->setRequired([
-                'certificate_locator',
-                'authority_cvr',
-                'sftp',
-            ])
-            ->setDefaults([
-                'debug' => false,
-                'test_mode' => true,
-                'cache' => static function (Options $options) {
-                    return new FilesystemAdapter();
-                },
-                'certificate_passphrase' => '',
-                'saml_token_svc' => static function (Options $options) {
-                    return $options['test_mode']
-                        ? 'https://n2adgangsstyring.eksterntest-stoettesystemerne.dk/runtime/services/kombittrust/14/certificatemixed'
-                        : 'https://n2adgangsstyring.stoettesystemerne.dk/runtime/services/kombittrust/14/certificatemixed';
-                },
-                'saml_token_expiration_time_offset' => '-15 minutes',
-                'service_endpoint_domain' => static function (Options $options) {
-                    return $options['test_mode']
-                        ? 'https://exttest.serviceplatformen.dk'
-                        : 'https://prod.serviceplatformen.dk';
-                },
-                'soap_request_cache_expiration_time' => ['+1 hour'],
-                'soap_service_version' => '3',
-                'organisation-funktion-manager-id' => '46c73630-f7ad-4000-9624-c06131cde671',
-            ])
-            ->setInfo('saml_token_expiration_time_offset', 'Offset used when checking if SAML token is expired. By default the SAML token expires 8 hours after being issued.')
-            ->setAllowedTypes('certificate_locator', CertificateLocatorInterface::class)
-            ->setAllowedTypes('cache', CacheInterface::class)
-            ->setAllowedTypes('soap_request_cache_expiration_time', 'string[]')
-            ->setAllowedTypes('soap_service_version', 'string')
-            ->setOptions('sftp', SftpHelper::resolveOptions(...))
-            ->resolve($options)
-        ;
-    }
-
-    public function getSoapLocation(string $location): string
-    {
-        return $this->options['service_endpoint_domain']
-            .parse_url($location, PHP_URL_PATH);
-    }
-
-    public static function formatDateTime(\DateTimeInterface $dateTime): string
-    {
-        return $dateTime->format(self::DATETIME_FORMAT);
-    }
-
-    public static function formatDate(\DateTimeInterface $dateTime): string
-    {
-        return $dateTime->format(self::DATE_FORMAT);
-    }
-
-    /**
-     * Get local certificate in PEM format.
-     *
-     * @return array[string, string]
-     *   [filename, passphrase]
-     *
-     * @throws \ItkDev\Serviceplatformen\Certificate\Exception\CertificateLocatorException
-     */
-    private function getLocalCert(): array
-    {
-        // @todo Does this only work with a file system certificate locator?!
-        $certificateLocator = $this->options['certificate_locator'];
-        assert($certificateLocator instanceof CertificateLocatorInterface);
-        $certificates = $certificateLocator->getCertificates();
-        $passphrase = '';
-        $output = [null, null];
-        openssl_x509_export($certificates['cert'], $output[0]);
-        openssl_pkey_export($certificates['pkey'], $output[1], $passphrase);
-        $localCertFilename = tempnam(sys_get_temp_dir(), 'cert');
-        file_put_contents($localCertFilename, join(PHP_EOL, $output));
-
-        return [
-            $localCertFilename,
-            $passphrase,
-        ];
     }
 }
