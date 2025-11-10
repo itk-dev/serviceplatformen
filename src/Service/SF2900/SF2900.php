@@ -13,6 +13,8 @@ namespace ItkDev\Serviceplatformen\Service\SF2900;
 use ItkDev\Serviceplatformen\Certificate\CertificateLocatorInterface;
 use ItkDev\Serviceplatformen\Service\Exception\MissingArgumentException;
 use ItkDev\Serviceplatformen\Service\Exception\SoapException;
+use ItkDev\Serviceplatformen\Service\SF2900\Event\AfterServiceCallEvent;
+use ItkDev\Serviceplatformen\Service\SF2900\Event\BeforeServiceCallEvent;
 use ItkDev\Serviceplatformen\Service\SF2900\SF2900\SftpHelper;
 use ItkDev\Serviceplatformen\SF2900\ClassMap;
 use ItkDev\Serviceplatformen\SF2900\ServiceType\Fordelingskvittering;
@@ -36,10 +38,9 @@ use ItkDev\Serviceplatformen\SF2900\StructType\ForretningskvitteringType;
 use ItkDev\Serviceplatformen\SF2900\StructType\ObjektIndholdType;
 use ItkDev\Serviceplatformen\SF2900\StructType\RoutingKLEInfo;
 use ItkDev\Serviceplatformen\SF2900\StructType\RoutingValg;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use WsdlToPhp\PackageBase\AbstractStructBase;
 use WsdlToPhp\PackageBase\SoapClientInterface;
 
@@ -57,8 +58,10 @@ class SF2900
 
     private ?AbstractStructBase $lastRequest;
 
-    public function __construct(array $options)
-    {
+    public function __construct(
+        private readonly EventDispatcherInterface $eventDispatcher,
+        array $options,
+    ) {
         $this->options = $this->resolveOptions($options);
         $this->sftp = new SftpHelper($this->options['sftp']);
     }
@@ -202,6 +205,11 @@ class SF2900
         [$localCert, $passphrase] = $this->getLocalCert();
 
         try {
+            $event = new BeforeServiceCallEvent(
+                request: $request,
+            );
+            $this->eventDispatcher->dispatch($event);
+
             $service = (new $serviceClass([
                 SoapClientInterface::WSDL_URL => __DIR__.'/../../../resources/sf2900/wsdl/context/DistributionService.wsdl',
                 SoapClientInterface::WSDL_CLASSMAP => ClassMap::get(),
@@ -211,6 +219,12 @@ class SF2900
                 ->setSF2900($this);
 
             $response = $service->{$serviceMethod}($request) ?: null;
+
+            $event = new AfterServiceCallEvent(
+                request: $request,
+                response: $response,
+            );
+            $this->eventDispatcher->dispatch($event);
 
             return $response;
         } finally {
@@ -333,7 +347,6 @@ class SF2900
 
         return new FordelingsobjektAfsendRequestType(
             anmodning: $anmodning,
-            //            callContext: null,
             authorityContext: $authorityContext,
         );
     }
