@@ -17,6 +17,7 @@ use ItkDev\Serviceplatformen\Service\SF2900\Event\AfterServiceCallEvent;
 use ItkDev\Serviceplatformen\Service\SF2900\Event\BeforeServiceCallEvent;
 use ItkDev\Serviceplatformen\Service\SF2900\SF2900\SftpHelper;
 use ItkDev\Serviceplatformen\SF2900\ClassMap;
+use ItkDev\Serviceplatformen\SF2900\EnumType\ObjektTypeType;
 use ItkDev\Serviceplatformen\SF2900\ServiceType\Fordelingskvittering;
 use ItkDev\Serviceplatformen\SF2900\ServiceType\Fordelingsmodtager;
 use ItkDev\Serviceplatformen\SF2900\ServiceType\Fordelingsobjekt;
@@ -99,7 +100,6 @@ class SF2900
      */
     public function afsend(
         string $transactionId,
-        string $type,
         DistributionDokumentType|DistributionJournalPostType|DistributionFormularType $document,
         string $routingMyndighed,
         string $routingKLEEmne,
@@ -113,7 +113,6 @@ class SF2900
 
         $request = $this->buildFordelingsobjektAfsendRequest(
             transactionId: $transactionId,
-            type: $type,
             document: $document,
             routingMyndighed: $routingMyndighed,
             routingKLEEmne: $routingKLEEmne,
@@ -151,12 +150,30 @@ class SF2900
 
     private function resolveOptions(array $options): array
     {
+        $resolveSftpOptions = static function (OptionsResolver $resolver, Options $parent): void {
+            $resolver
+                ->setDefaults([
+                    // https://digitaliseringskataloget.dk/files/integration-files/260220200803/20200226_Vejledning%20til%20Serviceplatformens%20SFTP%20Service.pdf#page=14
+                    'host' => $parent['test_mode']
+                        ? 'sftpexttest.serviceplatformen.dk'
+                        : 'sftp.serviceplatformen.dk',
+                    'port' => 22,
+                ])
+                ->setAllowedTypes('host', 'string')
+                ->setAllowedTypes('port', 'int')
+                ->setRequired('username')
+                ->setAllowedTypes('username', 'string')
+                ->setRequired('private_key')
+                ->setAllowedTypes('private_key', 'string')
+                ->setDefault('private_key_passphrase', null)
+                ->setAllowedTypes('private_key_passphrase', ['string', 'null']);
+        };
+
         return (new OptionsResolver())
-            ->setRequired([
-                'certificate_locator',
-                'authority_cvr',
-                'sftp',
-            ])
+            ->setRequired('certificate')
+            ->setAllowedTypes('certificate', ['string', CertificateLocatorInterface::class])
+            ->setRequired('authority_cvr')
+            ->addAllowedTypes('authority_cvr', 'string')
             ->setDefaults([
                 'debug' => false,
                 'test_mode' => true,
@@ -167,8 +184,11 @@ class SF2900
                         : 'https://prod.serviceplatformen.dk';
                 },
             ])
-            ->setAllowedTypes('certificate_locator', CertificateLocatorInterface::class)
-            ->setOptions('sftp', SftpHelper::resolveOptions(...))
+            ->setRequired('sftp')
+            ->setDefault('sftp', $resolveSftpOptions)
+            // Defining nested options via setDefault() is deprecated since Symfony 7.3
+            // (cf. https://symfony.com/doc/current/components/options_resolver.html#nested-options)
+            // ->setOptions('sftp', $resolveSftpOptions)
             ->resolve($options);
     }
 
@@ -245,19 +265,24 @@ class SF2900
     private function getLocalCert(): array
     {
         // @todo Does this only work with a file system certificate locator?!
-        $certificateLocator = $this->options['certificate_locator'];
-        assert($certificateLocator instanceof CertificateLocatorInterface);
-        $certificates = $certificateLocator->getCertificates();
-        $passphrase = '';
-        $output = [null, null];
-        openssl_x509_export($certificates['cert'], $output[0]);
-        openssl_pkey_export($certificates['pkey'], $output[1], $passphrase);
+        $certificate = $this->options['certificate'];
+        $certificatePassphrase = $this->options['certificate_passphrase'];
+
         $localCertFilename = tempnam(sys_get_temp_dir(), 'cert');
-        file_put_contents($localCertFilename, join(PHP_EOL, $output));
+        if ($certificate instanceof CertificateLocatorInterface) {
+            $certificates = $certificate->getCertificates();
+            $output = [null, null];
+            openssl_x509_export($certificates['cert'], $output[0]);
+            $certificatePassphrase = '';
+            openssl_pkey_export($certificates['pkey'], $output[1], $certificatePassphrase);
+            file_put_contents($localCertFilename, join(PHP_EOL, $output));
+        } else {
+            file_put_contents($localCertFilename, $certificate);
+        }
 
         return [
             $localCertFilename,
-            $passphrase,
+            $certificatePassphrase,
         ];
     }
 
@@ -287,7 +312,6 @@ class SF2900
 
     private function buildFordelingsobjektAfsendRequest(
         string $transactionId,
-        string $type,
         DistributionDokumentType|DistributionJournalPostType|DistributionFormularType $document,
         string $routingMyndighed,
         string $routingKLEEmne,
@@ -303,12 +327,15 @@ class SF2900
         $objectIndhold = new ObjektIndholdType();
         switch ($document::class) {
             case DistributionDokumentType::class:
+                $type = ObjektTypeType::VALUE_DOKUMENT;
                 $objectIndhold->setDistributionDokument($document);
                 break;
             case DistributionJournalPostType::class:
+                $type = ObjektTypeType::VALUE_JOURNALPOST;
                 $objectIndhold->setDistributionJournalPost($document);
                 break;
             case DistributionFormularType::class:
+                $type = ObjektTypeType::VALUE_FORMULAR;
                 $objectIndhold->setDistributionFormular($document);
                 break;
             default:

@@ -224,7 +224,6 @@ HELP,
         try {
             $result = $sf2900->afsend(
                 transactionId: $transactionId,
-                type: $type,
                 document: $document,
                 routingMyndighed: $options['sender-id'],
                 routingKLEEmne: $options['routing-kle'],
