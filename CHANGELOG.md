@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 - [PR-46](https://github.com/itk-dev/serviceplatformen/pull/46)
-  Update composer/string dependency
+  Update symfony/string dependency
 
 ## [1.7.2] - 2025-11-24
 
