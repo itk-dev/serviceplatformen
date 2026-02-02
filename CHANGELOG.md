@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-02-02
+
 - [PR-46](https://github.com/itk-dev/serviceplatformen/pull/46)
-  Update symfony/string dependency
+  Added support for Symfony 7
 
 ## [1.7.2] - 2025-11-24
 
@@ -135,7 +137,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Functionality for making calls to the PersonBaseDataExtended service.
 - Possibility to use certificates stored in Azure Key Vault.
 
-[Unreleased]: https://github.com/itk-dev/serviceplatformen/compare/1.7.2...HEAD
+[Unreleased]: https://github.com/itk-dev/serviceplatformen/compare/1.8.0...HEAD
+[1.8.0]: https://github.com/itk-dev/serviceplatformen/compare/1.7.2...1.8.0
 [1.7.2]: https://github.com/itk-dev/serviceplatformen/compare/1.7.1...1.7.2
 [1.7.1]: https://github.com/itk-dev/serviceplatformen/compare/1.7.0...1.7.1
 [1.7.0]: https://github.com/itk-dev/serviceplatformen/compare/1.6.1...1.7.0
