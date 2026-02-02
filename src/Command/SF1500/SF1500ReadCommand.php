@@ -53,10 +53,10 @@ certificate:
     &name=organisation
     &secret=test
     &version=bbcbd812-0d7c-420b-9b93-7318e3769578
-    
+
     If using path option make sure the path is relative to project root to the certificate file, e.g.
     '/app/src/Command/SF1500/certificate.p12'
- 
+
 certificate-passphrase:
     the passphrase for p12 certificate, i.e.
     'XYZ'
@@ -79,7 +79,7 @@ HELP;
     /**
      * @throws SF1500Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $options = $this->resolveOptions(
             array_filter(
