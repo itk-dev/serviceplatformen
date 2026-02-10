@@ -72,8 +72,7 @@ class SftpHelper
 
     public function getFiles(string $dir, bool $recursive = false): array
     {
-        $sftp = $this->getSftp();
-        $sftp->chdir($dir);
+        $sftp = $this->getSftp($dir);
         $files = $sftp->nlist(recursive: $recursive);
         if (false === $files) {
             throw new SftpException(sprintf('Cannot list files: %s', $sftp->getLastError()));
