@@ -20,28 +20,28 @@ class SftpHelper
     /**
      * Put file contents in outgoing folder on SFTP server.
      */
-    public function putFile(string $file, ?string $filename = null): string
+    public function putFile(string $file, ?string $filename = null, ?string $sftpFilename = null): string
     {
         if (!is_readable($file)) {
             throw new SftpException(sprintf('Cannot read file %s', $file));
         }
         $contents = file_get_contents($file);
 
-        return $this->putContents($contents, $filename ?? basename($file));
+        return $this->putContents($contents, $filename ?? basename($file), $sftpFilename);
     }
 
     /**
      * Put contents in outgoing folder on SFTP server.
      */
-    public function putContents(string $contents, string $filename): string
+    public function putContents(string $contents, string $filename, ?string $sftpFilename = null): string
     {
         $sftp = $this->getSftp();
-        $uniqueFilename = uniqid('sf2900_').'_'.$filename;
-        if (!$sftp->put($uniqueFilename, $contents)) {
+        $sftpFilename ??= uniqid('sf2900_').'_'.$filename;
+        if (!$sftp->put($sftpFilename, $contents)) {
             throw new SftpException(sprintf('Error putting file %s: %s', $filename, $sftp->getLastError()));
         }
 
-        return $uniqueFilename;
+        return $sftpFilename;
     }
 
     /**
