@@ -325,21 +325,17 @@ class SF2900
         $authorityContextMunicipalityCVR ??= $afsendendeMyndighed;
 
         $objectIndhold = new ObjektIndholdType();
-        switch ($document::class) {
-            case DistributionDokumentType::class:
-                $type = ObjektTypeType::VALUE_DOKUMENT;
-                $objectIndhold->setDistributionDokument($document);
-                break;
-            case DistributionJournalPostType::class:
-                $type = ObjektTypeType::VALUE_JOURNALPOST;
-                $objectIndhold->setDistributionJournalPost($document);
-                break;
-            case DistributionFormularType::class:
-                $type = ObjektTypeType::VALUE_FORMULAR;
-                $objectIndhold->setDistributionFormular($document);
-                break;
-            default:
-                throw new \Exception(__FILE__);
+        if ($document instanceof DistributionDokumentType) {
+            $type = ObjektTypeType::VALUE_DOKUMENT;
+            $objectIndhold->setDistributionDokument($document);
+        } elseif ($document instanceof DistributionJournalPostType) {
+            $type = ObjektTypeType::VALUE_JOURNALPOST;
+            $objectIndhold->setDistributionJournalPost($document);
+        } elseif ($document instanceof DistributionFormularType) {
+            $type = ObjektTypeType::VALUE_FORMULAR;
+            $objectIndhold->setDistributionFormular($document);
+        } else {
+            throw new \Exception(sprintf('Invalid document class: %s', $document::class));
         }
 
         $distributionObject = new DistributionObjectType(
