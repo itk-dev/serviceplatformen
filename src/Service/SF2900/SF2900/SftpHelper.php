@@ -70,10 +70,10 @@ class SftpHelper
         }
     }
 
-    public function getFiles(string $dir, bool $recursive = false): array
+    public function getFiles(string $dir, bool $recursive = false, bool $raw = false): array
     {
         $sftp = $this->getSftp($dir);
-        $files = $sftp->nlist(recursive: $recursive);
+        $files = $raw ? $sftp->rawlist(recursive: $recursive) : $sftp->nlist(recursive: $recursive);
         if (false === $files) {
             throw new SftpException(sprintf('Cannot list files: %s', $sftp->getLastError()));
         }
