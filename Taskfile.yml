@@ -8,13 +8,13 @@ tasks:
     cmds:
       - task: compose
         vars:
-          COMPOSE_ARGS: run --rm phpfpm composer install
+          TASK_ARGS: run --rm phpfpm composer install
       - task: compose
         vars:
-          COMPOSE_ARGS: run --rm phpfpm bin/generate resources
+          TASK_ARGS: run --rm phpfpm bin/generate resources
       - task: compose
         vars:
-          COMPOSE_ARGS: run --rm phpfpm bin/generate classes
+          TASK_ARGS: run --rm phpfpm bin/generate classes
 
   compose:
     cmds:

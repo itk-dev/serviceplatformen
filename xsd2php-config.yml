@@ -48,6 +48,8 @@ xsd2php:
     "urn:oio:fjernprint:1.0.0": "Oio\\Fjernprint"
     "urn:oio:sagdok:3.0.0": "Oio\\Sagdok"
 
+    "http://serviceplatformen.dk/xml/wsdl/soap11/SFTP/1/types": "Digitaliseringskataloget\\Sftp"
+
   destinations_php:
     # These must also be set in autoload.psr-4 in composer.json.
     "DigitalPost\\MeMo": "lib/DigitalPost/MeMo/"
@@ -66,6 +68,8 @@ xsd2php:
     "Digitaliseringskataloget\\SF1500\\Organisation6": "lib/digitaliseringskataloget/SF1500/Organisation6"
 
     "Oio": "lib/Oio"
+
+    "Digitaliseringskataloget\\Sftp": "lib/digitaliseringskataloget/Sftp"
 
   destinations_jms:
     # These must also be set in src/Service/SF1601/Serializer.php
@@ -86,6 +90,8 @@ xsd2php:
 
     "Oio": "lib/metadata/Oio"
 
+    "Digitaliseringskataloget\\Sftp": "lib/metadata/digitaliseringskataloget/Sftp"
+
   xml_namespaces:
     # prefix: namespace
     "memo": "https://DigitalPost.dk/MeMo-1"
@@ -98,3 +104,4 @@ xsd2php:
     "dmv": "https://motorregister.skat.dk/"
     "grd": "https://data.gov.dk/model/core/"
     "sor": "https://services.nsi.dk/en/Services/SOR"
+    "sftp": "http://serviceplatformen.dk/xml/wsdl/soap11/SFTP/1/types"
