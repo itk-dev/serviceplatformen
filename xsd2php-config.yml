@@ -30,6 +30,7 @@ xsd2php:
     "http://stoettesystemerne.dk/organisation/organisationsystem/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Organisationsystem"
     "http://stoettesystemerne.dk/organisation/person/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Person"
     "http://stoettesystemerne.dk/organisation/virksomhed/6/": "Digitaliseringskataloget\\SF1500\\Organisation6\\Virksomhed"
+    # @fixme Duplicated below. Which one is correct?
     # "urn:oio:sagdok:3.0.0": "Digitaliseringskataloget\\Sagdok3_0_0"
     "urn:oio:sts:6": "Digitaliseringskataloget\\Sts6"
     "urn:oio:sts:part:6": "Digitaliseringskataloget\\Sts6\\Part"

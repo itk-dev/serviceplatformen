@@ -24,6 +24,13 @@ xsd_dir=/tmp/serviceplatformen/xsd
 # XSD archive url (cf. https://www.digitaliser.dk/resource/5248921)
 XSD_ARCHIVE_URL="https://www.digitaliser.dk/resource/5248921/artefact/MeMo_XSD.zip?artefact=true&PID=6075979"
 
+# @todo
+# The previous XSD_ARCHIVE_URL does no longer exist.
+# https://www.digitaliser.dk/resource/5248921 » "MeMo v1.1 dokumentationen"
+# (https://www.digitaliser.dk/digital-post/vejledninger/memo-v11) »
+# "MeMo_XSD.zip" leads to
+# XSD_ARCHIVE_URL="https://www.digitaliser.dk/Media/638142936027043458/MeMo_XSD.zip"
+
 echo "${bold}Fetching MeMo XSD${normal}"
 
 mkdir -p "$xsd_dir"
