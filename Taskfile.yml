@@ -1,0 +1,58 @@
+# https://taskfile.dev
+
+version: "3"
+
+tasks:
+  generate:
+    desc: Generate stuff …
+    cmds:
+      - task: compose
+        vars:
+          TASK_ARGS: run --rm phpfpm composer install
+      - task: compose
+        vars:
+          TASK_ARGS: run --rm phpfpm bin/generate resources
+      - task: compose
+        vars:
+          TASK_ARGS: run --rm phpfpm bin/generate classes
+
+  compose:
+    cmds:
+      - docker compose {{.TASK_ARGS}} {{.CLI_ARGS}}
+    internal: true
+
+  composer:
+    desc: Run composer inside docker compose setup, e.g. `task {{.TASK}} -- install`
+    cmds:
+      - task: compose
+        vars:
+          TASK_ARGS: run --rm phpfpm composer {{.TASK_ARGS}}
+
+  php:
+    # https://taskfile.dev/docs/reference/templating#task-1
+    desc: Run PHP inside docker compose setup, e.g. `task {{.TASK}} -- bin/serviceplatformen-sf2900-fordelingsobjekt-list`
+    cmds:
+      - task: compose
+        vars:
+          TASK_ARGS: run --rm phpfpm php
+
+  debug:php:
+    desc: Run PHP inside docker compose setup with Xdebug enabled, e.g. `task {{.TASK}} -- bin/serviceplatformen-sf2900-fordelingsobjekt-list`
+    cmds:
+      - task: compose
+        vars:
+          TASK_ARGS: run --env PHP_XDEBUG_MODE=debug --env PHP_XDEBUG_WITH_REQUEST=yes --rm phpfpm php
+
+  coding-standards:coding-standards:check:
+    cmds:
+      - task: composer
+        vars:
+          TASK_ARGS: coding-standards-apply
+      - task: composer
+        vars:
+          TASK_ARGS: coding-standards-check
+
+  default:
+    cmds:
+      - task --list
+    silent: true

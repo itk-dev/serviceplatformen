@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/3/port"
+             targetNamespace="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/3/port"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             name="DistributionService"
+             xmlns:types="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/3/types"
+             xmlns:wsp="http://www.w3.org/ns/ws-policy">
+
+    <import namespace="http://serviceplatformen.dk/xml/wsdl/soap11/Security/Policy" location="policies.wsdl"/>
+
+    <types>
+        <xsd:schema targetNamespace="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/3/types">
+            <xsd:include schemaLocation="../../DistributionServiceMsg.xsd"/>
+        </xsd:schema>
+    </types>
+
+    <message name="FordelingsobjektAfsendRequest">
+        <part name="request" element="types:FordelingsobjektAfsendRequest"/>
+    </message>
+    <message name="FordelingsobjektAfsendResponse">
+        <part name="response" element="types:FordelingsobjektAfsendResponse"/>
+    </message>
+    <message name="FordelingskvitteringModtagRequestType">
+        <part name="request" element="types:FordelingskvitteringModtagRequest"/>
+    </message>
+    <message name="FordelingskvitteringModtagResponseType">
+        <part name="response" element="types:FordelingskvitteringModtagResponse"/>
+    </message>
+    <message name="FordelingsmodtagerListRequestType">
+        <part name="request" element="types:FordelingsmodtagerListRequest"/>
+    </message>
+    <message name="FordelingsmodtagerListResponseType">
+        <part name="response" element="types:FordelingsmodtagerListResponse"/>
+    </message>
+    <message name="FordelingsmodtagerValiderRequestType">
+        <part name="request" element="types:FordelingsmodtagerValiderRequest"/>
+    </message>
+    <message name="FordelingsmodtagerValiderResponseType">
+        <part name="response" element="types:FordelingsmodtagerValiderResponse"/>
+    </message>
+
+    <message name="TransportKvitteringType">
+        <part name="fault" element="types:TransportKvittering"/>
+    </message>
+
+    <portType name="DistributionWebServicePort">
+        <operation name="FordelingsobjektAfsend">
+            <input message="tns:FordelingsobjektAfsendRequest"/>
+            <output message="tns:FordelingsobjektAfsendResponse"/>
+            <fault message="tns:TransportKvitteringType" name="TransportKvittering"/>
+        </operation>
+        <operation name="FordelingskvitteringModtag">
+            <input message="tns:FordelingskvitteringModtagRequestType"/>
+            <output message="tns:FordelingskvitteringModtagResponseType"/>
+            <fault message="tns:TransportKvitteringType" name="TransportKvittering"/>
+        </operation>
+        <operation name="FordelingsmodtagerList">
+            <input message="tns:FordelingsmodtagerListRequestType"/>
+            <output message="tns:FordelingsmodtagerListResponseType"/>
+            <fault message="tns:TransportKvitteringType" name="TransportKvittering"/>
+        </operation>
+        <operation name="FordelingsmodtagerValider">
+            <input message="tns:FordelingsmodtagerValiderRequestType"/>
+            <output message="tns:FordelingsmodtagerValiderResponseType"/>
+            <fault message="tns:TransportKvitteringType" name="TransportKvittering"/>
+        </operation>
+    </portType>
+
+    <binding name="DistributionServiceBinding" type="tns:DistributionWebServicePort">
+        <wsp:PolicyReference URI="policies.wsdl#ServiceplatformBindingPolicy"/>
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+
+        <operation name="FordelingsobjektAfsend">
+            <soap:operation soapAction="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/3/port/FordelingsobjektAfsend"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="TransportKvittering">
+                <soap:fault name="TransportKvittering" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="FordelingskvitteringModtag">
+            <soap:operation soapAction="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/3/port/FordelingskvitteringModtag"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+
+            <fault name="TransportKvittering">
+                <soap:fault name="TransportKvittering" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="FordelingsmodtagerList">
+            <soap:operation
+                    soapAction="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/3/port/FordelingsmodtagerList"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="TransportKvittering">
+                <soap:fault name="TransportKvittering" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="FordelingsmodtagerValider">
+            <soap:operation soapAction="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/3/port/FordelingsmodtagerValider"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="TransportKvittering">
+                <soap:fault name="TransportKvittering" use="literal"/>
+            </fault>
+        </operation>
+    </binding>
+
+    <service name="DistributionService">
+        <port name="DistributionServiceWebServicePort" binding="tns:DistributionServiceBinding">
+            <soap:address location="https://localhost:8080/service/SP/Distribution/3"/>
+        </port>
+    </service>
+</definitions>

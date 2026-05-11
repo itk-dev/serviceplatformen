@@ -1,0 +1,18 @@
+Digitaliseringskataloget\Sftp\TriggerType:
+    properties:
+        fileDescriptor:
+            expose: true
+            access_type: public_method
+            serialized_name: FileDescriptor
+            accessor:
+                getter: getFileDescriptor
+                setter: setFileDescriptor
+            type: Digitaliseringskataloget\Sftp\FileDescriptorType
+        fileContentDescriptor:
+            expose: true
+            access_type: public_method
+            serialized_name: FileContentDescriptor
+            accessor:
+                getter: getFileContentDescriptor
+                setter: setFileContentDescriptor
+            type: Digitaliseringskataloget\Sftp\FileContentDescriptorType

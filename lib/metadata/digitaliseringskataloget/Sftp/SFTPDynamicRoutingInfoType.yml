@@ -1,0 +1,70 @@
+Digitaliseringskataloget\Sftp\SFTPDynamicRoutingInfoType:
+    properties:
+        infRef:
+            expose: true
+            access_type: public_method
+            serialized_name: InfRef
+            accessor:
+                getter: getInfRef
+                setter: setInfRef
+            type: string
+        senderItSystem:
+            expose: true
+            access_type: public_method
+            serialized_name: SenderIt-system
+            accessor:
+                getter: getSenderItSystem
+                setter: setSenderItSystem
+            type: string
+        senderAuthority:
+            expose: true
+            access_type: public_method
+            serialized_name: SenderAuthority
+            accessor:
+                getter: getSenderAuthority
+                setter: setSenderAuthority
+            type: string
+        transactionId:
+            expose: true
+            access_type: public_method
+            serialized_name: TransactionId
+            accessor:
+                getter: getTransactionId
+                setter: setTransactionId
+            type: string
+        senderTimestamp:
+            expose: true
+            access_type: public_method
+            serialized_name: SenderTimestamp
+            accessor:
+                getter: getSenderTimestamp
+                setter: setSenderTimestamp
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime
+        recipientItSystem:
+            expose: true
+            access_type: public_method
+            serialized_name: RecipientIt-system
+            accessor:
+                getter: getRecipientItSystem
+                setter: setRecipientItSystem
+            type: string
+        recipientAuthority:
+            expose: true
+            access_type: public_method
+            serialized_name: RecipientAuthority
+            accessor:
+                getter: getRecipientAuthority
+                setter: setRecipientAuthority
+            type: string
+        routeParameterList:
+            expose: true
+            access_type: public_method
+            serialized_name: RouteParameterList
+            accessor:
+                getter: getRouteParameterList
+                setter: setRouteParameterList
+            type: array<Digitaliseringskataloget\Sftp\RouteParameterType>
+            xml_list:
+                inline: false
+                entry_name: RouteParameter
+                skip_when_empty: true

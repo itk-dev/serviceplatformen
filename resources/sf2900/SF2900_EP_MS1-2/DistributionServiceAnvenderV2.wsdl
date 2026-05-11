@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/2/port"
+             targetNamespace="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/2/port"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             name="DistributionServiceAnvender"
+             xmlns:types="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/2/types">
+
+    <types>
+        <xsd:schema targetNamespace="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/2/types">
+            <xsd:include schemaLocation="DistributionServiceMsgV2.xsd"/>
+        </xsd:schema>
+    </types>
+
+    <message name="FordelingskvitteringModtagRequestType">
+        <part name="request" element="types:FordelingskvitteringModtagAnvenderRequest"/>
+    </message>
+
+    <message name="FordelingskvitteringModtagResponseType">
+        <part name="response" element="types:FordelingskvitteringModtagAnvenderResponse"/>
+    </message>
+
+    <message name="TransportKvitteringType">
+        <part name="fault" element="types:TransportKvittering"/>
+    </message>
+
+    <portType name="DistributionSenderWebServicePort">
+        <operation name="FordelingskvitteringModtag">
+            <input message="tns:FordelingskvitteringModtagRequestType"/>
+            <output message="tns:FordelingskvitteringModtagResponseType"/>
+            <fault message="tns:TransportKvitteringType" name="TransportKvittering"/>
+        </operation>
+    </portType>
+
+    <binding name="DistributionServiceAnvenderBinding" type="tns:DistributionSenderWebServicePort">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+
+        <operation name="FordelingskvitteringModtag">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="TransportKvittering">
+                <soap:fault name="TransportKvittering" use="literal"/>
+            </fault>
+        </operation>
+    </binding>
+
+    <service name="DistributionServiceAnvender">
+        <port name="DistributionSenderWebServicePort" binding="tns:DistributionServiceAnvenderBinding">
+            <soap:address location="http://localhost:8080/service/DistributionService/DistributionService/2"/>
+        </port>
+    </service>
+</definitions>
