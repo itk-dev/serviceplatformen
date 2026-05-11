@@ -1,0 +1,26 @@
+Digitaliseringskataloget\Sftp\ErrorMessageType:
+    properties:
+        errorCode:
+            expose: true
+            access_type: public_method
+            serialized_name: ErrorCode
+            accessor:
+                getter: getErrorCode
+                setter: setErrorCode
+            type: int
+        errorCodeDescription:
+            expose: true
+            access_type: public_method
+            serialized_name: ErrorCodeDescription
+            accessor:
+                getter: getErrorCodeDescription
+                setter: setErrorCodeDescription
+            type: string
+        errorDescription:
+            expose: true
+            access_type: public_method
+            serialized_name: ErrorDescription
+            accessor:
+                getter: getErrorDescription
+                setter: setErrorDescription
+            type: string
