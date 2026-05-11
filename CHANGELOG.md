@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [PR-44](https://github.com/itk-dev/serviceplatformen/pull/44)
+  Added support for [Fordelingskomponenten](https://digitaliseringskataloget.dk/integration/sf2900)
+
 ## [1.8.0] - 2026-02-02
 
 - [PR-46](https://github.com/itk-dev/serviceplatformen/pull/46)

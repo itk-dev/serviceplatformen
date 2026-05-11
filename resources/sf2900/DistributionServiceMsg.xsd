@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:tns="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/3/types"
+            targetNamespace="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/3/types"
+            xmlns:callctx="http://serviceplatformen.dk/xml/schemas/CallContext/1/"
+            xmlns:authctx="http://serviceplatformen.dk/xml/schemas/AuthorityContext/1/"
+            xmlns:dsv2="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/2/types"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified"
+            version="1.0">
+
+    <!-- Import external entities -->
+    <xsd:import namespace="http://serviceplatformen.dk/xml/schemas/CallContext/1/"
+                schemaLocation="sp/CallContext_1.xsd"/>
+    <xsd:import namespace="http://serviceplatformen.dk/xml/schemas/AuthorityContext/1/"
+                schemaLocation="sp/AuthorityContext_1.xsd"/>
+    <xsd:import namespace="http://serviceplatformen.dk/xml/wsdl/soap11/DistributionService/2/types"
+                schemaLocation="SF2900_EP_MS1-2/DistributionServiceMsgV2.xsd"/>
+
+    <xsd:include schemaLocation="xsd/DistributionServiceTypes.xsd"/>
+
+    <!-- Elements used for messages in wsdl file -->
+    <xsd:element name="FordelingsobjektAfsendRequest" type="tns:FordelingsobjektAfsendRequestType"/>
+    <xsd:element name="FordelingsobjektAfsendResponse" type="tns:FordelingsobjektAfsendResponseType"/>
+    <xsd:element name="FordelingskvitteringModtagRequest" type="tns:FordelingskvitteringModtagRequestType"/>
+    <xsd:element name="FordelingskvitteringModtagResponse" type="tns:FordelingskvitteringModtagResponseType"/>
+    <xsd:element name="FordelingsmodtagerListRequest" type="tns:FordelingsmodtagerListRequestType"/>
+    <xsd:element name="FordelingsmodtagerListResponse" type="tns:FordelingsmodtagerListResponseType"/>
+    <xsd:element name="FordelingsmodtagerValiderRequest" type="tns:FordelingsmodtagerValiderRequestType"/>
+    <xsd:element name="FordelingsmodtagerValiderResponse" type="tns:FordelingsmodtagerValiderResponseType"/>
+
+    <!-- Complex types defining he request and reposnse elements for services -->
+    <xsd:complexType name="FordelingsobjektAfsendRequestType">
+        <xsd:sequence>
+            <xsd:element ref="callctx:CallContext" minOccurs="0" maxOccurs="1"/>
+            <xsd:element ref="authctx:AuthorityContext" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="anmodning" type="dsv2:anmodRequestType" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="FordelingsobjektAfsendResponseType">
+        <xsd:sequence>
+            <xsd:element name="ForretningsKvittering" type="dsv2:ForretningskvitteringType" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="DistributionContext" type="dsv2:DistributionContextType" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="FordelingskvitteringModtagRequestType">
+        <xsd:sequence>
+            <xsd:element ref="callctx:CallContext" minOccurs="0" maxOccurs="1"/>
+            <xsd:element ref="authctx:AuthorityContext" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="Forretningskvittering" type="dsv2:ForretningskvitteringType" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="DistributionContext" type="dsv2:DistributionContextType" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="FordelingskvitteringModtagResponseType"/>
+
+    <xsd:complexType name="FordelingsmodtagerListRequestType">
+        <xsd:sequence>
+            <xsd:element ref="callctx:CallContext" minOccurs="0" maxOccurs="1"/>
+            <xsd:element ref="authctx:AuthorityContext" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="Routing" type="dsv2:FordelingsmodtagerListRequest" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="FordelingsmodtagerListResponseType">
+        <xsd:sequence>
+            <xsd:element name="Systemer" type="dsv2:tilgaengeligeModtagereType" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="FordelingsmodtagerValiderRequestType">
+        <xsd:sequence>
+            <xsd:element ref="callctx:CallContext" minOccurs="0" maxOccurs="1"/>
+            <xsd:element ref="authctx:AuthorityContext" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="AfsendendeMyndighed" type="dsv2:CVRNumber" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="RoutingListe" type="dsv2:RoutingListeType" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="FordelingsmodtagerValiderResponseType">
+        <xsd:sequence>
+            <xsd:element name="RoutingListe" type="dsv2:RoutingResposneListeType" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

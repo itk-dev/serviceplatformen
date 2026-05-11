@@ -1,0 +1,42 @@
+Digitaliseringskataloget\Sftp\BusinessReceiptType:
+    properties:
+        fileTransferUUID:
+            expose: true
+            access_type: public_method
+            serialized_name: FileTransferUUID
+            accessor:
+                getter: getFileTransferUUID
+                setter: setFileTransferUUID
+            type: string
+        filename:
+            expose: true
+            access_type: public_method
+            serialized_name: Filename
+            accessor:
+                getter: getFilename
+                setter: setFilename
+            type: string
+        recipient:
+            expose: true
+            access_type: public_method
+            serialized_name: Recipient
+            accessor:
+                getter: getRecipient
+                setter: setRecipient
+            type: string
+        fileAcceptance:
+            expose: true
+            access_type: public_method
+            serialized_name: FileAcceptance
+            accessor:
+                getter: getFileAcceptance
+                setter: setFileAcceptance
+            type: string
+        reason:
+            expose: true
+            access_type: public_method
+            serialized_name: Reason
+            accessor:
+                getter: getReason
+                setter: setReason
+            type: string

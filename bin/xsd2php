@@ -24,6 +24,13 @@ xsd_dir=/tmp/serviceplatformen/xsd
 # XSD archive url (cf. https://www.digitaliser.dk/resource/5248921)
 XSD_ARCHIVE_URL="https://www.digitaliser.dk/resource/5248921/artefact/MeMo_XSD.zip?artefact=true&PID=6075979"
 
+# @todo
+# The previous XSD_ARCHIVE_URL does no longer exist.
+# https://www.digitaliser.dk/resource/5248921 » "MeMo v1.1 dokumentationen"
+# (https://www.digitaliser.dk/digital-post/vejledninger/memo-v11) »
+# "MeMo_XSD.zip" leads to
+# XSD_ARCHIVE_URL="https://www.digitaliser.dk/Media/638142936027043458/MeMo_XSD.zip"
+
 echo "${bold}Fetching MeMo XSD${normal}"
 
 mkdir -p "$xsd_dir"
@@ -78,3 +85,15 @@ unzip -q -o "$xsd_dir/SF1500 Bilag*.zip" -d "$xsd_dir" || true
 ls -l "$xsd_dir"/Tekniske*/*/xsd/6.0.STS-0/*.xsd
 
 "$project_dir"/vendor/bin/xsd2php convert xsd2php-config.yml "$xsd_dir"/Tekniske*/*/xsd/6.0.STS-0/*.xsd
+
+# https://digitaliseringskataloget.dk/sites/default/files/integration-files/091220250945/Vejledning%20til%20Serviceplatformens%20SFTP%20Service.pdf
+
+xsd_dir=/tmp/sftp/xsd
+mkdir -p "$xsd_dir"
+
+set -x
+
+curl --silent --location https://docs.kombit.dk/latest/0cfee71a >| "$xsd_dir"/sftp.zip
+unzip -q -o "$xsd_dir"/sftp.zip -d "$xsd_dir"
+
+"$project_dir"/vendor/bin/xsd2php convert xsd2php-config.yml "$xsd_dir"/*/xsd/*.xsd

@@ -1,0 +1,10 @@
+Digitaliseringskataloget\Sftp\ReceiptType:
+    properties:
+        message:
+            expose: true
+            access_type: public_method
+            serialized_name: Message
+            accessor:
+                getter: getMessage
+                setter: setMessage
+            type: string

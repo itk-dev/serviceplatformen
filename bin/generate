@@ -48,6 +48,18 @@ $services = [
         ],
         'namespace_name' => 'SF1600',
     ],
+
+    // https://digitaliseringskataloget.dk/integration/sf2900
+    'sf2900' => [
+        'doc_url' => 'https://docs.kombit.dk/integration/sf2900/2.4/pakke',
+        'resource_zip_glob' => 'SF2900 Teknisk Spec*.zip',
+        'wsdl_paths' => [
+            '' => 'wsdl/context/DistributionService.wsdl',
+        ],
+        'namespace_name' => 'SF2900',
+        // @see https://github.com/WsdlToPhp/PackageEws365/blob/master/SoapClient/SoapClientBase.php
+        'soap_client_class' => \ItkDev\Serviceplatformen\Service\SF2900\SoapClientBase::class,
+    ],
 ];
 
 class ResourceHelper extends Helper {

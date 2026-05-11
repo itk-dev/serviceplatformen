@@ -1,0 +1,45 @@
+Digitaliseringskataloget\Sftp\FileDescriptorType:
+    properties:
+        fileName:
+            expose: true
+            access_type: public_method
+            serialized_name: FileName
+            accessor:
+                getter: getFileName
+                setter: setFileName
+            type: string
+        sizeInBytes:
+            expose: true
+            access_type: public_method
+            serialized_name: SizeInBytes
+            accessor:
+                getter: getSizeInBytes
+                setter: setSizeInBytes
+            type: int
+        sender:
+            expose: true
+            access_type: public_method
+            serialized_name: Sender
+            accessor:
+                getter: getSender
+                setter: setSender
+            type: string
+        sendersFileId:
+            expose: true
+            access_type: public_method
+            serialized_name: SendersFileId
+            accessor:
+                getter: getSendersFileId
+                setter: setSendersFileId
+            type: string
+        recipients:
+            expose: true
+            access_type: public_method
+            serialized_name: Recipients
+            accessor:
+                getter: getRecipients
+                setter: setRecipients
+            xml_list:
+                inline: true
+                entry_name: Recipients
+            type: array<string>
