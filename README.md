@@ -9,6 +9,7 @@ Library for interacting with services on [Serviceplatformen](https://www.service
 * Parts of [Afsend post (SF1601):
   https://digitaliseringskataloget.dk/integration/sf1601](https://digitaliseringskataloget.dk/integration/sf1601).
   See [SF1601: Afsend post](docs/SF1601.md) for details.
+* [Fordelingskomponenten (SF2900): https://digitaliseringskataloget.dk/integration/sf2900](https://digitaliseringskataloget.dk/integration/sf2900)
 
 ## Updating resources and classes
 
@@ -18,32 +19,28 @@ generate PHP classes for talking to SOAP services. To update
 [resources](./resources) and [generated classes](./generated-classes), run
 
 ``` shell
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest composer install
-# Update WSDL resources.
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest bin/generate resources
-# Generate PHP classes from WSDL resources.
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest bin/generate classes
+task generate
 ```
 
 ## Test commands
 
 ``` shell
-docker run --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest vendor/bin/serviceplatformen-sf1601-kombipostafsend --help
+docker compose run --rm phpfpm vendor/bin/serviceplatformen-sf1601-kombipostafsend --help
 ```
 
 Use `bin/serviceplatformen-sf1601-kombipostafsend` (symlinked to
 `bin/SF1601/kombipostafsend`) during development of this library. i.e.
 
 ``` shell
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest bin/serviceplatformen-sf1601-kombipostafsend
+docker compose run --rm phpfpm bin/serviceplatformen-sf1601-kombipostafsend
 ```
 
 ``` shell
-docker run --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest vendor/bin/serviceplatformen-sf1601-postforespoerg --help
+docker compose run --rm phpfpm vendor/bin/serviceplatformen-sf1601-postforespoerg --help
 ```
 
 ``` shell
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest bin/serviceplatformen-sf1601-postforespoerg
+docker compose run --rm phpfpm bin/serviceplatformen-sf1601-postforespoerg
 ```
 
 ## Getting Started
@@ -71,7 +68,7 @@ Install the dependencies:
 ``` shell
 cd serviceplatformen
 
-composer install
+docker compose run --rm phpfpm composer install
 ```
 
 ## Running the tests
@@ -79,13 +76,13 @@ composer install
 Unit tests:
 
 ``` shell
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest composer tests/unit
+docker compose run --rm phpfpm composer tests/unit
 ```
 
 End to end tests:
 
 ``` shell
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest composer tests/end-to-end
+docker compose run --rm phpfpm composer tests/end-to-end
 ```
 
 ### And coding style tests
@@ -93,13 +90,13 @@ docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:lates
 PHP_CodeSniffer
 
 ``` shell
-composer coding-standards-check/phpcs
+docker compose run --rm phpfpm composer coding-standards-check/phpcs
 ```
 
 PHP-CS-Fixer
 
 ``` shell
-composer coding-standards-check/php-cs-fixer
+docker compose run --rm phpfpm composer coding-standards-check/php-cs-fixer
 ```
 
 ### Static code analysis
@@ -107,13 +104,13 @@ composer coding-standards-check/php-cs-fixer
 Phan
 
 ``` shell
-composer static-code-analysis/phan
+docker compose run --rm phpfpm composer static-code-analysis/phan
 ```
 
 ## Deployment
 
 ``` shell
-composer require itk-dev/serviceplatformen
+docker compose run --rm phpfpm composer require itk-dev/serviceplatformen
 ```
 
 ## Usage
@@ -237,20 +234,20 @@ reviewer to merge it for you.
 ### Coding standards
 
 ``` shell
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest composer install
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest composer coding-standards-apply
-docker run --interactive --tty --rm --volume ${PWD}:/app itkdev/php8.3-fpm:latest composer coding-standards-check
+docker compose run --rm phpfpm composer install
+docker compose run --rm phpfpm composer coding-standards-apply
+docker compose run --rm phpfpm composer coding-standards-check
 ```
 
 ``` shell
-docker run --rm --volume ${PWD}:/md peterdavehello/markdownlint markdownlint --ignore vendor --ignore LICENSE.md '**/*.md' --fix
-docker run --rm --volume ${PWD}:/md peterdavehello/markdownlint markdownlint --ignore vendor --ignore LICENSE.md '**/*.md'
+docker compose run --rm markdownlint markdownlint '**/*.md' --fix
+docker compose run --rm markdownlint markdownlint '**/*.md'
 ```
 
 ### Code analysis
 
 ``` shell
-docker run --interactive --tty --rm --volume ${PWD}:/app --env COMPOSER_MEMORY_LIMIT=-1 itkdev/php8.3-fpm:latest composer code-analysis
+docker compose run --rm phpfpm composer code-analysis
 ```
 
 ## Versioning
