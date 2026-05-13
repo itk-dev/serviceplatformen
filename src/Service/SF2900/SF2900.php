@@ -196,7 +196,7 @@ class SF2900
             ->setRequired('sftp')
             ->setDefault('sftp', $resolveSftpOptions)
             // Defining nested options via setDefault() is deprecated since Symfony 7.3
-            // (cf. https://symfony.com/doc/current/components/options_resolver.html#nested-options)
+            // (cf. https://symfony.com/doc/7.4/components/options_resolver.html#nested-options)
             // ->setOptions('sftp', $resolveSftpOptions)
             ->resolve($options);
     }
