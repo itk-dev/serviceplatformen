@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-05-13
+
 - [PR-44](https://github.com/itk-dev/serviceplatformen/pull/44)
   Added support for [Fordelingskomponenten](https://digitaliseringskataloget.dk/integration/sf2900)
 
@@ -140,7 +142,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Functionality for making calls to the PersonBaseDataExtended service.
 - Possibility to use certificates stored in Azure Key Vault.
 
-[Unreleased]: https://github.com/itk-dev/serviceplatformen/compare/1.8.0...HEAD
+[Unreleased]: https://github.com/itk-dev/serviceplatformen/compare/1.9.0...HEAD
+[1.9.0]: https://github.com/itk-dev/serviceplatformen/compare/1.8.0...1.9.0
 [1.8.0]: https://github.com/itk-dev/serviceplatformen/compare/1.7.2...1.8.0
 [1.7.2]: https://github.com/itk-dev/serviceplatformen/compare/1.7.1...1.7.2
 [1.7.1]: https://github.com/itk-dev/serviceplatformen/compare/1.7.0...1.7.1
