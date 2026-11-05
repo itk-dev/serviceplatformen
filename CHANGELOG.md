@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.1] - 2026-11-05
+
+- [PR-50](https://github.com/itk-dev/serviceplatformen/pull/50)
+  Avoid using existing variables names when validating additional documents in
+  SF1601.
+
 ## [1.9.0] - 2026-05-13
 
 - [PR-44](https://github.com/itk-dev/serviceplatformen/pull/44)
@@ -142,7 +148,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Functionality for making calls to the PersonBaseDataExtended service.
 - Possibility to use certificates stored in Azure Key Vault.
 
-[Unreleased]: https://github.com/itk-dev/serviceplatformen/compare/1.9.0...HEAD
+[Unreleased]: https://github.com/itk-dev/serviceplatformen/compare/1.9.1...HEAD
+[1.9.1]: https://github.com/itk-dev/serviceplatformen/compare/1.9.0...1.9.1
 [1.9.0]: https://github.com/itk-dev/serviceplatformen/compare/1.8.0...1.9.0
 [1.8.0]: https://github.com/itk-dev/serviceplatformen/compare/1.7.2...1.8.0
 [1.7.2]: https://github.com/itk-dev/serviceplatformen/compare/1.7.1...1.7.2
