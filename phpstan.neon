@@ -18,6 +18,7 @@ parameters:
         - '#expects ItkDev\\Serviceplatformen\\SF1500\\OrganisationFunktion\\StructType\\BrugerFlerRelationType, ItkDev\\Serviceplatformen\\SF1500\\OrganisationFunktion\\StructType\\FlerRelationType given.#'
         - '#expects ItkDev\\Serviceplatformen\\SF1500\\OrganisationFunktion\\StructType\\KlasseRelationType\|null, ItkDev\\Serviceplatformen\\SF1500\\OrganisationFunktion\\StructType\\RelationType given.#'
         - '#expects ItkDev\\Serviceplatformen\\SF1500\\OrganisationFunktion\\StructType\\OrganisationEnhedFlerRelationType, ItkDev\\Serviceplatformen\\SF1500\\OrganisationFunktion\\StructType\\FlerRelationType given.#'
+
 rules:
   - PHPStan\Rules\ForLoop\OverwriteVariablesWithForLoopInitRule
   - PHPStan\Rules\ForeachLoop\OverwriteVariablesWithForeachRule
