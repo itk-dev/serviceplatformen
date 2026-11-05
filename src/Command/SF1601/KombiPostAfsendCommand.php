@@ -376,15 +376,15 @@ HELP;
             $body->setMainDocument($mainDocument);
 
             if (!empty($options['attachment'])) {
-                foreach ($options['attachment'] as $index => $filename) {
+                foreach ($options['attachment'] as $index => $attachment) {
                     $additionalDocument = (new AdditionalDocument())
                         ->setLabel(sprintf('Attachment %d', $index+1))
                         ->setFile([
                             (new File())
-                                ->setEncodingFormat($mimeTypes->guessMimeType($filename))
+                                ->setEncodingFormat($mimeTypes->guessMimeType($attachment))
                                 ->setLanguage('da')
-                                ->setFilename(basename($filename))
-                                ->setContent(file_get_contents($filename))
+                                ->setFilename(basename($attachment))
+                                ->setContent(file_get_contents($attachment))
                         ]);
                     $body->addToAdditionalDocument($additionalDocument);
                 }
