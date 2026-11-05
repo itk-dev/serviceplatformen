@@ -10,8 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.9.1] - 2026-11-05
 
 - [PR-50](https://github.com/itk-dev/serviceplatformen/pull/50)
-  Avoid using existing variables names when validating additional documents in
-  SF1601.
+  - Avoid using existing variables names when validating and creating
+    additional documents in SF1601.
+  - Enable variable overwrite check to phpstan.
 
 ## [1.9.0] - 2026-05-13
 
