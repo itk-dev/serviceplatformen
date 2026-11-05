@@ -204,9 +204,9 @@ class SF1601 extends AbstractRESTService
             $additionalDocuments = $message->getMessageBody()->getAdditionalDocument();
             $this->validateActions($mainDocument->getAction());
             $this->sanitizeFilenames($mainDocument->getFile());
-            foreach ($additionalDocuments as $document) {
-                $this->validateActions($document->getAction());
-                $this->sanitizeFilenames($document->getFile());
+            foreach ($additionalDocuments as $additionalDocument) {
+                $this->validateActions($additionalDocument->getAction());
+                $this->sanitizeFilenames($additionalDocument->getFile());
             }
 
             // Serialize message and import and append it to kombi_request element.
